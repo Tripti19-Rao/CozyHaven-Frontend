@@ -1,16 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Stack from '@mui/material/Stack';
-import { TextField } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import Button from '@mui/material/Button';
+import { Grid, Box, Stack, TextField, Typography, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button } from '@mui/material';
 
 export default function Signup() {
   const [username, setUsername] = useState("");
