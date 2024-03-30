@@ -1,10 +1,14 @@
 import {useState} from 'react'
 import {isEmpty} from 'lodash'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 import {Grid,Box,Typography,FormControl,TextField,Button,Stack,Alert,Divider} from '@mui/material'
-import toast, { Toaster } from 'react-hot-toast';
+// import toast, { Toaster } from 'react-hot-toast';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
  
 export default function Login() {
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [clientErrors, setClientErrors] = useState({})
@@ -32,13 +36,18 @@ export default function Login() {
         if(isEmpty(errors)) {
             try {
                 setClientErrors({})
-                const response = await axios.post('http://localhost:3055/api/users/login',formData)
+                const response = await axios.post('http://localhost:3055/api/user/login',formData)
                 const token = response.data.token
                 localStorage.setItem('token',token)
-                toast.success('Successfully Logged In!')
+                // toast.success('Successfully Logged In!')
+                toast.success('Successfully Logged In!', {
+                    autoClose: 1000,
+                    onClose: () => navigate('/search')
+                  })
                 setServerErrors({})
                 setEmail('')
                 setPassword('')
+                // navigate('/')
             } catch(err) {
                 //alert(err.message)
                 //console.log(err)
@@ -52,7 +61,8 @@ export default function Login() {
     return (
         <div>
             <Grid container spacing={0} height='auto'>
-                <Toaster/>
+                {/* <Toaster/> */}
+                <ToastContainer/>
                 <Grid item xs={6}>
                     <img
                         src='/sign.jpg'
@@ -107,7 +117,6 @@ export default function Login() {
                                         required
                                         error={clientErrors.email}
                                         helperText={clientErrors.email && <span style={{color: 'red'}}>{clientErrors.email}</span>}
-
                                     />
                                     <TextField
                                         id="password"

@@ -10,9 +10,10 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
-    "lodash": "^4.17.21",
     "bootstrap": "^5.3.3",
+    "formik": "^2.4.5",
     "install": "^0.13.0",
+    "lodash": "^4.17.21",
     "npm": "^10.5.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
@@ -20,9 +21,12 @@
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
+    "react-toastify": "^10.0.5",
     "reactstrap": "^9.2.2",
     "styled-components": "^6.1.8",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0",
+    "yup-password": "^0.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
