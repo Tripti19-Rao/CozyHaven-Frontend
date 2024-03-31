@@ -22,9 +22,9 @@ export default function Login() {
         }
         if(!password.trim().length) {
             errors.password = 'Password is required'
-        } else if(!(password.trim().length >= 8 && password.trim().length <= 128)) {
-            errors.password = 'Password must be between 8 to 128 characters long'
-        }
+        }// else if(!(password.trim().length >= 8 && password.trim().length <= 128)) {
+        //     errors.password = 'Password must be between 8 to 128 characters long'
+        // }
     }
 
     const handleSubmit = async (e) => {
@@ -51,7 +51,7 @@ export default function Login() {
                 // navigate('/')
             } catch(err) {
                 //alert(err.message)
-                //console.log(err)
+                //console.log(err.response.data)
                 setServerErrors(err.response.data)
             }
         } else {
@@ -63,7 +63,7 @@ export default function Login() {
         <div>
             <Grid container spacing={0} height='auto'>
                 {/* <Toaster/> */}
-                <ToastContainer/>
+                <ToastContainer position='top-center'/>
                 <Grid item xs={6}>
                     <img
                         src='/sign.jpg'
