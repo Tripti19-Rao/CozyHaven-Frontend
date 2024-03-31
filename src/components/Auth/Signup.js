@@ -68,7 +68,7 @@ export default function Signup() {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3055/api/user/register",
+        "http://localhost:3055/api/users/register",
         formData
       );
       console.log(response.data);

@@ -36,7 +36,7 @@ export default function Login() {
         if(isEmpty(errors)) {
             try {
                 setClientErrors({})
-                const response = await axios.post('http://localhost:3055/api/user/login',formData)
+                const response = await axios.post('http://localhost:3055/api/users/login',formData)
                 const token = response.data.token
                 localStorage.setItem('token',token)
                 // toast.success('Successfully Logged In!')
