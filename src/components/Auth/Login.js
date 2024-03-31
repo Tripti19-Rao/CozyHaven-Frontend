@@ -3,6 +3,7 @@ import {isEmpty} from 'lodash'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import {Grid,Box,Typography,FormControl,TextField,Button,Stack,Alert,Divider} from '@mui/material'
+import { Link } from 'react-router-dom'
 // import toast, { Toaster } from 'react-hot-toast';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -36,7 +37,7 @@ export default function Login() {
         if(isEmpty(errors)) {
             try {
                 setClientErrors({})
-                const response = await axios.post('http://localhost:3055/api/user/login',formData)
+                const response = await axios.post('http://localhost:3055/api/users/login',formData)
                 const token = response.data.token
                 localStorage.setItem('token',token)
                 // toast.success('Successfully Logged In!')
@@ -103,7 +104,7 @@ export default function Login() {
                                 </Alert>}
                             <form onSubmit={handleSubmit}>
                                 <FormControl>
-                                <Stack spacing={2} direction="column">
+                                <Stack spacing={2} direction="column" sx={{marginLeft: "20px", marginTop: '20px'}}>
                                     <TextField
                                         id="email"
                                         label="Email"
@@ -132,7 +133,7 @@ export default function Login() {
                                     />
                                     </Stack>
                                     {/* {serverErrors.errors && <span style={{color: 'red'}}>{serverErrors.errors}</span>} */}
-                                    <Button type="submit" variant="contained" sx={{margin: '20px',marginLeft:'130px',width: '100px'}}>Log In</Button>
+                                    <Button type="submit" variant="contained" sx={{margin: '20px',marginLeft:'140px',width: '100px'}}>Log In</Button>
                                 </FormControl>
                             </form>
                             
@@ -155,71 +156,19 @@ export default function Login() {
                                 </Grid>
                             </Grid>
                             <Typography
-                                         //variant="body1"
-                                        // fontWeight="bold"
-                                        fontFamily="Prociono"
-                                        textAlign="center"
-                                        fontSize="18px"
-                                        sx={{color: "black"}}
-                                    >Don't have an account? Sign Up</Typography>
+                                 //variant="body1"
+                                 // fontWeight="bold"
+                                fontFamily="Prociono"
+                                textAlign="center"
+                                fontSize="18px"
+                                sx={{color: "black"}}
+                                >Don't have an account? <Link to={"/signup"}>Click here</Link>
+                            </Typography>
                         </Stack>
                         </Box>
                     </Box>
                 </Grid>
             </Grid>
-            {/* <form onSubmit={handleSubmit}>
-            <FormControl>
-                <TextField
-                    id="email"
-                    label="Enter Your Email"
-                    variant="standard"
-                    type='email'
-                    value={email}
-                    onChange={(e) => {setEmail(e.target.value)}}
-                    required
-                    error={clientErrors.email}
-                    helperText={clientErrors.email && clientErrors.email}
-
-                />
-                {clientErrors.email && <FormHelperText>Error: Please enter your email.</FormHelperText>}
-                <TextField
-                    id="password"
-                    label="Password"
-                    variant="standard"
-                    type='password'
-                    value={password}
-                    onChange={(e) => {setPassword(e.target.value)}}
-                    required
-                    error={clientErrors.password}
-                    helperText={clientErrors.password && <span style={{color: 'red'}}>{clientErrors.password}</span>}
-
-                />
-                <Button type="submit" variant="contained">Log In</Button>
-            </FormControl>
-            </form> */}
-
-
-            {/* <form onSubmit={handleSubmit}>
-            {serverErrors.errors && <span style={{color: 'red'}}>{serverErrors.errors}</span>}
-                <input 
-                    type='email'
-                    value={email}
-                    placeholder='Enter Your Email'
-                    onChange={(e) => {setEmail(e.target.value)}}
-                />
-                {clientErrors.email && <span style={{color: 'red'}}>{clientErrors.email}</span>}
-                <br/>
-                <input
-                    type='password'
-                    value={password}
-                    placeholder='Enter Password'
-                    onChange={(e) => {setPassword(e.target.value)}}
-                />
-                {clientErrors.password && <span style={{color: 'red'}}>{clientErrors.password}</span>}
-                <br/>
-                <input type="submit"/>
-            </form> */}
-            
         </div>
     )
 }
