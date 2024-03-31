@@ -15,7 +15,9 @@ import {
   Button,
   FormHelperText,
   Alert,
+  Divider
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import {toast , ToastContainer} from 'react-toastify' 
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from "formik";
@@ -120,7 +122,7 @@ export default function Signup() {
             }}
           >
             <Box
-              // height={560}
+              //height={600}
               width={430}
               // alignItems="center"
               // gap={4}
@@ -128,7 +130,7 @@ export default function Signup() {
               component="form"
               onSubmit={handleSubmit}
               sx={{
-                border: "2px solid grey",
+                border: "1px solid grey",
                 backgroundColor: "#FFFFFF",
                 position: "absolute",
                 top: "50%",
@@ -279,7 +281,34 @@ export default function Signup() {
               >
                 Submit
               </Button>
-            </Box>
+              <Grid container spacing={2} style={{marginTop: '2px'}}>
+                <Grid item xs={5}>
+                  <Divider style={{border: "1px solid black"}}/>
+                </Grid>
+                <Grid item xs={1} style={{padding: "5px",marginLeft: "15px",marginRight: "10px"}}>
+                  <Typography
+                    //variant="body1"
+                    // fontWeight="bold"
+                    fontFamily="Prociono"
+                    textAlign="center"
+                    fontSize="16px"
+                    sx={{color: "#737373"}}
+                  >OR</Typography>
+                </Grid>
+                <Grid item xs={5} style={{paddingLeft: "4px"}}>
+                  <Divider style={{border: "1px solid black"}}/>
+                </Grid>
+                </Grid>
+                <Typography
+                  //variant="body1"
+                  // fontWeight="bold"
+                  fontFamily="Prociono"
+                  textAlign="center"
+                  fontSize="16px"
+                  sx={{color: "black"}}
+                  >Already have an account? <Link to={"/login"}>Click here</Link>
+                </Typography>
+             </Box>
           </Box>
         </Grid>
       </Grid>
