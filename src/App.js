@@ -3,7 +3,8 @@ import {Routes, Route } from 'react-router-dom'
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import LandingPage from './components/Auth/LandingPage';
-import Search from './components/Search/Search'
+import Search from './components/Finder/Search';
+// import Search from './components/Search/Search'
 
 function App() {
   return (
