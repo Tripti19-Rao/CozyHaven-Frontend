@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import {isEmpty} from 'lodash'
 import axios from 'axios'
+import {jwtDecode} from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import {Grid,Box,Typography,FormControl,TextField,Button,Stack,Alert,Divider} from '@mui/material'
 import { Link } from 'react-router-dom'
@@ -40,10 +41,21 @@ export default function Login() {
                 const response = await axios.post('http://localhost:3055/api/users/login',formData)
                 const token = response.data.token
                 localStorage.setItem('token',token)
+                const {role} = jwtDecode(token)
+                // const role = jwtDecode(token)
                 // toast.success('Successfully Logged In!')
                 toast.success('Successfully Logged In!', {
                     autoClose: 1000,
-                    onClose: () => navigate('/search')
+                    onClose: () => {
+                        if(role==="admin"){
+                            navigate("/dashboard")
+                        }
+                        else if(role==="owner"){
+                            navigate("/home")
+                        }else{
+                            navigate("/search")
+                        }
+                    }
                   })
                 setServerErrors({})
                 setEmail('')
