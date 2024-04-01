@@ -8,6 +8,7 @@ function LandingPage() {
         <Link to="/signup">Sign Up</Link>
         <Link to="/login">Login</Link>
         <Link to='/nav'>Navbar</Link>
+        <Link to="/search">SEARCH</Link>
     </div>
   )
 }
