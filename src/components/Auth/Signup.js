@@ -76,7 +76,7 @@ export default function Signup() {
       console.log(response.data);
       actions.resetForm();
       setServerErrors({});
-      toast.success("Successfully Logged In!",{
+      toast.success("Successfully Registered!",{
         autoClose:1000,
         onClose:()=>navigate('/login')
       });
