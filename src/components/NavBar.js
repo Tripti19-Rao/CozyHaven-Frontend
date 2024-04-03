@@ -85,9 +85,9 @@ import { FaUser } from "react-icons/fa";
   
       
    return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{backgroundColor: "white"}}>
-        <Toolbar>
+    <Box sx={{ flexGrow: 1 ,}}>
+      <AppBar position="static" style={{backgroundColor: "white", zIndex: 1000 }}>
+        <Toolbar  >
         <Stack direction="row" alignItems="center" spacing={1} sx={{flexGrow: 1}}>
             <img src='/Cozy.png' alt='CozyHaven Logo' width="50px" height="50px"/>
             <Typography 

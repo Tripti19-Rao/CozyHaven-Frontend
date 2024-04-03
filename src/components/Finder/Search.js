@@ -72,7 +72,7 @@ export default function Search() {
         fontFamily="San Serif"
         textAlign="center"
         fontSize="50px"
-        style={{ marginTop: "150px" }}
+        style={{ marginTop: "100px" }}
       >
         CozyHaven
       </Typography>
