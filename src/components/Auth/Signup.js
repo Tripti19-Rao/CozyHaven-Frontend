@@ -73,7 +73,6 @@ export default function Signup() {
         "http://localhost:3055/api/users/register",
         formData
       );
-      console.log(response.data);
       actions.resetForm();
       setServerErrors({});
       toast.success("Successfully Registered!",{

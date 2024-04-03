@@ -22,7 +22,6 @@ import { FaUser } from "react-icons/fa";
   const navBasedOnRole = () => {
     
     const {role} = jwtDecode(token)
-    console.log(role)
     
 
     if(role === "finder") {

@@ -1,5 +1,8 @@
 import './App.css';
+import { useReducer } from 'react'
 import {Routes, Route } from 'react-router-dom'
+import buildingsReducer from './Reducer/buildingsReducer';
+import BuildingContext from './ContextApi/BuildingContext';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import LandingPage from './components/Auth/LandingPage';
@@ -12,11 +15,33 @@ import Dashboard from './components/Admin/Dashboard'
 import Home from './components/Owner/Home'
 import NotFound from './components/NotFound';
 import HomeDisplay from './components/Owner/HomeDisplay'
+import BuildingForm from './components/Owner/BuildingForm';
 // import Search from './components/Search/Search'
 
 function App() {
+  const buildingsInitialState = {
+    data:[],
+    formData:{
+      ownerId:'',
+      profilePic:'',
+      name:'',
+      gender:'',
+      address:'',
+      contact:'',
+      deposit:'',
+      amenities:'',
+      amenitiesPic:'',
+      rules:'',
+      license:'',
+      geolocation:''
+    },
+    serverError:[]
+ }
+ const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
+
   return (
     <div>
+      <BuildingContext.Provider value={{buildings, buildingsDispatch}}>
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
@@ -31,7 +56,9 @@ function App() {
         <Route path="/home" element={<Home/>}/>
         <Route path="/notfound" element={<NotFound/>}/>
         <Route path="/display" element={<HomeDisplay/>}/>
+        <Route path="/form" element={<BuildingForm/>}/>
       </Routes>
+      </BuildingContext.Provider>
     </div>
   )
 }
