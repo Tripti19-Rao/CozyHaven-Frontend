@@ -10,6 +10,8 @@ import Profile from './components/Finder/Profile';
 import PaymentHistory from './components/Finder/PaymentHistory';
 import Dashboard from './components/Admin/Dashboard'
 import Home from './components/Owner/Home'
+import NotFound from './components/NotFound';
+import HomeDisplay from './components/Owner/HomeDisplay'
 // import Search from './components/Search/Search'
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
         <Route path='/paymentHistory' element={<PaymentHistory/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/home" element={<Home/>}/>
+        <Route path="/notfound" element={<NotFound/>}/>
+        <Route path="/display" element={<HomeDisplay/>}/>
       </Routes>
     </div>
   )
