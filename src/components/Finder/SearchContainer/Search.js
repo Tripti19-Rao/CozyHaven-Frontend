@@ -137,6 +137,7 @@ export default function Search() {
             <Select
               labelId="gender-label"
               id="gender"
+              name="gender"
               value={values.gender}
               onBlur={handleBlur}
               label="Gender"
@@ -148,7 +149,7 @@ export default function Search() {
             >
               <MenuItem value={"male"}>Male</MenuItem>
               <MenuItem value={"female"}>Female</MenuItem>
-              <MenuItem value={"co"}>Co-living</MenuItem>
+              <MenuItem value={"co-living"}>Co-living</MenuItem>
             </Select>
           </FormControl>
 
@@ -161,6 +162,7 @@ export default function Search() {
             <Select
               labelId="sharing-label"
               id="sharing"
+              name="sharing"
               value={values.sharing}
               onChange={(e) => {
                 handleChange(e);
