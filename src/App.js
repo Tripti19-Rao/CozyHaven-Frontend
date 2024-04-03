@@ -49,10 +49,6 @@ function App() {
   return (
     <div>
       <BuildingContext.Provider value={{buildings, buildingsDispatch}}>
-
-
-
-      
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
