@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+//import searchResultsReducer from "../../Reducer/searchResultsReducers";
+
 import {
   Box,
   Typography,
@@ -15,8 +17,11 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import SearchContext from "../../ContextApi/searchContext";
 
 export default function Search() {
+  const {searchDispatch} = useContext(SearchContext)
+
   const navigate = useNavigate();
   const [serverErrors, setServerErrors] = useState({});
 
@@ -24,16 +29,16 @@ export default function Search() {
     address: yup.string().required("City & Area is required"),
     gender: yup
       .string()
-      .oneOf(["female", "male", "co", ""], "Please select the gender"),
+      .oneOf(["female", "male", "co-living", ""], "Please select the gender"),
     sharing: yup.number(),
   });
 
   const onSubmit = async() => {
-    const formData = {
-      address: values.address,
-      gender: values.gender,
-      sharing: values.sharing,
-    };
+    // const formData = {
+    //   address: values.address,
+    //   gender: values.gender,
+    //   sharing: values.sharing,
+    // };
     try {
         const queryParams = new URLSearchParams();
         queryParams.append('address', values.address);
@@ -41,7 +46,9 @@ export default function Search() {
         queryParams.append('gender', values.gender);
 
         const response = await axios.get(`http://localhost:3055/api/buildings/search?${queryParams.toString()}`)
-        console.log(response.data)
+        //console.log(response.data)
+        searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
+        navigate('/search-results')
     } catch (err) {
       setServerErrors(err.response.data);
     }
@@ -113,7 +120,6 @@ export default function Search() {
           // autoFocus
           margin="dense"
           id="address"
-          name="address"
           label="City & Area"
           type="text"
           fullWidth
@@ -132,7 +138,7 @@ export default function Search() {
           <FormControl
             variant="outlined"
             fullWidth
-            //error={errors.gender && touched.gender}
+            error={errors.gender && touched.gender}
           >
             <InputLabel id="gender-label">Gender</InputLabel>
             <Select
@@ -157,7 +163,7 @@ export default function Search() {
           <FormControl
             variant="outlined"
             fullWidth
-            //error={errors.sharing && touched.sharing}
+            error={errors.sharing && touched.sharing}
           >
             <InputLabel id="sharing-label">Sharing</InputLabel>
             <Select
