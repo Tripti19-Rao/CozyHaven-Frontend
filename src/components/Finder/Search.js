@@ -46,8 +46,20 @@ export default function Search() {
         queryParams.append('gender', values.gender);
 
         const response = await axios.get(`http://localhost:3055/api/buildings/search?${queryParams.toString()}`)
-        //console.log(response.data)
+        //console.log(values.address)
         searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
+        //Geoapify search for getting search cordinates
+        const encodedAddress = values.address
+          .replace(/ /g, '%20')
+          .replace(/,/g, '%2C')
+        //to separate based on , & space
+        axios.get(`https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&format=json&apiKey=983639ee58ef4e7ba34698247ae60048`)
+        .then(result => {
+          console.log(result.data.results)
+          searchDispatch({type: 'SET_GEOAPIFY',payload: result.data.results})
+        })
+        .catch(error => console.log('error', error));
+
         navigate('/search-results')
     } catch (err) {
       setServerErrors(err.response.data);

@@ -18,7 +18,7 @@ import SearchContext from './ContextApi/searchContext';
 
 
 function App() {
-  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, {data: []})
+  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, {data: [],geoapifyResult: []})
 
   return (
     <div>
