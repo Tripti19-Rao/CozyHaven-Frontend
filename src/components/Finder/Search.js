@@ -150,7 +150,7 @@ export default function Search() {
             >
               <MenuItem value={"male"}>Male</MenuItem>
               <MenuItem value={"female"}>Female</MenuItem>
-              <MenuItem value={"co"}>Co-living</MenuItem>
+              <MenuItem value={"co-living"}>Co-living</MenuItem>
             </Select>
           </FormControl>
 
