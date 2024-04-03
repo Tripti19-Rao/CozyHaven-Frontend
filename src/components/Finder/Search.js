@@ -113,6 +113,7 @@ export default function Search() {
           // autoFocus
           margin="dense"
           id="address"
+          name="address"
           label="City & Area"
           type="text"
           fullWidth
@@ -131,12 +132,13 @@ export default function Search() {
           <FormControl
             variant="outlined"
             fullWidth
-            error={errors.gender && touched.gender}
+            //error={errors.gender && touched.gender}
           >
             <InputLabel id="gender-label">Gender</InputLabel>
             <Select
               labelId="gender-label"
               id="gender"
+              name="gender"
               value={values.gender}
               onBlur={handleBlur}
               label="Gender"
@@ -155,12 +157,13 @@ export default function Search() {
           <FormControl
             variant="outlined"
             fullWidth
-            error={errors.sharing && touched.sharing}
+            //error={errors.sharing && touched.sharing}
           >
             <InputLabel id="sharing-label">Sharing</InputLabel>
             <Select
               labelId="sharing-label"
               id="sharing"
+              name="sharing"
               value={values.sharing}
               onChange={(e) => {
                 handleChange(e);
