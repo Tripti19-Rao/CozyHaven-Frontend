@@ -9,7 +9,16 @@ export default function Home() {
     serverError:[]
  }
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
+  useEffect(()=>{
 
+    (async()=>{
+      const token = localStorage.getItem('token')
+      const {id} = jwtDecode(token)
+      if(token){
+        console.log(id)
+      }
+    })()
+  },[])
   return (
     <div>Home</div>
   )
