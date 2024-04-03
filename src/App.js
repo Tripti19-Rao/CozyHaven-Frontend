@@ -3,7 +3,7 @@ import {Routes, Route } from 'react-router-dom'
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import LandingPage from './components/Auth/LandingPage';
-import Search from './components/Finder/Search';
+import Search from './components/Finder/SearchContainer/Search';
 import Navbar from './components/NavBar';
 import WishList from './components/Finder/WishList';
 import Profile from './components/Finder/Profile';
