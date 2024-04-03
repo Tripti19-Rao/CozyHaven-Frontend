@@ -1,5 +1,5 @@
 import './App.css';
-import { useReducer } from 'react'
+import { useReducer } from 'react';
 import {Routes, Route } from 'react-router-dom'
 import buildingsReducer from './Reducer/buildingsReducer';
 import BuildingContext from './ContextApi/BuildingContext';
@@ -16,9 +16,16 @@ import Home from './components/Owner/Home'
 import NotFound from './components/NotFound';
 import HomeDisplay from './components/Owner/HomeDisplay'
 import BuildingForm from './components/Owner/BuildingForm';
+import SearchResults from './components/Finder/SearchResults';
+
+import searchResultsReducer from './Reducer/searchResultsReducers';
+import SearchContext from './ContextApi/searchContext';
+
 // import Search from './components/Search/Search'
 
 function App() {
+  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, {data: [],geoapifyResult: []})
+
   const buildingsInitialState = {
     data:[],
     formData:{
@@ -42,12 +49,17 @@ function App() {
   return (
     <div>
       <BuildingContext.Provider value={{buildings, buildingsDispatch}}>
+
+
+
+      
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/login" element={<Login/>}/>
-        <Route path="/search" element={<Search/>}/>
+        <Route path="/search" element={<SearchContext.Provider value={{searchResults, searchDispatch}}><Search/></SearchContext.Provider>}/>
+        <Route path='/search-results' element={<SearchContext.Provider value={{searchResults, searchDispatch}}><SearchResults/></SearchContext.Provider>}/>
         <Route path='/nav' element={<Navbar/>}/>
         <Route path='/wishlist' element={<WishList/>}/>
         <Route path='/profile' element={<Profile/>}/>

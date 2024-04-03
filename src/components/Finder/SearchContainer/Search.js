@@ -1,8 +1,6 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
-//import searchResultsReducer from "../../Reducer/searchResultsReducers";
-
 import {
   Box,
   Typography,
@@ -17,11 +15,8 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import SearchContext from "../../ContextApi/searchContext";
 
 export default function Search() {
-  const {searchDispatch} = useContext(SearchContext)
-
   const navigate = useNavigate();
   const [serverErrors, setServerErrors] = useState({});
 
@@ -29,16 +24,16 @@ export default function Search() {
     address: yup.string().required("City & Area is required"),
     gender: yup
       .string()
-      .oneOf(["female", "male", "co-living", ""], "Please select the gender"),
+      .oneOf(["female", "male", "co", ""], "Please select the gender"),
     sharing: yup.number(),
   });
 
   const onSubmit = async() => {
-    // const formData = {
-    //   address: values.address,
-    //   gender: values.gender,
-    //   sharing: values.sharing,
-    // };
+    const formData = {
+      address: values.address,
+      gender: values.gender,
+      sharing: values.sharing,
+    };
     try {
         const queryParams = new URLSearchParams();
         queryParams.append('address', values.address);
@@ -46,21 +41,7 @@ export default function Search() {
         queryParams.append('gender', values.gender);
 
         const response = await axios.get(`http://localhost:3055/api/buildings/search?${queryParams.toString()}`)
-        //console.log(values.address)
-        searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
-        //Geoapify search for getting search cordinates
-        const encodedAddress = values.address
-          .replace(/ /g, '%20')
-          .replace(/,/g, '%2C')
-        //to separate based on , & space
-        axios.get(`https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&format=json&apiKey=983639ee58ef4e7ba34698247ae60048`)
-        .then(result => {
-          console.log(result.data.results)
-          searchDispatch({type: 'SET_GEOAPIFY',payload: result.data.results})
-        })
-        .catch(error => console.log('error', error));
-
-        navigate('/search-results')
+        console.log(response.data)
     } catch (err) {
       setServerErrors(err.response.data);
     }
