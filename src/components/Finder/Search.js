@@ -51,7 +51,7 @@ export default function Search() {
         //Geoapify search for getting search cordinates
         const encodedAddress = values.address
           .replace(/ /g, '%20')
-          .replace(/,/g, '%2C')
+          .replace(/,/g, '%2C') 
         //to separate based on , & space
         axios.get(`https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&format=json&apiKey=983639ee58ef4e7ba34698247ae60048`)
         .then(result => {
