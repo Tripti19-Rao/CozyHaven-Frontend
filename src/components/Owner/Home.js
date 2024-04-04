@@ -48,10 +48,17 @@ export default function Home() {
           }
         );
         buildingsDispatch({ type: "SET_BUILDINGS", payload: response.data });
+        const amenities = await axios.get('http://localhost:3055/api/amenities',{
+          headers:{
+            Authorization: token,
+          }
+        })
+        buildingsDispatch({ type:"SET_AMENITIES",payload:amenities.data})
       } else {
         navigate("/notfound");
       }
     })();
+      // eslint-disable-next-line 
   }, [navigate]);
   return (
     <div>
@@ -126,7 +133,7 @@ export default function Home() {
             border: '2px ',
             boxShadow:24,
             p: 4,
-            width:"70%"
+            width:"70%",
             }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Text in a modal
