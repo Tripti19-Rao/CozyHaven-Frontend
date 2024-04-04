@@ -45,7 +45,7 @@ export default function Search() {
         queryParams.append('sharing', values.sharing);
         queryParams.append('gender', values.gender);
 
-        const response = await axios.get(`http://localhost:3055/api/buildings/search?${queryParams.toString()}`)
+        const response = await axios.get(`http://localhost:3055/api/search?${queryParams.toString()}`)
         //console.log(values.address)
         searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
         //Geoapify search for getting search cordinates
