@@ -6,6 +6,9 @@ export default function buildingsReducer ( state, action )  {
         case 'SET_AMENITIES':{
             return {...state, amenities:action.payload}
         }
+        case 'ADD_BUILDING':{
+            return {...state , data:[...state.data , action.payload]}
+        }
         default:{
             return {...state}
         }

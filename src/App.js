@@ -14,34 +14,16 @@ import PaymentHistory from './components/Finder/PaymentHistory';
 import Dashboard from './components/Admin/Dashboard'
 import Home from './components/Owner/Home'
 import NotFound from './components/NotFound';
-import HomeDisplay from './components/Owner/HomeDisplay'
-// import BuildingForm from './components/Owner/BuildingForm';
 import SearchResults from './components/Finder/SearchResults';
-
 import searchResultsReducer from './Reducer/searchResultsReducers';
 import SearchContext from './ContextApi/searchContext';
 
-// import Search from './components/Search/Search'
 
 function App() {
   const [searchResults, searchDispatch] = useReducer(searchResultsReducer, {data: [],geoapifyResult: []})
 
   const buildingsInitialState = {
     data:[],
-    formData:{
-      ownerId:'',
-      profilePic:'',
-      name:'',
-      gender:'',
-      address:'',
-      contact:'',
-      deposit:'',
-      amenities:'',
-      amenitiesPic:'',
-      rules:'',
-      license:'',
-      geolocation:''
-    },
     amenities:[],
     serverError:[]
  }
@@ -64,8 +46,6 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/home" element={<Home/>}/>
         <Route path="/notfound" element={<NotFound/>}/>
-        <Route path="/display" element={<HomeDisplay/>}/>
-        {/* <Route path="/form" element={<BuildingForm/>}/> */}
       </Routes>
       </BuildingContext.Provider>
     </div>

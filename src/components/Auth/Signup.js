@@ -69,7 +69,7 @@ export default function Signup() {
       role: values.role,
     };
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:3055/api/users/register",
         formData
       );
