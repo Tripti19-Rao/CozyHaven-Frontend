@@ -7,6 +7,7 @@ import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import BedroomChildOutlinedIcon from "@mui/icons-material/BedroomChildOutlined";
 import BuildingForm from "./BuildingForm";
+import EditBuildingForm from "./EditBuildingForm";
 import {
   Box,
   Typography,
@@ -25,7 +26,15 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editId, setEditId] = useState('');
+  const handleEditOpen = (id) =>{
+    setEditOpen(true)
+    setEditId(id)
+  }
+  const handleEditClose = () => setEditOpen(false);
   const { buildings, buildingsDispatch } = useContext(BuildingContext);
+  
 
   useEffect(() => {
     (async () => {
@@ -92,7 +101,7 @@ export default function Home() {
                   <Card sx={{ maxWidth: 700, maxHeight: 300, marginLeft: 50 }}>
                     <CardMedia
                       sx={{ height: 140 }}
-                      image="/sign.jpg"
+                      image={ele.profilePic}
                       title="green iguana"
                     />
                     <CardContent>
@@ -116,12 +125,14 @@ export default function Home() {
                       </Button>
                       <Button
                         variant="outlined"
+                        onClick={()=>{handleEditOpen(ele._id)}}
                         startIcon={<ModeEditOutlineOutlinedIcon />}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="outlined"
+                        onClick={handleOpen}
                         startIcon={<BedroomChildOutlinedIcon />}
                       >
                         Add Room
@@ -171,6 +182,36 @@ export default function Home() {
           </Box>
         </Modal>
       </Box>
+
+      {/* EDIT FORM */}
+      <Modal
+          open={editOpen}
+          onClose={handleEditClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              marginTop: "50px",
+              marginLeft: "200px",
+              bgcolor: "background.paper",
+              border: "2px ",
+              boxShadow: 24,
+              p: 4,
+              width: "70%",
+            }}
+          >
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              sx={{ textAlign: "center" }}
+            >
+              EDIT YOUR PG DETAILS
+            </Typography>
+            <EditBuildingForm editId={editId} buildings={buildings}/>
+          </Box>
+        </Modal>
     </div>
   );
 }

@@ -20,48 +20,52 @@ import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Icon } from "leaflet";
-import BuildingContext from "../../ContextApi/BuildingContext";
 import QuillEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import quillEmoji from 'quill-emoji';
 import 'quill-emoji/dist/quill-emoji.css';
 import { isEmpty } from "lodash";
 import { toast, ToastContainer } from 'react-toastify';
+import BuildingContext from "../../ContextApi/BuildingContext";
 const { EmojiBlot, ShortNameEmoji, ToolbarEmoji, TextAreaEmoji } = quillEmoji;
 const Quill = QuillEditor.Quill;
 
-
 Quill.register({
-  'formats/emoji': EmojiBlot,
-  'modules/emoji-shortname': ShortNameEmoji,
-  'modules/emoji-toolbar': ToolbarEmoji,
-  'modules/emoji-textarea': TextAreaEmoji
-}, true);
+    'formats/emoji': EmojiBlot,
+    'modules/emoji-shortname': ShortNameEmoji,
+    'modules/emoji-toolbar': ToolbarEmoji,
+    'modules/emoji-textarea': TextAreaEmoji
+  }, true);
 
+//Images validations are removed...string data are getting updated but not able to reflect m guessing bcoz of images and validations...string data are getting updated but not able to reflect
+//have to fix the images b4 being able to use the d this correctly
 
-export default function BuildingForm(props) {
+export default function EditBuildingForm(props){
+    const {editId, buildings} = props
+    const {buildingsDispatch} = useContext(BuildingContext)
+  
 
-  const { buildings , buildingsDispatch } = useContext(BuildingContext);
-
-  const [show, setShow] = useState(false);
+  const building = buildings.data.filter((ele)=>ele._id===editId)
+  console.log(building[0].profilePic)
+//   const [show, setShow] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [clientErrors, setClientErrors] = useState({})
   const errors = {}
 
 const [formData,setFormData]=useState({
-  profilePic:null,
-  name:'',
-  gender:'',
-  address:'',
-  contact:'',
-  deposit:'',
-  amenities:[],
-  amenitiesPic:[],
-  rules:'',
-  license:null,
+  profilePic:building[0].profilePic,
+  name:building[0].name,
+  gender:building[0].gender,
+  address:building[0].address,
+  contact:building[0].contact,
+  deposit:building[0].deposit,
+  amenities:building[0].amenities,
+  amenitiesPic:building[0].amenitiesPic,
+  rules:building[0].rules,
+  license:building[0].license,
   geolocation:{
-    lng:0,
-    lat:0
+    lng:building[0]? building[0].geolocation.lng:0,
+    lat:building[0]? building[0].geolocation.lat:0
   }
 })
 
@@ -102,9 +106,9 @@ const validations = () =>{
   if(!formData.amenitiesPic.length){
     errors.amenitiesPic = 'Amenities Pictures is required'
   }
-  if(!formData.deposit.trim().length){
-    errors.deposit = 'Deposite amount is required'
-  }
+//   if(!formData.deposit.trim().length){
+//     errors.deposit = 'Deposite amount is required'
+//   }
   if(String(+formData.deposit) === 'NaN'){
     errors.deposit = 'Deposit amount must be a number'
   }
@@ -122,30 +126,25 @@ const handleSubmit = async() => {
     console.log(errors)
     try{
       setClientErrors({})
-      const finalFormData = new FormData();
-      finalFormData.append('name',formData.name)
-      finalFormData.append('gender',formData.gender)
-      finalFormData.append('address',formData.address)
-      finalFormData.append('contact',formData.contact)
-      finalFormData.append('deposit',formData.deposit)
-      finalFormData.append('rules',formData.rules)
-      finalFormData.append('geolocation.lat',formData.geolocation.lat)
-      finalFormData.append('geolocation.lng',formData.geolocation.lng)
-      formData.amenities.forEach(id => finalFormData.append('amenities', id));
-      // finalFormData.append('profilePic',formData.profilePic)
-      // finalFormData.append('license',formData.license)
-      Object.entries(formData.profilePic).forEach(ele => finalFormData.append('profilePic', ele[1]))
-      Object.entries(formData.license).forEach(ele => finalFormData.append('license', ele[1]))
-      Object.entries(formData.amenitiesPic).forEach(ele => finalFormData.append('amenitiesPic', ele[1]))
-      // Object.entries(formData.profilePic).forEach(ele => finalFromData.append('profilePic', ele[1]))
-      // Object.entries(formData.amenitiesPic).forEach(ele => finalFromData.append('amenitiesPic', ele[1]))
-      // Object.entries(formData.license).forEach(ele => finalFromData.append('license', ele[1]))
-      console.log(finalFormData)
+      const finalFromData = new FormData();
+      finalFromData.append('name',formData.name)
+      finalFromData.append('gender',formData.gender)
+      finalFromData.append('address',formData.address)
+      finalFromData.append('contact',formData.contact)
+      finalFromData.append('deposit',formData.deposit)
+      finalFromData.append('rules',formData.rules)
+      finalFromData.append('geolocation.lat',formData.geolocation.lat)
+      finalFromData.append('geolocation.lng',formData.geolocation.lng)
+      formData.amenities.forEach(id => finalFromData.append('amenities', id));
+    //   Object.entries(formData.profilePic).forEach(ele => finalFromData.append('profilePic', ele[1]))
+    //   Object.entries(formData.amenitiesPic).forEach(ele => finalFromData.append('amenitiesPic', ele[1]))
+    //   Object.entries(formData.license).forEach(ele => finalFromData.append('license', ele[1]))
+      console.log(finalFromData)
 
-      const response = await axios.post('http://localhost:3055/api/buildings',finalFormData,{headers:{
+      const response = await axios.put(`http://localhost:3055/api/buildings/${editId}`,finalFromData,{headers:{
         Authorization:localStorage.getItem('token')
       }})
-      buildingsDispatch({type:"ADD_BUILDING", payload:response.data})
+      buildingsDispatch({type:"EDIT_BUILDING", payload:response.data})
       props.handleClose()
     }catch(err){
       toast.error('Please ensure all the feilds are filled correctly')
@@ -192,7 +191,8 @@ const center = { lat: formData.geolocation.lat, lng: formData.geolocation.lng };
 
 const handleAddress = (e) => {
   e.preventDefault();
-  setShow(false); // Hide the map and marker before fetching new coordinates
+//   setShow(false); 
+  // Hide the map and marker before fetching new coordinates
   const formattedAddress = encodeURIComponent(formData.address);
   const config = {
     method: "get",
@@ -206,7 +206,7 @@ const handleAddress = (e) => {
       const newLng = coordinates[0];
       const newLat = coordinates[1];
       setFormData({...formData, geolocation:{...formData.geolocation, lng:newLng, lat:newLat}})
-      setShow(true); // Show the map and marker with new coordinates
+      //setShow(true); // Show the map and marker with new coordinates
       // console.log(`New lng and lat is ${newLng} and ${newLat}`);
     })
     .catch(function (error) {
@@ -476,10 +476,10 @@ const handleEditorChange = (content) =>{
               </Button>
               </Grid>
               <Grid item xs={9}>
-                {show && <span style={{marginTop:'10px', color:'#272b30'}}>Drag and drop the marken on your building location</span>}
+                <span style={{marginTop:'10px', color:'#272b30'}}>Drag and drop the marken on your building location</span>
               </Grid>
               </Grid>
-              {show && (
+              
                 <MapContainer center={center} zoom={13} style={mapStyle}>
                   <TileLayer
                     url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
@@ -487,7 +487,7 @@ const handleEditorChange = (content) =>{
                   />
                   <DraggableMarker />
                 </MapContainer>
-              )}
+              
             </Stack>
           </div>
         );

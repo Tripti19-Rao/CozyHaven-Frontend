@@ -9,6 +9,16 @@ export default function buildingsReducer ( state, action )  {
         case 'ADD_BUILDING':{
             return {...state , data:[...state.data , action.payload]}
         }
+        case 'EDIT_BUILDING':{
+            return {...state , data:state.data.map((ele)=>{
+                if(ele._id===action.payload._id){
+                    return action.payload
+                }
+                else{
+                    return ele
+                }
+            })}
+        }
         default:{
             return {...state}
         }
