@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useContext, useState} from 'react'
 import {isEmpty} from 'lodash'
 import axios from 'axios'
 import {jwtDecode} from 'jwt-decode'
@@ -8,9 +8,12 @@ import { Link } from 'react-router-dom'
 // import toast, { Toaster } from 'react-hot-toast';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FinderContext from '../../ContextApi/FinderContext'
  
 export default function Login() {
     const navigate = useNavigate()
+    const {findersDispatch} = useContext(FinderContext)
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [clientErrors, setClientErrors] = useState({})
@@ -40,6 +43,14 @@ export default function Login() {
                 setClientErrors({})
                 const response = await axios.post('http://localhost:3055/api/users/login',formData)
                 const token = response.data.token
+                const finderData = response.data.finder_details
+
+                //setting the finder
+                localStorage.setItem('finderData',JSON.stringify(finderData)) //to keep the data even in page reloads
+                findersDispatch({type: 'SET_FINDER', payload: finderData})
+                console.log(finderData)
+
+                //storing token in local storage
                 localStorage.setItem('token',token)
                 const {role} = jwtDecode(token)
                 // const role = jwtDecode(token)
@@ -127,7 +138,7 @@ export default function Login() {
                                         sx={{ width: '350px' }}
                                         value={email}
                                         onChange={(e) => {setEmail(e.target.value)}}
-                                        required
+                                        //required
                                         error={clientErrors.email}
                                         helperText={clientErrors.email && <span style={{color: 'red'}}>{clientErrors.email}</span>}
                                     />
@@ -139,7 +150,7 @@ export default function Login() {
                                         margin="dense"
                                         value={password}
                                         onChange={(e) => {setPassword(e.target.value)}}
-                                        required
+                                        //required
                                         error={clientErrors.password}
                                         helperText={clientErrors.password && <span style={{color: 'red'}}>{clientErrors.password}</span>}
                                     />
