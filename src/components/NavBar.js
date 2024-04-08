@@ -1,14 +1,17 @@
-import { useState } from 'react';
-import { AppBar, Box, Toolbar, Typography, Button, Stack, Tooltip,IconButton,Menu,MenuItem} from '@mui/material';
+import { useContext, useState } from 'react';
+import { AppBar, Box, Toolbar, Typography, Button, Stack, Tooltip,IconButton,Menu,MenuItem,FormControl,Select,InputLabel} from '@mui/material';
 import { Link } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode'
 import { FcLike } from "react-icons/fc";
 import { FaUser } from "react-icons/fa";
+import SearchContext from '../ContextApi/searchContext';
 //import Search from './Finder/Search';
 
 
  export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const {searchResults} = useContext(SearchContext)
+  const [gender, setGender] = useState('')
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -25,8 +28,40 @@ import { FaUser } from "react-icons/fa";
     
 
     if(role === "finder") {
+      //console.log(id,role)
       return (
         <>
+          {searchResults.isSearched && (
+            <>
+            <FormControl
+            sx={{ m: 1, minWidth: 120}}
+          >
+            <InputLabel id="gender-label"  size="small">Gender</InputLabel>
+            <Select
+              labelId="gender-label"
+              id="gender"
+              name="gender"
+              size="small"
+              value={gender}
+              onChange={(e)=>{setGender(e.target.value)}}
+              //sx={{ '&:focus': { backgroundColor: '#B6D1F8', borderRadius: '16px' } }}
+              // value={values.gender}
+              // onBlur={handleBlur}
+              // label="Gender"
+              // onChange={(e) => {
+              //   handleChange(e);
+              //   setFieldValue("gender", e.target.value); // Manually set the field value for Formik
+              // }}
+             //style={{ width: "200px" }}
+            >
+              <MenuItem value=" ">Select Gender</MenuItem>
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+              <MenuItem value="co-living">Co-living</MenuItem>
+            </Select>
+          </FormControl>
+            </>
+          )}
           <Tooltip title="view wishlist">
           <IconButton>
               <Link to={"/wishlist"}><FcLike style={{fontSize: "35px"}}/></Link>
@@ -85,7 +120,7 @@ import { FaUser } from "react-icons/fa";
       
    return (
     <Box sx={{ flexGrow: 1 ,}}>
-      <AppBar position="static" style={{backgroundColor: "white", zIndex: 1000 }}>
+      <AppBar position="fixed" style={{backgroundColor: "white", zIndex: 1000}}>
         <Toolbar  >
         <Stack direction="row" alignItems="center" spacing={1} sx={{flexGrow: 1}}>
             <img src='/Cozy.png' alt='CozyHaven Logo' width="50px" height="50px"/>

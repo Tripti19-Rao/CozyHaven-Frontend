@@ -6,6 +6,9 @@ export default function searchResultsReducer(state, action) {
         case 'SET_GEOAPIFY': {
             return {...state, geoapifyResult: [...action.payload]}
         }
+        case 'SET_IS_SEARCH': {
+            return {...state, isSearched: action.payload}
+        }
         default : {
             return {...state}
         }

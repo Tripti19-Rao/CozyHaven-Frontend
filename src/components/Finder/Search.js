@@ -48,6 +48,8 @@ export default function Search() {
         const response = await axios.get(`http://localhost:3055/api/search?${queryParams.toString()}`)
         //console.log(values.address)
         searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
+        searchDispatch({type: 'SET_IS_SEARCH',payload: true})
+
         //Geoapify search for getting search cordinates
         const encodedAddress = values.address
           .replace(/ /g, '%20')
@@ -63,6 +65,7 @@ export default function Search() {
         navigate('/search-results')
     } catch (err) {
       setServerErrors(err.response.data);
+      searchDispatch({type: 'SET_IS_SEARCH',payload: false})
     }
   };
 
