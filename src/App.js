@@ -14,7 +14,7 @@ import Home from './components/Owner/Home'
 import NotFound from './components/NotFound';
 import SearchResults from './components/Finder/SearchResults';
 import BuildingForm from './components/Owner/BuildingForm';
-import SearchResults from './components/Finder/SearchResults';
+//import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
 import searchResultsReducer from './Reducer/searchResultsReducers';

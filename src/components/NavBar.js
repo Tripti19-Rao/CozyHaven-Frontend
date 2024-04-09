@@ -1,14 +1,16 @@
 import { useContext, useState } from 'react';
 import { AppBar, Box, Toolbar, Typography, Button, Stack, Tooltip,IconButton,Menu,MenuItem,FormControl,Select,InputLabel} from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode'
 import { FcLike } from "react-icons/fc";
 import { FaUser } from "react-icons/fa";
 import SearchContext from '../ContextApi/searchContext';
+
 //import Search from './Finder/Search';
 
 
  export default function Navbar() {
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState(null);
   const {searchResults} = useContext(SearchContext)
   const [gender, setGender] = useState('')
@@ -20,6 +22,12 @@ import SearchContext from '../ContextApi/searchContext';
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogOut = () => {
+    handleClose()
+    localStorage.clear()
+    navigate('/login')
+  }
 
   const token = localStorage.getItem('token')
   const navBasedOnRole = () => {
@@ -98,7 +106,7 @@ import SearchContext from '../ContextApi/searchContext';
         <MenuItem onClick={handleClose}>
           <Link to={'/paymentHistory'} style={{textDecoration: 'none',color: "blue"}}>Payment History</Link>
         </MenuItem>
-        <MenuItem onClick={handleClose}>Log Out</MenuItem>
+        <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
       </Menu>
         </>
       )
