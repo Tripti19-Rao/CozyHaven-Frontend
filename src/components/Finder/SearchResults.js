@@ -62,9 +62,10 @@ export default function SearchResults() {
     }
 
     useEffect(()=>{
-        const storedIsClick = JSON.parse(localStorage.getItem('wishlist'))
-        //console.log('storedClick',storedIsClick)
-        setIsClicked([...storedIsClick])
+        if(JSON.parse(localStorage.getItem('wishlist'))) {
+            const storedIsClick = JSON.parse(localStorage.getItem('wishlist'))
+            setIsClicked([...storedIsClick])
+        }
     },[])
 
     const handleWishlist = async (buildingId,index) => {

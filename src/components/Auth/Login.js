@@ -43,16 +43,20 @@ export default function Login() {
                 setClientErrors({})
                 const response = await axios.post('http://localhost:3055/api/users/login',formData)
                 const token = response.data.token
-                const finderData = response.data.finder_details
+
+                 //storing token in local storage
+                 localStorage.setItem('token',token)
+                 const {role} = jwtDecode(token)
 
                 //setting the finder
-                localStorage.setItem('finderData',JSON.stringify(finderData)) //to keep the data even in page reloads
-                findersDispatch({type: 'SET_FINDER', payload: finderData})
-                console.log(finderData)
+                if(role === 'finder') {
+                    const finderData = response.data.finder_details
+                    localStorage.setItem('finderData',JSON.stringify(finderData)) //to keep the data even in page reloads
+                    findersDispatch({type: 'SET_FINDER', payload: finderData})
+                    //console.log(finderData)
+                }
 
-                //storing token in local storage
-                localStorage.setItem('token',token)
-                const {role} = jwtDecode(token)
+               
                 // const role = jwtDecode(token)
                 // toast.success('Successfully Logged In!')
                 toast.success('Successfully Logged In!', {
