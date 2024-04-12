@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css'
 import { useContext, useEffect, useState } from "react"
 import SearchContext from "../../ContextApi/searchContext"
-import { Grid, Paper,Box, Card, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton} from "@mui/material" 
+import { Grid, Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton} from "@mui/material" 
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import HotelIcon from '@mui/icons-material/Hotel';
 //import GirlIcon from '@mui/icons-material/Girl';
@@ -16,27 +16,29 @@ import { FcLike } from "react-icons/fc";
 import axios from 'axios';
 import FinderContext from '../../ContextApi/FinderContext';
 import { toast, ToastContainer } from 'react-toastify';
+import { StyledCard } from './styles';
+import { useNavigate } from 'react-router-dom';
 //import CurrencyRupee from '@mui/icons-material/CurrencyRupee';
 //import { BiMaleFemale,BiMale,BiFemale} from "react-icons/bi"
 
 export default function SearchResults() {
+    const navigate = useNavigate()
     const {finder,findersDispatch} = useContext(FinderContext)
-    const {searchResults} = useContext(SearchContext)
+    const {searchResults, searchDispatch} = useContext(SearchContext)
 
-    const initialClickedState = searchResults && searchResults.data ? Array(searchResults.data.length).fill(false) : [];
-    const [isClicked, setIsClicked] = useState(initialClickedState)
-    
+    // const initialClickedState = searchResults && searchResults.data ? Array(searchResults.data.length).fill(false) : [];
+    // const [isClicked, setIsClicked] = useState(initialClickedState)
+
     console.log(searchResults.data)
+    
     const customIcon = new Icon({
         iconUrl: '../../home.png',
         iconSize: [38,38]
     })
 
-    const bbox = searchResults?.geoapifyResult?.[0]?.bbox;
-    const lat = bbox?.lat2;
-    const lng = bbox?.lon2;
-
-    const isCoordsValid = lat !== undefined && lng !== undefined
+    const center = [...searchResults?.geoapifyResult]
+    console.log(center,'center')
+    const isCoordsValid = center[0] !== undefined && center[1] !== undefined
 
     const genderImg = (gender) => {
         console.log(gender.charAt(0).toUpperCase()+gender.slice(1))
@@ -62,10 +64,26 @@ export default function SearchResults() {
     }
 
     useEffect(()=>{
+        searchDispatch({type: 'SET_IS_SEARCH', payload: true})
+
         if(JSON.parse(localStorage.getItem('wishlist'))) {
             const storedIsClick = JSON.parse(localStorage.getItem('wishlist'))
-            setIsClicked([...storedIsClick])
+            searchDispatch({type: 'SET_ISCLICKED', payload: storedIsClick})
+        } else {
+            //if the wishlist is not present in the localStorage when the user logs out & logs in
+            const wishList = finder.data.wishList
+            const newClickStatus = [...searchResults?.isClicked]
+            console.log('click', searchResults?.isClicked)
+            searchResults.data.map(ele => ele._id).forEach((ele,i) => {
+                if(wishList.includes(ele)) {
+                    newClickStatus[i] = true
+                }
+            });
+            //setIsClicked(newClickStatus)
+            searchDispatch({type: 'SET_ISCLICKED', payload: newClickStatus})
+            localStorage.setItem('wishlist',JSON.stringify(newClickStatus))
         }
+        // eslint-disable-next-line
     },[])
 
     const handleWishlist = async (buildingId,index) => {
@@ -74,7 +92,7 @@ export default function SearchResults() {
             console.log(buildingId)
 
             const body = {...finder.data}
-            const newClickStatus = [...isClicked]
+            const newClickStatus = [...searchResults?.isClicked]
 
             const isBuildingId = body.wishList.find(bId => bId === buildingId)
             if(isBuildingId) {
@@ -97,7 +115,8 @@ export default function SearchResults() {
             
             
             //update isClicked for that building
-                setIsClicked(newClickStatus)
+                //setIsClicked(newClickStatus)
+                searchDispatch({type: 'SET_ISCLICKED', payload: newClickStatus})
                 localStorage.setItem('wishlist',JSON.stringify(newClickStatus))
                 console.log('newClick',newClickStatus)
             // const newClickStatus = [...isClicked]
@@ -113,6 +132,12 @@ export default function SearchResults() {
         } catch(err) {
             console.log(err)
         }
+    }
+
+    // to redirect to show-building page
+    const handleShowBuilding = (id) => {
+        searchDispatch({type: 'SET_IS_SEARCH', payload: false})
+        navigate(`/show-building/${id}`)
     }
     
     return (
@@ -132,7 +157,7 @@ export default function SearchResults() {
                 style={{overflow: "hidden",width: "1000px", height: "400px"}}
             >
             {isCoordsValid && (
-                <MapContainer center={[lat,lng]} zoom={13} style={{ width: "100%", height: "100%" }}>
+                <MapContainer center={center} zoom={13} style={{ width: "100%", height: "100%" }}>
                 <TileLayer 
                     url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'//leafletjs.com -- copy the url
                 />
@@ -151,20 +176,28 @@ export default function SearchResults() {
                 <Paper 
                 key={ele._id}
                 elevation={4} 
-                style={{overflow: "hidden",width: "1000px",marginBottom: "10px"}}
+                style={{ overflow: "hidden", width: "1000px", marginBottom: "10px", transition: 'box-shadow 0.3s' }} // Add transition for elevation change
+                onMouseOver={(e) => {
+                    e.currentTarget.style.transition = 'box-shadow 0.3s'; // Add transition on hover
+                    e.currentTarget.style.boxShadow = '12px 12px 12px rgba(0, 0, 0, 0.2)'; // Increase elevation on hover
+                }}
+                onMouseOut={(e) => {
+                    e.currentTarget.style.transition = 'box-shadow 0.3s'; // Add transition on hover out
+                    e.currentTarget.style.boxShadow = '0px 6px 8px rgba(0, 0, 0, 0.1)'; // Reset elevation on hover out
+                }}
             >
-                
-                <Card sx={{ display: 'flex'}}>
+                {/* <Link to={`/show-building/${ele._id}`} style={{textDecoration: 'none'}}> */}
+                <StyledCard sx={{ display: 'flex'}}>
                 <CardMedia
                     component="img"
-                    sx={{ width: 450 }}
-                    image="../../Sign.jpg"
+                    sx={{ width: 450,height: 258 }}
+                    image={ele.profilePic}
                     alt="Buildings Picture"
                 />
                 <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
                         <CardContent sx={{ flex: '1 0 auto' }}>
                             <Grid container sx={{display: 'flex'}}>
-                                <Grid item xs={8}>
+                                <Grid item xs={8} onClick={() => {handleShowBuilding(ele._id)}}>
                                     <Typography variant="h5" fontFamily='Prociono' fontWeight="bold">
                                         {ele.name}
                                     </Typography>
@@ -176,13 +209,16 @@ export default function SearchResults() {
                                     sx={{marginLeft: '25px'}}
                                     />
                                 </Grid>
-                                <Grid item xs={1}>
-                                <Tooltip title={isClicked[i] ? 'remove from wishlist' : 'add to wishlist'}>
-                                    <IconButton sx={{ padding: '0px'}} onClick={()=>{handleWishlist(ele._id,i)}}>
-                                        {isClicked[i] ? <FcLike style={{fontSize: "35px", color: 'white'}}/> :  <CiHeart style={{fontSize: "35px"}}/>}
-                                        </IconButton>
-                                    </Tooltip>
-                                </Grid>
+                                {searchResults?.isClicked && (
+                                    <Grid item xs={1}>
+                                    <Tooltip title={searchResults?.isClicked[i] ? 'remove from wishlist' : 'add to wishlist'}>
+                                        <IconButton sx={{ padding: '0px'}} onClick={()=>{handleWishlist(ele._id,i)}}>
+                                            {searchResults?.isClicked[i] ? <FcLike style={{fontSize: "35px", color: 'white'}}/> :  <CiHeart style={{fontSize: "35px"}}/>}
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                )}
+                                
                             </Grid>
                         
                         {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', pr: 2}}>
@@ -199,7 +235,7 @@ export default function SearchResults() {
                                 {ele.rating}
                             </Typography>
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" component="div" fontWeight="bold">
+                        <Typography variant="subtitle1" color="text.secondary" component="div" fontWeight="bold" className='blue'>
                             Amenities
                         </Typography>
                         <Grid>
@@ -216,7 +252,7 @@ export default function SearchResults() {
                         </Grid>
                         <Grid container sx={{display: 'flex'}}>
                         <Grid item xs={9}>
-                            <Typography variant="subtitle1" color="text.secondary" component="div" fontWeight="bold">
+                            <Typography variant="subtitle1" color="text.secondary" component="div" fontWeight="bold" className='blue'>
                                 Availability
                             </Typography>
                             <Chip label={`${calculateAvailability(ele.rooms)} Beds`} icon={<HotelIcon/>} sx={{backgroundColor: '#B6D1F8'}}/>
@@ -235,7 +271,8 @@ export default function SearchResults() {
                         </Grid>
                         </CardContent>
                     </Box>
-                    </Card>
+                    </StyledCard>
+                    {/* </Link> */}
                     </Paper>
                 )
             })}

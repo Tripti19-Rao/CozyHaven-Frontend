@@ -49,6 +49,7 @@ export default function Search() {
         //console.log(values.address)
         searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
         searchDispatch({type: 'SET_IS_SEARCH',payload: true})
+        localStorage.setItem('searchResults',JSON.stringify(response.data))
 
         //Geoapify search for getting search cordinates
         const encodedAddress = values.address
@@ -58,7 +59,12 @@ export default function Search() {
         axios.get(`https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&format=json&apiKey=983639ee58ef4e7ba34698247ae60048`)
         .then(result => {
           console.log(result.data.results)
-          searchDispatch({type: 'SET_GEOAPIFY',payload: result.data.results})
+          const bbox = result.data.results?.[0]?.bbox;
+          const lat = bbox?.lat2;
+          const lng = bbox?.lon2;
+          searchDispatch({type: 'SET_GEOAPIFY',payload: [lat,lng]})
+          localStorage.setItem('center',JSON.stringify([lat, lng]))
+          // searchDispatch({type: 'SET_GEOAPIFY',payload: result.data.results})
         })
         .catch(error => console.log('error', error));
 
