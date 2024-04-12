@@ -14,6 +14,7 @@ import Home from './components/Owner/Home'
 import NotFound from './components/NotFound';
 import SearchResults from './components/Finder/SearchResults';
 import BuildingForm from './components/Owner/BuildingForm';
+import ShowBuilding from './components/Finder/ShowBuilding';
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -31,7 +32,16 @@ import BuildingContext from './ContextApi/BuildingContext';
 
 
 function App() {
-  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, {data: [],geoapifyResult: [], isSearched: false})
+  const searchInitialState = {
+    data: JSON.parse(localStorage.getItem('searchResults')) || [],
+    geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
+    isSearched: false,
+    isClicked: []
+  }
+
+  searchInitialState.isClicked = Array(searchInitialState.data.length).fill(false)
+
+  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
   const [finder, findersDispatch] = useReducer(findersReducer, {data: JSON.parse(localStorage.getItem('finderData')) || {}})
 
   const buildingsInitialState = {
@@ -54,6 +64,7 @@ function App() {
         <Route path="/login" element={<Login/>}/>
         <Route path="/search" element={<Search/>}/>
         <Route path='/search-results' element={<SearchResults/>}/>
+        <Route path='/show-building/:id' element={<ShowBuilding/>}/>
         <Route path='/nav' element={<Navbar/>}/>
         <Route path='/wishlist' element={<WishList/>}/>
         <Route path='/profile' element={<Profile/>}/>

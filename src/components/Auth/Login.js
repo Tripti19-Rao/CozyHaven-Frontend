@@ -78,7 +78,8 @@ export default function Login() {
                 // navigate('/')
             } catch(err) {
                 //alert(err.message)
-                //console.log(err.response.data)
+                // console.log(err.response.data)
+                // console.log(err)
                 setServerErrors(err.response.data)
             }
         } else {

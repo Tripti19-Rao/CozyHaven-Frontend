@@ -119,7 +119,33 @@ import SearchContext from '../ContextApi/searchContext';
     } else if(role === "owner") {
       return (
         <>
-          <Button>Owner</Button>
+          <Tooltip title="view Profile">
+            <IconButton onClick={handleClick} sx={{ p: 0 }}>
+              <Typography>Owner</Typography>
+            </IconButton>
+          </Tooltip>
+          <Menu
+            sx={
+              { mt: "45px", "& .MuiMenu-paper": 
+                { backgroundColor: "white", color: "blue", fontWeight: "bold"}, 
+              }
+            }
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+          </Menu>
+          {/* <Button>Owner</Button> */}
         </>
       )
     }
