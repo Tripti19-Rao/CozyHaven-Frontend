@@ -128,18 +128,18 @@ import SearchContext from '../ContextApi/searchContext';
       
    return (
     <Box sx={{ flexGrow: 1 ,}}>
-      <AppBar position="fixed" style={{backgroundColor: "white", zIndex: 1000}}>
+      <AppBar position="fixed" style={{ backgroundColor: "white", zIndex: 1000,  boxShadow: "none"}}>
         <Toolbar  >
         <Stack direction="row" alignItems="center" spacing={1} sx={{flexGrow: 1}}>
             <img src='/Cozy.png' alt='CozyHaven Logo' width="50px" height="50px"/>
-            <Typography 
+            {/* <Typography 
                 variant="h6"
                 component="div"
                 sx={{ flexGrow: 1 }}
                 color="blue"
                 fontWeight="bold"
                 fontFamily="Squada One, cursive"
-            >CozyHaven</Typography>
+            >CozyHaven</Typography> */}
         </Stack>
             <Stack direction="row" alignItems="center" spacing={1}>
             {!token ? (

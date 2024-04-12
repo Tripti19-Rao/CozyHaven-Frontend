@@ -8,6 +8,7 @@ import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutl
 import BedroomChildOutlinedIcon from "@mui/icons-material/BedroomChildOutlined";
 import BuildingForm from "./BuildingForm";
 import EditBuildingForm from "./EditBuildingForm";
+import Rooms from "./Rooms"
 import {
   Box,
   Typography,
@@ -27,14 +28,21 @@ export default function Home() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [editId, setEditId] = useState('');
-  const handleEditOpen = (id) =>{
-    setEditOpen(true)
-    setEditId(id)
-  }
+  const [editId, setEditId] = useState("");
+  const handleEditOpen = (id) => {
+    setEditOpen(true);
+    setEditId(id);
+  };
   const handleEditClose = () => setEditOpen(false);
   const { buildings, buildingsDispatch } = useContext(BuildingContext);
-  
+
+  const handleView = (id) => {
+    navigate(`/view-building/${id}`);
+  };
+
+  const handleRooms = (id) =>{
+    navigate(`/view-rooms/${id}`)
+  }
 
   useEffect(() => {
     (async () => {
@@ -50,6 +58,7 @@ export default function Home() {
           }
         );
         buildingsDispatch({ type: "SET_BUILDINGS", payload: response.data });
+        localStorage.setItem("buildings", JSON.stringify(response.data));
         const amenities = await axios.get(
           "http://localhost:3055/api/amenities",
           {
@@ -59,6 +68,7 @@ export default function Home() {
           }
         );
         buildingsDispatch({ type: "SET_AMENITIES", payload: amenities.data });
+        localStorage.setItem("amenities", JSON.stringify(amenities.data));
       } else {
         navigate("/notfound");
       }
@@ -66,7 +76,15 @@ export default function Home() {
     // eslint-disable-next-line
   }, []);
   return (
-    <div>
+    <div
+      // style={{
+      //   backgroundImage: "url(/design3.jpg)",
+      //   backgroundAttachment: "fixed",
+      //   backgroundSize: "cover",
+      //   // opacity: 0.1
+      //   // backgroundColor: rgba(255, 255, 255, 0.5)
+      //         }}
+    >
       {buildings.data.length === 0 ? (
         <div>
           <Typography
@@ -81,7 +99,7 @@ export default function Home() {
           </Typography>
         </div>
       ) : (
-        <div>
+        <div style={{ marginTop: "70px" }}>
           {buildings.data
             .filter((element) => {
               return element.isApproved === "Accepted";
@@ -102,10 +120,27 @@ export default function Home() {
                     <CardMedia
                       sx={{ height: 140 }}
                       image={ele.profilePic}
-                      title="green iguana"
+                      title="View building"
+                      onClick={() => {
+                        handleView(ele._id);
+                      }}
                     />
                     <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{
+                          "&:hover": {
+                            textDecoration: "underline",
+                            color: "#5785FD",
+                            cursor: "pointer",
+                          },
+                        }}
+                        onClick={() => {
+                          handleView(ele._id);
+                        }}
+                      >
                         {ele.name}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -125,17 +160,19 @@ export default function Home() {
                       </Button>
                       <Button
                         variant="outlined"
-                        onClick={()=>{handleEditOpen(ele._id)}}
+                        onClick={() => {
+                          handleEditOpen(ele._id);
+                        }}
                         startIcon={<ModeEditOutlineOutlinedIcon />}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="outlined"
-                        onClick={handleOpen}
+                        onClick={()=>{handleRooms(ele._id)}}
                         startIcon={<BedroomChildOutlinedIcon />}
                       >
-                        Add Room
+                        Rooms
                       </Button>
                     </CardActions>
                   </Card>
@@ -185,33 +222,33 @@ export default function Home() {
 
       {/* EDIT FORM */}
       <Modal
-          open={editOpen}
-          onClose={handleEditClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+        open={editOpen}
+        onClose={handleEditClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            marginTop: "50px",
+            marginLeft: "200px",
+            bgcolor: "background.paper",
+            border: "2px ",
+            boxShadow: 24,
+            p: 4,
+            width: "70%",
+          }}
         >
-          <Box
-            sx={{
-              marginTop: "50px",
-              marginLeft: "200px",
-              bgcolor: "background.paper",
-              border: "2px ",
-              boxShadow: 24,
-              p: 4,
-              width: "70%",
-            }}
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ textAlign: "center" }}
           >
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              sx={{ textAlign: "center" }}
-            >
-              EDIT YOUR PG DETAILS
-            </Typography>
-            <EditBuildingForm editId={editId} buildings={buildings}/>
-          </Box>
-        </Modal>
+            EDIT YOUR PG DETAILS
+          </Typography>
+          <EditBuildingForm editId={editId} buildings={buildings} />
+        </Box>
+      </Modal>
     </div>
   );
 }

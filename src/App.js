@@ -14,6 +14,8 @@ import Home from './components/Owner/Home'
 import NotFound from './components/NotFound';
 import SearchResults from './components/Finder/SearchResults';
 import BuildingForm from './components/Owner/BuildingForm';
+import ViewBuildingForm from './components/Owner/ViewBuildingForm'
+import Rooms from './components/Owner/Rooms'
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -35,8 +37,8 @@ function App() {
   const [finder, findersDispatch] = useReducer(findersReducer, {data: JSON.parse(localStorage.getItem('finderData')) || {}})
 
   const buildingsInitialState = {
-    data:[],
-    amenities:[],
+    data:JSON.parse(localStorage.getItem('buildings')) || [],
+    amenities:JSON.parse(localStorage.getItem('amenities')) || [],
     serverError:[]
  }
  const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
@@ -62,6 +64,8 @@ function App() {
         <Route path="/home" element={<Home/>}/>
         <Route path="/notfound" element={<NotFound/>}/>
         <Route path="/form" element={<BuildingForm/>}/>
+        <Route path="/view-building/:id" element={<ViewBuildingForm />} />
+        <Route path="/view-rooms/:id" element={<Rooms />} />
       </Routes>
       </SearchContext.Provider>
       </FinderContext.Provider>

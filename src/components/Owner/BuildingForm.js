@@ -183,7 +183,6 @@ const handleReset = () => {
 
 //Map features
 const customIcon = new Icon({
-  // iconUrl: "https://cdn-icons-png.flaticon.com/512/447/447031.png",
   iconUrl: "../../home.png",
   iconSize: [38, 38], // size of the icon
 });
@@ -205,6 +204,8 @@ const handleAddress = (e) => {
       const coordinates = response.data.features[0].geometry.coordinates;
       const newLng = coordinates[0];
       const newLat = coordinates[1];
+      // console.log(newLat,newLng)
+      
       setFormData({...formData, geolocation:{...formData.geolocation, lng:newLng, lat:newLat}})
       setShow(true); // Show the map and marker with new coordinates
       // console.log(`New lng and lat is ${newLng} and ${newLat}`);
@@ -223,8 +224,9 @@ function DraggableMarker() {
         const marker = markerRef.current;
         if (marker != null) {
           setPosition(marker.getLatLng());
-          // console.log(marker.getLatLng()); 
-          //final lat and long
+          console.log(marker.getLatLng()); 
+          const {lat,lng} = marker.getLatLng();
+          setFormData({...formData, geolocation:{...formData.geolocation, lng:lng, lat:lat}})
         }
       },
     }),
