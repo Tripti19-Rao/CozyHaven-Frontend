@@ -1,22 +1,119 @@
 import { useParams } from "react-router-dom";
 import BuildingContext from "../../ContextApi/BuildingContext";
-import { useState ,useContext } from "react";
-import {Typography,Box,Button,Modal} from "@mui/material";
+import { useState ,useContext, useEffect } from "react";
+import {Typography,Box,Button,Modal, Stack, Grid} from "@mui/material";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
-
+import RoomForm from "./RoomForm";
+import ViewRoom from "./ViewRoom";
+import RoomContext from "../../ContextApi/RoomContext";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { Carousel } from "react-responsive-carousel";
+import { ImageContainer,RoundedImage,Overlay,Info } from "../Finder/styles";
+import Swal from 'sweetalert2'
+//import {jwtDecode} from 'jwt-decode'
 
 export default function Rooms() {
     const { buildings } = useContext(BuildingContext);
-    const { id } = useParams();
-    const building = buildings.data.filter((ele)=>ele._id===id)
-    const {rooms} = building[0]
+    const {rooms, roomsDispatch} = useContext(RoomContext)
+    const [roomId, setRoomId] = useState(null)
+    //const [editId, setEditId] = useState(null)
+    
     const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+    const [viewRoomOpen, setViewRoomOpen] = useState(false)
+
+    const { id } = useParams();
+
+    const building = buildings?.data?.find((ele) => ele._id === id)
+    
+    const handleOpen = () => setOpen(true); 
+    const handleViewRoomOpen = (id) => {
+      setViewRoomOpen(true)
+      setRoomId(id)
+    }
+
+    const handleClose = () => setOpen(false);
+    const handleViewRommClose = () => setViewRoomOpen(false)
+
+    useEffect(()=>{
+      (async function(){
+        try{
+          const token = localStorage.getItem('token')
+          const response = await axios.get(`http://localhost:3055/api/${building._id}/rooms`,{
+            headers: {
+              Authorization: token
+            }
+          })
+          //console.log(response.data)
+          roomsDispatch({type:'SET_ROOMS',payload: response.data})
+          
+        } catch(err) {
+          console.log(err)
+          toast.error(err.message, {
+            autoClose: 1000,
+            position: 'top-center'
+          })
+        }
+      })();
+      // eslint-disable-next-line
+    },[])
+
+    const handleDelete = async (rid) => {
+      const token = localStorage.getItem('token')
+      //const {id} = jwtDecode(token)
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await axios.delete(`http://localhost:3055/api/${building._id}/rooms/${rid}`,{
+                headers: {
+                  Authorization: token
+                }
+              })
+              
+              //console.log('id',id,'buid',building._id,'roomid',rid,'response',response.data)
+              roomsDispatch({type: 'DELETE_ROOM', payload: response.data._id})
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+              });
+            } catch(err) {
+              console.log(err)
+              Swal.fire({
+                title: 'Error',
+                text: `${err.message}`,
+                icon: 'error'
+              })
+            }
+            
+          }// else if (
+        //     /* Read more about handling dismissals below */
+        //     result.dismiss === Swal.DismissReason.cancel
+        //   ) {
+        //     swalWithBootstrapButtons.fire({
+        //       title: "Cancelled",
+        //       text: "Your imaginary file is safe :)",
+        //       icon: "error"
+        //     });
+        //   }
+        // });
+        });
+      
+    }
+
   return (
-    <div>
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {
-           rooms.length===0 ? (
+           rooms?.data?.length===0 ? (
+            <>
             <Typography
             variant="body1"
             fontWeight="bold"
@@ -26,26 +123,135 @@ export default function Rooms() {
             margin="50px"
             marginTop="80px"
           >
-            Oops you dont have a buildings yet... Create one now!{" "}
+            Oops you dont have any rooms yet... Create one now!{" "}
           </Typography>
-           ):(null)}
-           <Box display="flex" justifyContent="center">
-           <Button
-             variant="outlined"
-             onClick={handleOpen}
-             startIcon={<AddSharpIcon />}
-           >
-             Add new PG
-           </Button>
-           </Box>
+          <Button
+          style={{marginLeft: '30px'}}
+          variant="outlined"
+          onClick={handleOpen}
+          startIcon={<AddSharpIcon />}
+        >
+          Add new Room
+        </Button>
+        </>
+           ):(
+            <>
+            
+            <ToastContainer/>
+            <Grid 
+              container 
+              style={{marginTop:"80px",marginLeft: "690px", marginBottom: '25px'}}
+            >
+              <Grid item xs={5}>
+              <Typography
+                variant="body1"
+                fontWeight="bold"
+                fontFamily="Roboto"
+                //textAlign="center"
+                fontSize="25px"
+                //margin="50px"
+                
+              >
+                You have {rooms?.data?.length} rooms
+              </Typography>
+              </Grid>
+              <Grid item xs={7}>
+              <Button
+                  style={{marginLeft: '30px'}}
+                  variant="outlined"
+                  onClick={handleOpen}
+                  startIcon={<AddSharpIcon />}
+                >
+                  Add new Room
+                </Button>
+              </Grid>
+            </Grid>
+            
+            
+           
+           
+          <>
+            {rooms?.data?.map(ele => {
+              return (
+                <div 
+                  key={ele._id}
+                  style={{
+                    width: '850px',
+                    height: '430px',
+                    marginBottom: '20px',
+                    // overflow: 'hidden',
+                    // //transition: 'box-shadow 0.3s ease',
+                    // boxShadow: 'none',
+                    borderRadius: '10px'
+                  }}
+                    // onMouseOver={(e) => e.target.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.9)'}
+                    // onMouseOut={(e) => e.target.style.boxShadow = 'none'}
+                  >
+                  <Carousel
+                    showThumbs={false}
+                    showStatus={false}
+                    infiniteLoop
+                  >
+                    {ele.pic.map((pic,i) => {
+                      return (
+                        <ImageContainer key={i}>
+                          <RoundedImage src={pic} alt={`Room Image ${i + 1 }`}/>
+                          <Overlay>
+                            <Info>
+                            <Typography
+                              fontFamily='Roboto'
+                              fontWeight='bold'
+                              fontSize='18px'
+                              ml='10px'
+                              mr='20px'
+                              mb="20px"
+                            >
+                              {ele.roomNo}
+                            </Typography>
+                            <Stack direction='row' spacing={1} ml="550px" mb="20px">
+                            <Button 
+                            variant="contained" 
+                            size="small" 
+                            sx={{color: 'white'}}
+                            onClick={()=>{handleViewRoomOpen(ele._id)}}
+                            >
+                              View
+                            </Button>
+                            <Button variant="contained" size="small" sx={{color: 'white'}}>
+                              Edit
+                            </Button>
+                            <Button 
+                              variant="contained" 
+                              size="small" 
+                              sx={{color: 'white'}}
+                              onClick={()=>{handleDelete(ele._id)}}
+                            >
+                              Delete
+                            </Button>
+                            </Stack>
+                            </Info>
+                          </Overlay>
+                        </ImageContainer>
+                      )
+                    })}
+                  </Carousel>
+                </div>
+              )
+            })}
+          </>
+          </>
+           )
+           }
+
+           
 
 
            <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
           <Box
             sx={{
               marginTop: "50px",
@@ -63,9 +269,40 @@ export default function Rooms() {
               component="h2"
               sx={{ textAlign: "center" }}
             >
-              ADD YOUR PG DETAILS
+              ADD YOUR ROOM DETAILS
             </Typography>
             {/* <BuildingForm handleClose={handleClose} /> */}
+            <RoomForm handleClose={handleClose} rooms={rooms} roomsDispatch={roomsDispatch} buildingId={building._id}/>
+          </Box>
+        </Modal>
+
+        {/*view Room modal */}
+        <Modal
+            open={viewRoomOpen}
+            onClose={handleViewRommClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+          <Box
+            sx={{
+              marginTop: "50px",
+              marginLeft: "200px",
+              bgcolor: "background.paper",
+              border: "2px ",
+              boxShadow: 24,
+              p: 4,
+              width: "70%",
+            }}
+          >
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              sx={{ textAlign: "center" }}
+            >
+              ROOM DETAILS
+            </Typography>
+            <ViewRoom roomId={roomId} rooms={rooms}/>
           </Box>
         </Modal>
         

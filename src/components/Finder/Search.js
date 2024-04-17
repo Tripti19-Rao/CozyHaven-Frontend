@@ -45,11 +45,12 @@ export default function Search() {
         queryParams.append('sharing', values.sharing);
         queryParams.append('gender', values.gender);
 
-        const response = await axios.get(`http://localhost:3055/api/search?${queryParams.toString()}`)
-        //console.log(values.address)
-        searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
-        searchDispatch({type: 'SET_IS_SEARCH',payload: true})
-        localStorage.setItem('searchResults',JSON.stringify(response.data))
+        // const response = await axios.get(`http://localhost:3055/api/search?${queryParams.toString()}`)
+        // //console.log(values.address)
+        // searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
+        // searchDispatch({type: 'SET_IS_SEARCH',payload: true})
+
+        //localStorage.setItem('searchResults',JSON.stringify(response.data))
 
         //Geoapify search for getting search cordinates
         const encodedAddress = values.address
@@ -67,8 +68,10 @@ export default function Search() {
           // searchDispatch({type: 'SET_GEOAPIFY',payload: result.data.results})
         })
         .catch(error => console.log('error', error));
-
-        navigate('/search-results')
+        
+        navigate(`/search-results?${String(queryParams)}`)
+        //navigate('/search')
+        localStorage.setItem('queryparams',String(queryParams))
     } catch (err) {
       setServerErrors(err.response.data);
       searchDispatch({type: 'SET_IS_SEARCH',payload: false})

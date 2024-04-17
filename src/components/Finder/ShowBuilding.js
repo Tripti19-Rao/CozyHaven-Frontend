@@ -20,11 +20,30 @@ import { toast, ToastContainer } from 'react-toastify';
 
 export default function ShowBuilding() {
     const { id } = useParams()
-    const { searchResults } = useContext(SearchContext)
+    const { searchResults, searchDispatch } = useContext(SearchContext)
     const {finder, findersDispatch} = useContext(FinderContext)
     const [isClicked, setIsClicked] = useState(false)
 
-    const building = searchResults.data.find(ele => ele._id === id)
+    const building = searchResults?.building
+
+    useEffect(() => {
+        (async function(){
+            try {
+                const token = localStorage.getItem('token')
+                const response = await axios.get(`http://localhost:3055/api/buildings/one/${id}`,{
+                    headers: {
+                        Authorization: token
+                    }
+                })
+                //console.log(response.data)
+                searchDispatch({type: 'SET_BUILDING',payload: response.data})
+                localStorage.setItem('building',JSON.stringify(response.data))
+            } catch (err) {
+                console.log(err)
+            }
+        })();
+        // eslint-disable-next-line
+    },[])
     //console.log(building, searchResults.data)
 
     const genderImg = (gender) => {
@@ -46,6 +65,7 @@ export default function ShowBuilding() {
             } else {
                 setIsClicked(false)
             }
+            // eslint-disable-next-line
     },[])
 
     const handleClick = async () => {
@@ -92,7 +112,9 @@ export default function ShowBuilding() {
                 container
                 height='100vh'
             >
-            <Grid 
+                {building && (
+                    <>
+                                <Grid 
                 item
                 xs={4}
                 sx={{
@@ -295,6 +317,8 @@ export default function ShowBuilding() {
                 
                {/* </div> */}
             </Grid>
+                    </>
+                )}
             </Grid>
             // <Box
         //     marginTop="90px"

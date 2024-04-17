@@ -29,13 +29,18 @@ import buildingsReducer from './Reducer/buildingsReducer';
 import SearchContext from './ContextApi/searchContext';
 import FinderContext from './ContextApi/FinderContext';
 import BuildingContext from './ContextApi/BuildingContext';
+import roomsReducer from './Reducer/roomsReducer';
+import RoomContext from './ContextApi/RoomContext';
 
 
 
 
 function App() {
+
+  //initial data
   const searchInitialState = {
-    data: JSON.parse(localStorage.getItem('searchResults')) || [],
+    data: [], //JSON.parse(localStorage.getItem('searchResults')) || 
+    building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
     isSearched: false,
     isClicked: []
@@ -43,22 +48,30 @@ function App() {
 
   searchInitialState.isClicked = Array(searchInitialState.data.length).fill(false)
 
-  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
-  const [finder, findersDispatch] = useReducer(findersReducer, {data: JSON.parse(localStorage.getItem('finderData')) || {}})
-
   const buildingsInitialState = {
     data:JSON.parse(localStorage.getItem('buildings')) || [],
     amenities:JSON.parse(localStorage.getItem('amenities')) || [],
     serverError:[]
  }
- const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
+
+  const roomsInitialState = {
+    data: [],
+    clientErrors: {},
+    serverError: ''
+  }
+  //State
+  const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
+  const [finder, findersDispatch] = useReducer(findersReducer, {data: JSON.parse(localStorage.getItem('finderData')) || {}})
+  const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
+  const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
+  console.log('App', rooms)
 
   return (
     <div>
       <BuildingContext.Provider value={{buildings, buildingsDispatch}}>
       <FinderContext.Provider value={{finder, findersDispatch}}>
       <SearchContext.Provider value={{searchResults, searchDispatch}}>
-
+      <RoomContext.Provider value={{rooms, roomsDispatch}}>
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
@@ -78,6 +91,7 @@ function App() {
         <Route path="/view-building/:id" element={<ViewBuildingForm />} />
         <Route path="/view-rooms/:id" element={<Rooms />} />
       </Routes>
+      </RoomContext.Provider>
       </SearchContext.Provider>
       </FinderContext.Provider>
       </BuildingContext.Provider>

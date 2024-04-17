@@ -17,12 +17,14 @@ import axios from 'axios';
 import FinderContext from '../../ContextApi/FinderContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { StyledCard } from './styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 //import CurrencyRupee from '@mui/icons-material/CurrencyRupee';
 //import { BiMaleFemale,BiMale,BiFemale} from "react-icons/bi"
 
 export default function SearchResults() {
     const navigate = useNavigate()
+    const location = useLocation()
+
     const {finder,findersDispatch} = useContext(FinderContext)
     const {searchResults, searchDispatch} = useContext(SearchContext)
 
@@ -40,6 +42,22 @@ export default function SearchResults() {
     console.log(center,'center')
     const isCoordsValid = center[0] !== undefined && center[1] !== undefined
 
+    useEffect(()=>{
+        (async function(){
+            try {
+               
+                const response = await axios.get(`http://localhost:3055/api/search${location.search}`)
+                console.log(response.data)
+        //console.log(values.address)
+                searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
+                searchDispatch({type: 'SET_IS_SEARCH',payload: true})
+            } catch(err) {
+                console.log(err)
+            }
+        })(); 
+        // eslint-disable-next-line
+    },[location.search])
+
     const genderImg = (gender) => {
         console.log(gender.charAt(0).toUpperCase()+gender.slice(1))
         if(gender === 'female') {
@@ -52,14 +70,14 @@ export default function SearchResults() {
     }
 
     const getStartAmount = (rooms) => {
-        const amt =  rooms.map(ele => ele.roomid.amount)
+        const amt =  rooms?.map(ele => ele.roomid?.amount)
         return Math.min(...amt)
     }
 
     const calculateAvailability = (rooms) => {
         //console.log('calculating availability..')
-        return rooms.reduce((acc,cv) => {
-            return acc + cv.roomid.sharing - cv.roomid.guest.length
+        return rooms?.reduce((acc,cv) => {
+            return acc + cv.roomid?.sharing - cv.roomid?.guest?.length
         },0)
     }
 
