@@ -1,177 +1,368 @@
-import { useParams } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  Grid,
+  Chip,
+  Tooltip,
+  IconButton,
+  Typography,
+  Rating,
+  Paper,
+  Card,
+  CardActions,
+  CardMedia,
+  CardContent,
+  Button,
+  Tabs ,
+  Tab,
+  Box
+} from "@mui/material";
+import PropTypes from 'prop-types';
+import { useContext ,useState } from "react";
 import BuildingContext from "../../ContextApi/BuildingContext";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
+import PhoneIcon from "@mui/icons-material/Phone";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Icon } from "leaflet";
 import { Carousel } from "react-responsive-carousel";
 
-import {
-  Box,
-  Typography,
-  Stack,
-  Grid,
-  //   Paper, Button,
-  // Button,
-  // Modal,
-  // Card,
-  // CardActions,
-  // CardContent,
-  // CardMedia,
-} from "@mui/material";
+
+
+//tab start
+
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+//tab end
+
 
 export default function ViewBuildingForm() {
   const { id } = useParams();
   const { buildings } = useContext(BuildingContext);
 
-  const building = buildings.data.filter((ele) => ele._id === id);
+  const building = buildings.data.find((ele) => ele._id === id);
   console.log(building);
 
+//tab start
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+//tab end
+
+
+  const customIcon = new Icon({
+    iconUrl: "../../home.png",
+    iconSize: [38, 38],
+  });
+
+  const genderImg = (gender) => {
+    console.log(gender.charAt(0).toUpperCase() + gender.slice(1));
+    if (gender === "female") {
+      return "https://cdn-icons-png.flaticon.com/128/657/657051.png";
+    } else if (gender === "male") {
+      return "https://cdn-icons-png.flaticon.com/128/657/657052.png";
+    } else {
+      return "https://cdn-icons-png.flaticon.com/128/20/20373.png";
+    }
+  };
+
   return (
-    <div
-      style={{
-        backgroundImage: "url(/background-1.jpg)",
-        backgroundAttachment: "fixed",
-        backgroundSize: "cover",
-        backgroundColor: "rgba(102, 152, 225, 0.1 )",
-      }}
-    >
-      {building.map((ele) => {
-        return (
-          <>
-            <Box
-              marginTop={3}
-              justifyContent="center"
-              alignItems="center"
-              marginLeft="auto"
-              marginRight="auto"
-              maxWidth={950}
-              style={{ border: "1px solid transparent" }}
-              // padding={5}
+    <div>
+      <Grid container height="100vh">
+        <Grid
+          item
+          xs={4}
+          sx={{
+            position: "fixed",
+            backgroundColor: "#6698E1",
+            //backgroundColor: '#EAF5FD',
+            height: "100vh",
+            width: "500px",
+            zIndex: 1, // Ensure it's above other content
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            fontFamily="Roboto"
+            fontWeight="bold"
+            fontSize="25px"
+            mt={15}
+            ml={14}
+            mb={3}
+            sx={{ color: "white" }}
+          >
+            Building Location
+          </Typography>
+          <Paper
+            elevation={12}
+            style={{
+              overflow: "hidden",
+              width: "400px",
+              height: "450px",
+              marginLeft: "50px",
+              borderRadius: "10px",
+            }}
+          >
+            <MapContainer
+              center={[building.geolocation.lat, building.geolocation.lng]}
+              zoom={13}
+              style={{ width: "100%", height: "100%" }}
             >
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                textAlign="center"
-                fontSize="35px"
-                marginTop="65px"
-                marginBottom="30px"
-                paddingTop="30px"
+              <TileLayer
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" //leafletjs.com -- copy the url
+              />
+
+              <Marker
+                position={[building.geolocation.lat, building.geolocation.lng]}
+                icon={customIcon}
               >
-                {ele.name}
-              </Typography>
-              <Grid
-                container
+                <Popup>{building.name}</Popup>
+              </Marker>
+            </MapContainer>
+          </Paper>
+        </Grid>
+        <Grid
+          item
+          xs={8}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            paddingLeft: "60px",
+            paddingTop: "100px",
+            marginLeft: "35%",
+          }}
+        >
+          <Grid container>
+            <Grid item xs={9}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Typography
+                  fontSize="30px"
+                  fontFamily="Roboto"
+                  fontWeight="bold"
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {building.name}
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <Chip
+                label={
+                  building.gender.charAt(0).toUpperCase() +
+                  building.gender.slice(1)
+                }
+                avatar={<img src={genderImg(building.gender)} alt="" />}
                 sx={{
-                  width: 800,
-                  margin: "0 auto",
-                 }}
+                  backgroundColor: "#EAF5FD",
+                  marginLeft: "60px",
+                  marginTop: "10px",
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Rating
+              name="read-only"
+              value={+building.rating}
+              precision={0.5}
+              readOnly
+            />
+            <Typography
+              fontSize={15}
+              fontWeight="bold"
+              style={{ marginLeft: "8px" }}
+            >
+              {building.rating}
+            </Typography>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: "590px",
+              }}
+            >
+              {/* <div style={{ display: "flex"}}>
+                
+              </div> */}
+              {/* <Typography
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "30px",
+                  color: "#6698E1",
+                }}
               >
-                <Grid item xs={6}>
-                  <Box
-                    component="img"
-                    sx={{
-                      height: "400px",
-                      width: "400px",
-                      display: "block",
-                      borderRadius: "5px",
-                    }}
-                    alt="Profile Picture"
-                    src={ele.profilePic}
-                  />
-                </Grid>
-                <Grid item xs={6} sx={{paddingLeft:"15px", border:'1px,solid'}}>
-                  <Stack spacing={2} marginBottom={2}>
-                    <Typography variant="body1" fontSize="20px">
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Gender
-                      </span>
-                      : {ele.gender}
-                    </Typography>
-
-                    <Typography variant="body1" fontSize="20px">
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Address
-                      </span>
-                      : {ele.address}
-                    </Typography>
-                    <Typography variant="body1" fontSize="20px">
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Contact
-                      </span>
-                      : {ele.contact}
-                    </Typography>
-                    <Typography variant="body1" fontSize="20px">
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Deposit
-                      </span>
-                      : {ele.deposit}
-                    </Typography>
-                  </Stack>
-
-                  <Typography variant="body1" fontSize="20px" fontWeight="bold">
-                    Amenities :
-                  </Typography>
-                  <Box width="500px">
-                    {ele.amenities.map((id) => {
-                      const matchingAmenity = buildings.amenities.find(
-                        (element) => element._id === id
-                      );
-                      if (matchingAmenity) {
-                        return (
-                          <img
-                            key={matchingAmenity._id}
-                            src={matchingAmenity.iconName}
-                            alt={matchingAmenity.name}
-                            style={{
-                              height: "35px",
-                              width: "35px",
-                              paddingLeft: "40px",
-                              marginTop: "15px",
-                            }}
-                          />
-                        );
-                      }
-                      return null;
-                    })}
-                  </Box>
-                </Grid>
-              </Grid>
-
+                
+                {new Date(building.createdAt).toLocaleDateString()}
+              </Typography> */}
+              {/* <PhoneIcon
+                sx={{ width: "20px", height: "20px", color: "#6698E1" }}
+              /> */}
+            </div>
+          </div>
+          <Card sx={{ maxWidth: 850, maxHeight:'auto', marginTop: 1, marginBottom: 2 }}>
+            <CardMedia
+              component="img"
+              alt="Building image"
+              height="430"
+              src={building.profilePic}
+            />
+            <CardContent>
+              {/* <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            component="div"
+            fontWeight="bold"
+            className="blue"
+          >
+            Address
+          </Typography> */}
+              <Typography mb={1} color="text.secondary">
+                {building.address}
+              </Typography>
               <Typography
-                variant="body1"
-                fontSize="25px"
-                margin="20px"
-                fontWeight="bold"
-                textAlign="center"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingBottom: "10px",
+                  color: "#178feb",
+                }}
               >
-                Amenities Pictures :
+                <PhoneIcon
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    color: "#178feb",
+                    marginRight: "10px",
+                  }}
+                />
+                {building.contact}
+              </Typography>
+              {/* <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            component="div"
+            fontWeight="bold"
+            className="blue"
+          >
+            Deposit
+          </Typography> */}
+              <Typography
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingBottom: "10px",
+                }}
+              >
+                {" "}
+                Deposit :
+                <CurrencyRupeeIcon sx={{ width: "16px", height: "16px" }} />
+                {building.deposit}/-
               </Typography>
 
+              <Typography
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingBottom: "20px",
+                }}
+              >
+                {" "}
+                Amenities :
+                {building.amenities.map((id) => {
+                  const matchingAmenity = buildings.amenities.find(
+                    (element) => element._id === id
+                  );
+                  if (matchingAmenity) {
+                    return (
+                      <img
+                        key={matchingAmenity._id}
+                        src={matchingAmenity.iconName}
+                        alt={matchingAmenity.name}
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          paddingLeft: "15px",
+                          filter:
+                            "invert(29%) sepia(72%) saturate(5023%) hue-rotate(203deg) brightness(95%) contrast(95%)",
+                        }}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+              </Typography>
+
+              {/* <Typography gutterBottom variant="h5" component="div">
+          Lizard
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Lizards are a widespread group of squamate reptiles, with over 6,000
+          species, ranging across all continents except Antarctica
+        </Typography> */}
+        <Box sx={{ borderBottom: 1, borderColor: "divider"}}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                  variant="fullWidth"
+                >
+                  <Tab label="Amenties Pictures" {...a11yProps(0)} />
+                  <Tab label="Rules" {...a11yProps(1)} />
+                  <Tab label="License" {...a11yProps(2)} />
+                </Tabs>
+              </Box>
+              <CustomTabPanel value={value} index={0}>
               <Box
                 style={{
-                  width: "800px",
-                  height: "500px",
-                  marginLeft: "100px",
-                  marginBottom: "30px",
+                  width: "90vh",
+                  height: "430px",
+                  marginLeft: "50px",
+                  // marginBottom: "30px",
                 }}
               >
                 <Carousel showThumbs={false} infiniteLoop >
-                  {ele.amenitiesPic.map((pic, index) => {
+                  {building.amenitiesPic.map((pic, index) => {
                     return (
                       <div key={index}>
                         <img
@@ -179,7 +370,7 @@ export default function ViewBuildingForm() {
                           alt={`Image ${index}`}
                           style={{
                             width: "800px",
-                            height: "500px",
+                            height: "430px",
                             borderRadius: "5px",
                           }}
                         />
@@ -189,51 +380,127 @@ export default function ViewBuildingForm() {
                 </Carousel>
               </Box>
 
-              <Box
-                style={{
-                  width: "800px",
-                  marginLeft: "100px",
-                  marginBottom: "30px",
-                }}
-              >
-                <Typography variant="body1" fontSize="20px">
-                  Rules :
-                  <div
-                    dangerouslySetInnerHTML={{ __html: ele.rules }}
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+              <div
+                    dangerouslySetInnerHTML={{ __html: building.rules }}
                     style={{
+                      height:'430px',
                       border: "1px solid #ccc",
                       padding: "10px",
                       backgroundColor: "#fff",
                     }}
                   />
-                </Typography>
-              </Box>
-
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={2} >
               <Box
-                style={{
-                  width: "800px",
-                  height: "500px",
-                  marginLeft: "100px",
-                  marginBottom: "30px",
-                }}
-              >
-                <Typography variant="body1" fontSize="20px">
-                  License Pictures :
-                </Typography>
-                <Box
                   component="img"
                   style={{
-                    height: "400px",
-                    width: "800px",
+                    height: "430px",
+                    width: "90vh",
                     borderRadius: "5px",
+                    marginLeft:"50px",
+                    objectFit: "contain", 
                   }}
-                  src={ele.license}
+                  src={building.license}
                 />
-              </Box>
-            </Box>
-          </>
-        );
-      })}
+              </CustomTabPanel>
+            </CardContent>
+          </Card>
+
+          {/* <div style={{ display: "flex", alignItems: "center" }}>
+            <Typography
+              fontSize="30px"
+              fontFamily="Roboto"
+              fontWeight="bold"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
+              {building.name}
+            </Typography>
+          </div> */}
+
+          {/* <div style={{ display: "flex", alignItems: "center" }}>
+            <Rating
+              name="read-only"
+              value={+building.rating}
+              precision={0.5}
+              readOnly
+            />
+            <Typography
+              fontSize={15}
+              fontWeight="bold"
+              style={{ marginLeft: "8px" }}
+            >
+              {building.rating}
+            </Typography>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: "590px",
+              }}
+            >
+              <Typography
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "30px",
+                  color: "#6698E1",
+                }}
+              >
+               
+                {new Date(building.createdAt).toLocaleDateString()}
+              </Typography>
+            </div>
+          </div>
+          <img
+            src={building.profilePic}
+            alt="Building"
+            width="850"
+            height="430"
+            style={{
+              borderRadius: "10px",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
+          />
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            component="div"
+            fontWeight="bold"
+            className="blue"
+          >
+            Address
+          </Typography>
+          <Typography variant="p">{building.address}</Typography>
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            component="div"
+            fontWeight="bold"
+            className="blue"
+          >
+            Deposit
+          </Typography>
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              paddingBottom: "10px",
+            }}
+          >
+            <CurrencyRupeeIcon sx={{ width: "20px", height: "20px" }} />
+            {building.deposit}/-
+          </Typography> */}
+        </Grid>
+      </Grid>
     </div>
   );
 }

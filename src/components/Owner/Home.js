@@ -77,13 +77,16 @@ export default function Home() {
   }, []);
   return (
     <div
-      // style={{
-      //   backgroundImage: "url(/design3.jpg)",
-      //   backgroundAttachment: "fixed",
-      //   backgroundSize: "cover",
-      //   // opacity: 0.1
-      //   // backgroundColor: rgba(255, 255, 255, 0.5)
-      //         }}
+      style={{
+        backgroundImage: "url(/home1.png)",
+        backgroundAttachment: "fixed",
+        backgroundSize: "contain",
+        // backgroundPosition: "bottom left",
+        minHeight: "100vh", 
+            backgroundRepeat: "no-repeat", // Prevent the background image from repeating
+        // opacity: 0.1
+        // backgroundColor: rgba(255, 255, 255, 0.5)
+              }}
     >
       {buildings.data.length === 0 ? (
         <div>
@@ -100,6 +103,15 @@ export default function Home() {
         </div>
       ) : (
         <div style={{ marginTop: "70px" }}>
+          <Typography
+            variant="body1"
+            fontWeight="bold"
+            textAlign="center"
+            fontSize="30px"
+            // margin="50px"
+          >
+           Your current buildings
+          </Typography>
           {buildings.data
             .filter((element) => {
               return element.isApproved === "Accepted";
@@ -113,10 +125,10 @@ export default function Home() {
                     flexDirection: "column",
                     alignItem: "center",
                     marginTop: "20px",
-                    marginBottom: "20px",
+                    marginBottom: "40px",
                   }}
                 >
-                  <Card sx={{ maxWidth: 700, maxHeight: 300, marginLeft: 50 }}>
+                  <Card sx={{ maxWidth: 600, maxHeight: 300, marginLeft: 60 }}>
                     <CardMedia
                       sx={{ height: 140 }}
                       image={ele.profilePic}

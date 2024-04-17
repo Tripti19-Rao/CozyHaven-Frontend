@@ -17,6 +17,9 @@ import BuildingForm from './components/Owner/BuildingForm';
 import ViewBuildingForm from './components/Owner/ViewBuildingForm'
 import Rooms from './components/Owner/Rooms'
 import ShowBuilding from './components/Finder/ShowBuilding';
+import BookingDetails from './components/Finder/BookingDetails';
+import PaymentSuccess from './components/Finder/Payment/PaymentSuccess';
+import PaymentCancel from './components/Finder/Payment/PaymentCancel'
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -77,6 +80,9 @@ function App() {
         <Route path="/form" element={<BuildingForm/>}/>
         <Route path="/view-building/:id" element={<ViewBuildingForm />} />
         <Route path="/view-rooms/:id" element={<Rooms />} />
+        <Route path="/booking-details/:bookingid" element={<BookingDetails/>} />
+        <Route path="/success" element={<PaymentSuccess />} />
+        <Route path="/cancel" element={<PaymentCancel />} />
       </Routes>
       </SearchContext.Provider>
       </FinderContext.Provider>
