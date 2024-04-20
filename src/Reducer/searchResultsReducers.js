@@ -12,6 +12,9 @@ export default function searchResultsReducer(state, action) {
         case 'SET_ISCLICKED': {
             return {...state, isClicked: [...action.payload]}
         }
+        case 'SET_BUILDING': {
+            return {...state, building: {...action.payload}}
+        }
         default : {
             return {...state}
         }

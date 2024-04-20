@@ -9,11 +9,14 @@ export const startBookingRoom = (data,navigate) =>{
                     Authorization:localStorage.getItem('token')
                 }
             })
+            //console.log('invoice', bookingResponse.data)
             dispatch(addBooking(bookingResponse.data))
             navigate(`/booking-details/${bookingResponse.data._id}`);
 
         }catch(err){
+            console.log(err)
             toast.error(err.response.data.errors)
+            
         }
     }
 }

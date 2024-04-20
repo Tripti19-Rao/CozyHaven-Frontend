@@ -367,7 +367,7 @@ export default function ViewBuildingForm() {
                       <div key={index}>
                         <img
                           src={pic}
-                          alt={`Image ${index}`}
+                          alt={`amenities ${index}`}
                           style={{
                             width: "800px",
                             height: "430px",

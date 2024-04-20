@@ -1,4 +1,4 @@
-import { Link, useParams,useNavigate } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import {
   Grid,
   Typography,
@@ -78,12 +78,34 @@ export default function ShowBuilding() {
   const { id } = useParams();
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { searchResults } = useContext(SearchContext);
+  const { searchResults , searchDispatch} = useContext(SearchContext);
   const { finder, findersDispatch } = useContext(FinderContext);
   const [isClicked, setIsClicked] = useState(false);
 
-  const building = searchResults.data.find((ele) => ele._id === id);
-  //console.log(building, searchResults.data)
+  const building = searchResults?.building
+  console.log('outside', building._id)
+
+    //to render buildings
+    useEffect(() => {
+      
+        (async function(){
+            try {
+                const token = localStorage.getItem('token')
+                const response = await axios.get(`http://localhost:3055/api/buildings/one/${id}`,{
+                    headers: {
+                        Authorization: token
+                    }
+                })
+                //console.log(response.data)
+                searchDispatch({type: 'SET_BUILDING',payload: response.data})
+                localStorage.setItem('building',JSON.stringify(response.data))
+            } catch (err) {
+                console.log(err)
+            }
+        })();
+        console.log('building', building._id)
+        // eslint-disable-next-line
+    },[])
 
 
   //tab start
@@ -108,12 +130,13 @@ export default function ShowBuilding() {
 
   useEffect(() => {
     const wishList = finder.data.wishList;
-    //console.log(wishList, building._id)
-    if (wishList.includes(building._id)) {
+    console.log('wishList',wishList, id)
+    if (wishList.includes(id)) {
       setIsClicked(true);
     } else {
       setIsClicked(false);
     }
+    // eslint-disable-next-line
   }, []);
 
   const handleClick = async () => {
@@ -128,7 +151,7 @@ export default function ShowBuilding() {
       body.wishList = [...body.wishList, building._id];
       newClickStatus = true;
     }
-
+    console.log('wishList', building._id)
     const token = localStorage.getItem("token");
     const response = await axios.put(
       `http://localhost:3055/api/finders`,
@@ -457,7 +480,7 @@ export default function ShowBuilding() {
                       <div key={index}>
                         <img
                           src={pic}
-                          alt={`Image ${index}`}
+                          alt={`Amenity ${index}`}
                           style={{
                             width: "800px",
                             height: "430px",
@@ -578,7 +601,7 @@ export default function ShowBuilding() {
                             <Button
                               variant="contained"
                               size="small"
-                              sx={{ color: "white" }}
+                              sx={{ color: "white", marginBottom: '15px' }}
                               disabled={
                                 ele.roomid.sharing - ele.roomid.guest.length ===
                                 0

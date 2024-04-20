@@ -1,9 +1,10 @@
 import {useNavigate, useParams } from 'react-router-dom'
-import {useState,useEffect} from 'react'
+import {useEffect, useContext} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {startGetBookingDetails, startDestroyBooking} from '../../Actions/BookingActions'
 import {startPayment} from '../../Actions/PaymentActions'
 import { Box, Typography, Grid, Button , Stack , CardContent, Card, Divider } from "@mui/material";
+import SearchContext from '../../ContextApi/searchContext'
 
 
  
@@ -11,45 +12,27 @@ export default function BookingDetails() {
     const {bookingid} = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const {searchResults} = useContext(SearchContext)
+
     useEffect(()=>{
       if(bookingid){
         dispatch(startGetBookingDetails(bookingid))
       }
+      // eslint-disable-next-line
     },[])
+
     const bookingDetail = useSelector((state)=>{
       return state.booking.bookingDetails
     })
     console.log("booking",bookingDetail)
 
-//mine
-  // const buildings = JSON.parse(localStorage.getItem('searchResults'))
-  // const building = buildings?.find((ele)=>ele._id===bookingDetail.buildingId)
-  // const room = building?.rooms.find((ele)=>ele.roomid._id===bookingDetail.roomId)
-  // console.log("room",room)
-//mine
+    const building = searchResults?.building
 
-
-//chat
-const buildingsJSON = localStorage.getItem('searchResults');
-if (!buildingsJSON) {
-    console.log('No search results found in localStorage');
-    return;
-}
-
-const buildings = JSON.parse(buildingsJSON);
-console.log('buildings', buildings);
-
-const building = buildings.find((ele) => ele._id === bookingDetail.buildingId);
-if (!building) {
-    console.log('Building not found');
-    return;
-}
-
-const room = building.rooms.find((ele) => ele.roomid._id === bookingDetail.roomId);
-if (!room) {
-    console.log('Room not found');
-    return;
-}
+    const room = building.rooms.find((ele) => ele.roomid._id === bookingDetail.roomId);
+    if (!room) {
+        console.log('Room not found');
+        return;
+    }
 
 console.log("room", room);
 //chat
