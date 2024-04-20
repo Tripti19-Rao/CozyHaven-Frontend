@@ -5,12 +5,16 @@ import {jwtDecode} from 'jwt-decode'
 import { FcLike } from "react-icons/fc";
 import { FaUser } from "react-icons/fa";
 import SearchContext from '../ContextApi/searchContext';
+import { useDispatch } from 'react-redux';
+import { handleLogout } from '../Actions/UserActions';
 
 //import Search from './Finder/Search';
 
 
  export default function Navbar() {
   const navigate = useNavigate()
+  const usersDispatch = useDispatch()
+
   const [anchorEl, setAnchorEl] = useState(null);
   const {searchResults} = useContext(SearchContext)
   const [gender, setGender] = useState('')
@@ -26,6 +30,7 @@ import SearchContext from '../ContextApi/searchContext';
   const handleLogOut = () => {
     handleClose()
     localStorage.clear()
+    usersDispatch(handleLogout)
     navigate('/login')
   }
 

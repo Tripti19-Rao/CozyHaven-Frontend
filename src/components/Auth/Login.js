@@ -9,10 +9,13 @@ import { Link } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FinderContext from '../../ContextApi/FinderContext'
+import { useDispatch } from 'react-redux'
+import { setUserAccount } from '../../Actions/UserActions'
  
 export default function Login() {
     const navigate = useNavigate()
     const {findersDispatch} = useContext(FinderContext)
+    const usersDispatch = useDispatch()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -56,7 +59,15 @@ export default function Login() {
                     //console.log(finderData)
                 }
 
-               
+                //getting the user's account
+                const user = await axios.get('http://localhost:3055/api/users/account', {
+                    headers: {
+                        Authorization: token
+                    }
+                })
+                //console.log(user.data)
+                usersDispatch(setUserAccount(user.data))
+
                 // const role = jwtDecode(token)
                 // toast.success('Successfully Logged In!')
                 toast.success('Successfully Logged In!', {
@@ -79,7 +90,7 @@ export default function Login() {
             } catch(err) {
                 //alert(err.message)
                 // console.log(err.response.data)
-                // console.log(err)
+                console.log(err)
                 setServerErrors(err.response.data)
             }
         } else {

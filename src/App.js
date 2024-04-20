@@ -21,6 +21,7 @@ import BookingDetails from './components/Finder/BookingDetails';
 import PaymentSuccess from './components/Finder/Payment/PaymentSuccess';
 import PaymentCancel from './components/Finder/Payment/PaymentCancel'
 import GuestForm from './components/Finder/GuestForm';
+import UnauthorizedPage from './components/Auth/UnauthorizedPage';
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -38,6 +39,9 @@ import RoomContext from './ContextApi/RoomContext';
 
 import {jwtDecode} from 'jwt-decode'
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserAccount } from './Actions/UserActions';
+import PrivateRoutes from './components/Auth/PrivateRoutes';
 
 
 function App() {
@@ -66,7 +70,13 @@ function App() {
   const [finder, findersDispatch] = useReducer(findersReducer, {data: {}})
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
-  console.log('App', finder.data)
+
+  const user = useSelector((state)=>{
+    return state.user.userData
+  })
+  const usersDispatch = useDispatch()
+  console.log('user',user)
+
 
   useEffect(()=> {
     const token = localStorage.getItem('token')
@@ -79,6 +89,12 @@ function App() {
               Authorization: token
             }
           }
+
+          //get user account
+          const response = await axios.get('http://localhost:3055/api/users/account',tokenHeader)
+          usersDispatch(setUserAccount(response.data))
+
+          //fetching data based on role
           if(jwtDecode(token).role === 'finder') {
             const response = await axios.get('http://localhost:3055/api/finders/findOne',tokenHeader)
             console.log(response.data, 'insitde useeffect')
@@ -104,23 +120,81 @@ function App() {
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/login" element={<Login/>}/>
-        <Route path="/search" element={<Search/>}/>
-        <Route path='/search-results' element={<SearchResults/>}/>
-        <Route path='/show-building/:id' element={<ShowBuilding/>}/>
+        <Route path="/search" element={
+          <PrivateRoutes permittedRoles={['finder']}>
+            <Search/>
+          </PrivateRoutes>
+          }/>
+        <Route path='/search-results' element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <SearchResults/>
+        </PrivateRoutes>
+        }/>
+        <Route path='/show-building/:id' element={
+          <PrivateRoutes permittedRoles={['finder']}>
+              <ShowBuilding/>
+            </PrivateRoutes>
+        }/>
         <Route path='/nav' element={<Navbar/>}/>
-        <Route path='/wishlist' element={<WishList/>}/>
-        <Route path='/profile' element={<Profile/>}/>
-        <Route path='/paymentHistory' element={<PaymentHistory/>}/>
+        <Route path='/wishlist' element={
+            <PrivateRoutes permittedRoles={['finder']}>
+              <WishList/>
+            </PrivateRoutes>
+        }/>
+        <Route path='/profile' element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <Profile/>
+        </PrivateRoutes>
+        }/>
+        <Route path='/paymentHistory' element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <PaymentHistory/>
+        </PrivateRoutes>
+        }/>
         <Route path="/dashboard" element={<Dashboard/>}/>
-        <Route path="/home" element={<Home/>}/>
+        <Route path="/home" element={
+          <PrivateRoutes permittedRoles={['owner']}>
+          <Home/>
+        </PrivateRoutes>
+        }/>
         <Route path="/notfound" element={<NotFound/>}/>
-        <Route path="/form" element={<BuildingForm/>}/>
-        <Route path="/view-building/:id" element={<ViewBuildingForm />} />
-        <Route path="/view-rooms/:id" element={<Rooms />} />
-        <Route path="/booking-details/:bookingid" element={<BookingDetails/>} />
-        <Route path="/success" element={<PaymentSuccess />} />
-        <Route path="/cancel" element={<PaymentCancel />} />
-        <Route path='/guest-form' element={<GuestForm/>} />
+        <Route path="/form" element={
+          <PrivateRoutes permittedRoles={['owner']}>
+          <BuildingForm/>
+        </PrivateRoutes>
+        }/>
+        <Route path="/view-building/:id" element={
+          <PrivateRoutes permittedRoles={['owner']}>
+          <ViewBuildingForm />
+        </PrivateRoutes>
+        } />
+        <Route path="/view-rooms/:id" element={
+          <PrivateRoutes permittedRoles={['owner']}>
+          <Rooms />
+        </PrivateRoutes>
+        } />
+        <Route path="/booking-details/:bookingid" element={
+          <PrivateRoutes permittedRoles={['finder']}>
+           <BookingDetails/>
+        </PrivateRoutes>
+       } />
+        <Route path="/success" element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <PaymentSuccess />
+       </PrivateRoutes>
+        
+        } />
+        <Route path="/cancel" element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <PaymentCancel />
+       </PrivateRoutes>
+        } />
+        <Route path='/guest-form' element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <GuestForm/>
+       </PrivateRoutes>
+        } />
+        <Route path='/unauthorized' element={<UnauthorizedPage/>}/>
       </Routes>
       </RoomContext.Provider>
       </SearchContext.Provider>
