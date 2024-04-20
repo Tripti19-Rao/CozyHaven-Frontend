@@ -378,28 +378,12 @@ export default function ShowBuilding() {
               src={building.profilePic}
             />
             <CardContent>
-              {/* <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-            fontWeight="bold"
-            className="blue"
-          >
-            Address
-          </Typography> */}
+              
               <Typography mb={1} color="text.secondary">
                 {building.address}
               </Typography>
               
-              {/* <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-            fontWeight="bold"
-            className="blue"
-          >
-            Deposit
-          </Typography> */}
+              
               <Typography
                 sx={{
                   display: "flex",
@@ -446,13 +430,6 @@ export default function ShowBuilding() {
                 })} */}
               </Typography>
 
-              {/* <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography> */}
         <Box sx={{ borderBottom: 1, borderColor: "divider"}}>
                 <Tabs
                   value={value}
