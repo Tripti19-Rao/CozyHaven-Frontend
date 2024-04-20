@@ -1,5 +1,6 @@
 import './App.css';
-import { useReducer } from 'react';
+import { useReducer, useEffect } from 'react';
+import axios from 'axios'
 import {Routes, Route } from 'react-router-dom'
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
@@ -36,7 +37,7 @@ import BuildingContext from './ContextApi/BuildingContext';
 import roomsReducer from './Reducer/roomsReducer';
 import RoomContext from './ContextApi/RoomContext';
 
-
+import { jwtDecode } from 'jwt-decode'
 
 
 function App() {
@@ -65,8 +66,30 @@ function App() {
   const [finder, findersDispatch] = useReducer(findersReducer, {data: JSON.parse(localStorage.getItem('finderData')) || {}})
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
-  console.log('App', rooms)
 
+  useEffect(()=>{
+    const token = localStorage.getItem('token')
+    if(token){
+      (async()=>{
+        try{
+          const tokenHeader = {
+            headers:{
+              Authorization:token
+            }
+          }
+          if(jwtDecode(token).role === 'owner'){
+            const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
+            buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
+
+            const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
+            buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
+          }
+        }catch(err){
+          console.log(err)
+        }
+      })()
+    } 
+  },[])
   return (
     <div>
       <BuildingContext.Provider value={{buildings, buildingsDispatch}}>

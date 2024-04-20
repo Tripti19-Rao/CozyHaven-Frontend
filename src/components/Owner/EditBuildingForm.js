@@ -15,6 +15,7 @@ import {
   InputLabel,
   FormHelperText,
 } from "@mui/material";
+import { FadeLoader  } from 'react-spinners';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import IconButton from "@mui/material/IconButton";
 import WifiIcon from "@mui/icons-material/Wifi";
@@ -61,10 +62,10 @@ Quill.register(
 export default function EditBuildingForm(props) {
   const { editId, buildings } = props;
   const { buildingsDispatch } = useContext(BuildingContext);
+  const [loading, setLoading] = useState(false);
 
   const building = buildings.data.filter((ele) => ele._id === editId);
   console.log(building[0].profilePic);
-  //   const [show, setShow] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [clientErrors, setClientErrors] = useState({});
   const errors = {};
@@ -86,15 +87,61 @@ export default function EditBuildingForm(props) {
     },
   });
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
-    if (name === "profilePic" || name === "license") {
-      setFormData({ ...formData, [name]: files });
+    const imageData = new FormData();
+    const tokenHeaders = {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+    if (name === "profilePic") {
+      try {
+        setLoading(true)
+        imageData.append("profilePic", files[0]);
+        const profileResponse = await axios.post(
+          "http://localhost:3055/api/images/profile",
+          imageData,
+          tokenHeaders
+        );
+        setFormData({ ...formData, [name]: profileResponse.data });
+        setLoading(false)
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (name === "license") {
+      try {
+        setLoading(true)
+        imageData.append("license", files[0]);
+        const licenseResponse = await axios.post(
+          "http://localhost:3055/api/images/license",
+          imageData,
+          tokenHeaders
+        );
+        setFormData({ ...formData, [name]: licenseResponse.data });
+        setLoading(false)
+      } catch (err) {
+        console.log(err);
+      }
     } else if (name === "amenitiesPic") {
-      setFormData({
-        ...formData,
-        [name]: [...formData.amenitiesPic, ...files],
-      });
+      try {
+        setLoading(true)
+        for (let i = 0; i < files.length; i++) {
+          imageData.append("amenitiesPic", files[i]);
+        }
+        const amenitiesResponse = await axios.post(
+          "http://localhost:3055/api/images/amenities",
+          imageData,
+          tokenHeaders
+        );
+        setFormData({
+          ...formData,
+          [name]: [...formData.amenitiesPic, ...amenitiesResponse.data],
+        });
+        setLoading(false)
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -125,9 +172,9 @@ export default function EditBuildingForm(props) {
     if (!formData.amenitiesPic.length) {
       errors.amenitiesPic = "Amenities Pictures is required";
     }
-    //   if(!formData.deposit.trim().length){
-    //     errors.deposit = 'Deposite amount is required'
-    //   }
+    // if (formData.deposit !== null && formData.deposit !== undefined && !formData.deposit.trim().length) {
+    //   errors.deposit = "Deposite amount is required";
+    // }
     if (String(+formData.deposit) === "NaN") {
       errors.deposit = "Deposit amount must be a number";
     }
@@ -144,59 +191,12 @@ export default function EditBuildingForm(props) {
     if (isEmpty(errors)) {
       console.log(errors);
       try {
+        setLoading(true)
         setClientErrors({});
-        const finalFromData = new FormData();
-        finalFromData.append("name", formData.name);
-        finalFromData.append("gender", formData.gender);
-        finalFromData.append("address", formData.address);
-        finalFromData.append("contact", formData.contact);
-        finalFromData.append("deposit", formData.deposit);
-        finalFromData.append("rules", formData.rules);
-        finalFromData.append("geolocation.lat", formData.geolocation.lat);
-        finalFromData.append("geolocation.lng", formData.geolocation.lng);
-        formData.amenities.forEach((id) =>
-          finalFromData.append("amenities", id)
-        );
-        // Handle profilePic
-        if (typeof formData.profilePic === "string") {
-          // If it's a URL, append it directly
-          finalFromData.append("profilePic", formData.profilePic);
-        } else {
-          // If it's a file object, append its data
-          Object.entries(formData.profilePic).forEach((ele) =>
-            finalFromData.append("profilePic", ele[1])
-          );
-        }
-
-        // Handle amenitiesPic
-        if (typeof formData.amenitiesPic === "string") {
-          // If it's a URL, append it directly
-          finalFromData.append("amenitiesPic", formData.amenitiesPic);
-        } else {
-          // If it's an array of files, append each file
-          formData.amenitiesPic.forEach((file) =>
-            finalFromData.append("amenitiesPic", file)
-          );
-        }
-
-        // Handle license
-        if (typeof formData.license === "string") {
-          // If it's a URL, append it directly
-          finalFromData.append("license", formData.license);
-        } else {
-          // If it's a file object, append its data
-          Object.entries(formData.license).forEach((ele) =>
-            finalFromData.append("license", ele[1])
-          );
-        }
-        // Object.entries(formData.profilePic).forEach(ele => finalFromData.append('profilePic', ele[1]))
-        // Object.entries(formData.amenitiesPic).forEach(ele => finalFromData.append('amenitiesPic', ele[1]))
-        // Object.entries(formData.license).forEach(ele => finalFromData.append('license', ele[1]))
-        console.log(finalFromData);
-
+        console.log(formData);
         const response = await axios.put(
           `http://localhost:3055/api/buildings/${editId}`,
-          finalFromData,
+          formData,
           {
             headers: {
               Authorization: localStorage.getItem("token"),
@@ -204,8 +204,9 @@ export default function EditBuildingForm(props) {
           }
         );
         buildingsDispatch({ type: "EDIT_BUILDING", payload: response.data });
-        props.handleClose();
+        props.handleEditClose();
       } catch (err) {
+        console.log(err)
         toast.error("Please ensure all the feilds are filled correctly");
       }
     } else {
@@ -259,7 +260,13 @@ export default function EditBuildingForm(props) {
     updatedAmenitiesPic.splice(index, 1); // Remove the image URL at the specified index
     setFormData({ ...formData, amenitiesPic: updatedAmenitiesPic }); // Update the state with the modified amenitiesPic array
   };
+  const onProfileDelete = () => {
+    setFormData({ ...formData, profilePic: null }); // Update the state with the modified amenitiesPic array
+  };
 
+  const onLicenseDelete = () => {
+    setFormData({ ...formData, license: null }); // Update the state with the modified amenitiesPic array
+  };
   //thumbnail of images end
 
   //Multistep form functions
@@ -284,9 +291,9 @@ export default function EditBuildingForm(props) {
   };
 
   //Remove profile picture
-  const handleProfileRemoveFile = () => {
-    setFormData({ ...formData, profilePic: null });
-  };
+  // const handleProfileRemoveFile = () => {
+  //   setFormData({ ...formData, profilePic: null });
+  // };
 
   //Map features
   const customIcon = new Icon({
@@ -432,6 +439,26 @@ export default function EditBuildingForm(props) {
       case 0:
         return (
           <div style={{ marginLeft: "250px" }}>
+            {loading && (
+              <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 9999,
+                width: "150px", // Adjust width to match the spinner size
+                height: "150px", // Adjust height to match the spinner size
+                backgroundColor: "rgba(255, 255, 255)", // Adjust background color to make it less transparent
+                borderRadius: "10px", // Optional: Add border-radius for a nicer look
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              >
+                <FadeLoader  color="#007FFF" />
+              </div>
+            )}
             <Stack
               spacing={2}
               direction="column"
@@ -484,15 +511,13 @@ export default function EditBuildingForm(props) {
                 </FormHelperText>
               )}
               {formData.profilePic && (
-                <p>
-                  Selected file : {formData.profilePic[0].name}
-                  <IconButton
-                    sx={{ color: "black" }}
-                    onClick={handleProfileRemoveFile}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </p>
+                <div>
+                  <p>Selected file :</p>
+                  <ImageThumbnail
+                    imageUrl={formData.profilePic}
+                    onDelete={onProfileDelete} // Assuming `onProfileDelete` is a function to handle deletion
+                  />
+                </div>
               )}
 
               <FormControl
@@ -517,9 +542,9 @@ export default function EditBuildingForm(props) {
                   <MenuItem value={"co-living"}>Co-living</MenuItem>
                 </Select>
               </FormControl>
-              {clientErrors.profilePic && (
+              {clientErrors.gender && (
                 <FormHelperText style={{ color: "red", marginLeft: "15px" }}>
-                  {clientErrors.profilePic}
+                  {clientErrors.gender}
                 </FormHelperText>
               )}
 
@@ -686,6 +711,26 @@ export default function EditBuildingForm(props) {
       case 3:
         return (
           <div style={{ marginLeft: "250px" }}>
+            {loading && (
+              <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 9999,
+                width: "150px", // Adjust width to match the spinner size
+                height: "150px", // Adjust height to match the spinner size
+                backgroundColor: "rgba(255, 255, 255)", // Adjust background color to make it less transparent
+                borderRadius: "10px", // Optional: Add border-radius for a nicer look
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              >
+                <FadeLoader  color="#007FFF" />
+              </div>
+            )}
             <Stack
               spacing={2}
               direction="column"
@@ -774,15 +819,13 @@ export default function EditBuildingForm(props) {
                 </FormHelperText>
               )}
               {formData.license && (
-                <p>
-                  Selected file : {formData.license[0].name}
-                  <IconButton
-                    sx={{ color: "black" }}
-                    onClick={handleRemoveLicenseFile}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </p>
+                <div>
+                  <p>Selected file :</p>
+                  <ImageThumbnail
+                    imageUrl={formData.license}
+                    onDelete={onLicenseDelete}
+                  />
+                </div>
               )}
             </Stack>
           </div>
@@ -791,6 +834,26 @@ export default function EditBuildingForm(props) {
         return (
           <div>
             <ToastContainer position="top-center" />
+            {loading && (
+              <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 9999,
+                width: "150px", // Adjust width to match the spinner size
+                height: "150px", // Adjust height to match the spinner size
+                backgroundColor: "rgba(255, 255, 255)", // Adjust background color to make it less transparent
+                borderRadius: "10px", // Optional: Add border-radius for a nicer look
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              >
+                <FadeLoader  color="#007FFF" />
+              </div>
+            )}
             <Typography
               fontFamily="Prociono"
               fontSize="20px"
