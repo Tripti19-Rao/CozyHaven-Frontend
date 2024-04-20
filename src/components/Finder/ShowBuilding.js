@@ -83,8 +83,11 @@ export default function ShowBuilding() {
   const [isClicked, setIsClicked] = useState(false);
 
   const building = searchResults?.building
+  console.log('outside', building._id)
 
+    //to render buildings
     useEffect(() => {
+      
         (async function(){
             try {
                 const token = localStorage.getItem('token')
@@ -100,6 +103,7 @@ export default function ShowBuilding() {
                 console.log(err)
             }
         })();
+        console.log('building', building._id)
         // eslint-disable-next-line
     },[])
 
@@ -126,8 +130,8 @@ export default function ShowBuilding() {
 
   useEffect(() => {
     const wishList = finder.data.wishList;
-    //console.log(wishList, building._id)
-    if (wishList.includes(building._id)) {
+    console.log('wishList',wishList, id)
+    if (wishList.includes(id)) {
       setIsClicked(true);
     } else {
       setIsClicked(false);
@@ -147,7 +151,7 @@ export default function ShowBuilding() {
       body.wishList = [...body.wishList, building._id];
       newClickStatus = true;
     }
-
+    console.log('wishList', building._id)
     const token = localStorage.getItem("token");
     const response = await axios.put(
       `http://localhost:3055/api/finders`,
@@ -620,7 +624,7 @@ export default function ShowBuilding() {
                             <Button
                               variant="contained"
                               size="small"
-                              sx={{ color: "white" }}
+                              sx={{ color: "white", marginBottom: '15px' }}
                               disabled={
                                 ele.roomid.sharing - ele.roomid.guest.length ===
                                 0

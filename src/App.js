@@ -20,6 +20,7 @@ import ShowBuilding from './components/Finder/ShowBuilding';
 import BookingDetails from './components/Finder/BookingDetails';
 import PaymentSuccess from './components/Finder/Payment/PaymentSuccess';
 import PaymentCancel from './components/Finder/Payment/PaymentCancel'
+import GuestForm from './components/Finder/GuestForm';
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -45,11 +46,8 @@ function App() {
     data: [], //JSON.parse(localStorage.getItem('searchResults')) || 
     building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
-    isSearched: false,
-    isClicked: []
+    isSearched: false
   }
-
-  searchInitialState.isClicked = Array(searchInitialState.data.length).fill(false)
 
   const buildingsInitialState = {
     data:JSON.parse(localStorage.getItem('buildings')) || [],
@@ -96,6 +94,7 @@ function App() {
         <Route path="/booking-details/:bookingid" element={<BookingDetails/>} />
         <Route path="/success" element={<PaymentSuccess />} />
         <Route path="/cancel" element={<PaymentCancel />} />
+        <Route path='/guest-form' element={<GuestForm/>} />
       </Routes>
       </RoomContext.Provider>
       </SearchContext.Provider>

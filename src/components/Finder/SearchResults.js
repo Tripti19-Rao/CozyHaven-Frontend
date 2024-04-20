@@ -28,8 +28,8 @@ export default function SearchResults() {
     const {finder,findersDispatch} = useContext(FinderContext)
     const {searchResults, searchDispatch} = useContext(SearchContext)
 
-    // const initialClickedState = searchResults && searchResults.data ? Array(searchResults.data.length).fill(false) : [];
-    // const [isClicked, setIsClicked] = useState(initialClickedState)
+    const initialClickedState = searchResults && searchResults.data ? Array(searchResults.data.length).fill(false) : [];
+    const [isClicked, setIsClicked] = useState(initialClickedState)
 
     console.log(searchResults.data)
     
@@ -84,25 +84,20 @@ export default function SearchResults() {
     useEffect(()=>{
         searchDispatch({type: 'SET_IS_SEARCH', payload: true})
 
-        if(JSON.parse(localStorage.getItem('wishlist'))) {
-            const storedIsClick = JSON.parse(localStorage.getItem('wishlist'))
-            searchDispatch({type: 'SET_ISCLICKED', payload: storedIsClick})
-        } else {
-            //if the wishlist is not present in the localStorage when the user logs out & logs in
-            const wishList = finder.data.wishList
-            const newClickStatus = [...searchResults?.isClicked]
-            console.log('click', searchResults?.isClicked)
-            searchResults.data.map(ele => ele._id).forEach((ele,i) => {
+            const wishList = finder?.data?.wishList
+            const newClickStatus = [isClicked]
+            searchResults.data?.map(ele => ele._id).forEach((ele,i) => {
                 if(wishList.includes(ele)) {
                     newClickStatus[i] = true
+                } else {
+                    newClickStatus[i] = false
                 }
             });
-            //setIsClicked(newClickStatus)
-            searchDispatch({type: 'SET_ISCLICKED', payload: newClickStatus})
-            localStorage.setItem('wishlist',JSON.stringify(newClickStatus))
-        }
+            setIsClicked(newClickStatus)
+            console.log(wishList,'wish','builid',newClickStatus)
+        
         // eslint-disable-next-line
-    },[])
+    },[searchResults.data])
 
     const handleWishlist = async (buildingId,index) => {
         
@@ -110,7 +105,7 @@ export default function SearchResults() {
             console.log(buildingId)
 
             const body = {...finder.data}
-            const newClickStatus = [...searchResults?.isClicked]
+            const newClickStatus = [...isClicked]
 
             const isBuildingId = body.wishList.find(bId => bId === buildingId)
             if(isBuildingId) {
@@ -133,13 +128,8 @@ export default function SearchResults() {
             
             
             //update isClicked for that building
-                //setIsClicked(newClickStatus)
-                searchDispatch({type: 'SET_ISCLICKED', payload: newClickStatus})
-                localStorage.setItem('wishlist',JSON.stringify(newClickStatus))
+                setIsClicked(newClickStatus)
                 console.log('newClick',newClickStatus)
-            // const newClickStatus = [...isClicked]
-            // newClickStatus[index] = !newClickStatus[index]
-            // setIsClicked(newClickStatus)
             toast.info(newClickStatus[index] ? 'Building added to your wishlist': 'Building removed from wishlist', {
                 autoClose: 1000,
                 position: 'top-center',
@@ -227,15 +217,15 @@ export default function SearchResults() {
                                     sx={{marginLeft: '25px'}}
                                     />
                                 </Grid>
-                                {searchResults?.isClicked && (
+                                
                                     <Grid item xs={1}>
-                                    <Tooltip title={searchResults?.isClicked[i] ? 'remove from wishlist' : 'add to wishlist'}>
+                                    <Tooltip title={isClicked[i] ? 'remove from wishlist' : 'add to wishlist'}>
                                         <IconButton sx={{ padding: '0px'}} onClick={()=>{handleWishlist(ele._id,i)}}>
-                                            {searchResults?.isClicked[i] ? <FcLike style={{fontSize: "35px", color: 'white'}}/> :  <CiHeart style={{fontSize: "35px"}}/>}
+                                            {isClicked[i] ? <FcLike style={{fontSize: "35px", color: 'white'}}/> :  <CiHeart style={{fontSize: "35px"}}/>}
                                             </IconButton>
                                         </Tooltip>
                                     </Grid>
-                                )}
+                                
                                 
                             </Grid>
                         

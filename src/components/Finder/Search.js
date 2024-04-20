@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //import searchResultsReducer from "../../Reducer/searchResultsReducers";
 
 import {
@@ -18,12 +18,34 @@ import { FaSearch } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import SearchContext from "../../ContextApi/searchContext";
+import FinderContext from "../../ContextApi/FinderContext";
 
 export default function Search() {
   const {searchDispatch} = useContext(SearchContext)
+  const {finder} = useContext(FinderContext)
+
+  const [guests, setGuests] = useState([])
 
   const navigate = useNavigate();
   const [serverErrors, setServerErrors] = useState({});
+
+  useEffect(()=>{
+    (async function(){
+      try{
+        const token = localStorage.getItem('token')
+        const response = await axios.get(`http://localhost:3055/api/finderid/${finder.data._id}/guests`,{
+          headers: {
+            Authorization: token
+          }
+        })
+        console.log(response.data)
+        setGuests(response.data)
+      } catch(err) {
+        console.log(err)
+      }
+    })();
+     // eslint-disable-next-line
+  },[])
 
   const basicSchema = yup.object().shape({
     address: yup.string().required("City & Area is required"),
@@ -97,7 +119,7 @@ export default function Search() {
   });
   return (
     <div>
-      <Typography
+      {/* <Typography
         variant="body1"
         fontWeight="bold"
         fontFamily="San Serif"
@@ -111,10 +133,56 @@ export default function Search() {
         src="/search.jpg"
         alt="Signup Page Banner"
         style={{ marginLeft: "150px", height: "450px", position: "relative" }}
+      /> */}
+      <Box sx={{ marginTop: { xs: '50px', md: '100px' } }}>
+      <Typography
+          variant="body1"
+          fontWeight="bold"
+          fontFamily="San Serif"
+          textAlign="center"
+          fontSize={{ xs: '30px', md: '50px' }}
+        >
+        CozyHaven
+      </Typography>
+      {guests?.map(ele => {
+        return (
+          !ele?.isComplete && (
+            <Typography
+          key={ele._id}
+          variant="p"
+          fontFamily="Roboto"
+          textAlign="center"
+          sx={{
+            backgroundColor: 'rgba(255, 0, 0, 0.7)', // Red color with 70% opacity
+            color: 'white',
+            padding: '10px',
+            width: '100%', // Make it span the entire page width
+            position: 'absolute',
+            // Stick it to the top of the page
+            left: 0, // Stretch it from the left
+            zIndex: 9999, // Ensure it's on top of other elements
+          }}
+        >
+          Please fill your registration form of {ele?.buildingId?.name} ! <Link to={'/guest-form'}>click here</Link>
+          
+        </Typography>
+          )
+        )
+      })}
+    
+      <img
+        src="/search.jpg"
+        alt="Signup Page Banner"
+        style={{
+           marginLeft: "150px", height: "450px", position: "relative" 
+           //width: '100%', maxWidth: '100%', height: 'auto', marginLeft: 'auto', marginRight: 'auto', display: 'block'
+          }}
+
       />
+      </Box>
       <Box
         //height={600}
-        width={430}
+        width={{ xs: '90%', sm: '70%', md: '430px' }}
         // alignItems="center"
         // gap={4}
         p={4}
