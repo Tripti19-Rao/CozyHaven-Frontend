@@ -1,5 +1,5 @@
 import './App.css';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import {Routes, Route } from 'react-router-dom'
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
@@ -36,7 +36,8 @@ import BuildingContext from './ContextApi/BuildingContext';
 import roomsReducer from './Reducer/roomsReducer';
 import RoomContext from './ContextApi/RoomContext';
 
-
+import {jwtDecode} from 'jwt-decode'
+import axios from 'axios';
 
 
 function App() {
@@ -62,10 +63,35 @@ function App() {
   }
   //State
   const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
-  const [finder, findersDispatch] = useReducer(findersReducer, {data: JSON.parse(localStorage.getItem('finderData')) || {}})
+  const [finder, findersDispatch] = useReducer(findersReducer, {data: {}})
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
-  console.log('App', rooms)
+  console.log('App', finder.data)
+
+  useEffect(()=> {
+    const token = localStorage.getItem('token')
+    if(token) {
+      //const {role} = jwtDecode(token)
+      (async function(){
+        try {
+          const tokenHeader = {
+            headers: {
+              Authorization: token
+            }
+          }
+          if(jwtDecode(token).role === 'finder') {
+            const response = await axios.get('http://localhost:3055/api/finders/findOne',tokenHeader)
+            console.log(response.data, 'insitde useeffect')
+            findersDispatch({type: 'SET_FINDER', payload: response.data})
+          }
+        } catch(err) {
+          console.log(err)
+        }
+      })();
+    }
+
+    // eslint-disable-next-line
+  },[])
 
   return (
     <div>

@@ -51,7 +51,7 @@ export default function Login() {
                 //setting the finder
                 if(role === 'finder') {
                     const finderData = response.data.finder_details
-                    localStorage.setItem('finderData',JSON.stringify(finderData)) //to keep the data even in page reloads
+                    //localStorage.setItem('finderData',JSON.stringify(finderData)) //to keep the data even in page reloads
                     findersDispatch({type: 'SET_FINDER', payload: finderData})
                     //console.log(finderData)
                 }
