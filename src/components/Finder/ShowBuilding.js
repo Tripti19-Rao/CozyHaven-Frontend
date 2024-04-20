@@ -33,7 +33,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import {useDispatch} from 'react-redux'
 import {startBookingRoom} from '../../Actions/BookingActions'
-
+import { isEmpty } from "lodash";
 
 //tab start
 
@@ -83,7 +83,7 @@ export default function ShowBuilding() {
   const [isClicked, setIsClicked] = useState(false);
 
   const building = searchResults?.building
-  console.log('outside', building._id)
+  console.log('outside', isEmpty(building))
 
     //to render buildings
     useEffect(() => {
@@ -118,7 +118,7 @@ export default function ShowBuilding() {
 
 
   const genderImg = (gender) => {
-    console.log(gender.charAt(0).toUpperCase() + gender.slice(1));
+    //console.log(gender.charAt(0).toUpperCase() + gender.slice(1));
     if (gender === "female") {
       return "https://cdn-icons-png.flaticon.com/128/657/657051.png";
     } else if (gender === "male") {
@@ -129,15 +129,17 @@ export default function ShowBuilding() {
   };
 
   useEffect(() => {
-    const wishList = finder.data.wishList;
-    console.log('wishList',wishList, id)
-    if (wishList.includes(id)) {
+    if(!isEmpty(finder.data)) {
+      const wishList = finder.data.wishList;
+      console.log('wishList',wishList, id)
+    if (wishList?.includes(id)) {
       setIsClicked(true);
     } else {
       setIsClicked(false);
     }
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [finder.data]);
 
   const handleClick = async () => {
     console.log("handleClick");
@@ -162,7 +164,7 @@ export default function ShowBuilding() {
         },
       }
     );
-    localStorage.setItem("finderData", JSON.stringify(response.data));
+    //localStorage.setItem("finderData", JSON.stringify(response.data));
     findersDispatch({ type: "SET_FINDER", payload: response.data });
     console.log("res", response.data);
 
@@ -196,8 +198,11 @@ export default function ShowBuilding() {
   }
 
   return (
+    
     <Grid container height="100vh">
-      <Grid
+      {!isEmpty(building) && (
+        <>
+        <Grid
         item
         xs={4}
         sx={{
@@ -289,7 +294,7 @@ export default function ShowBuilding() {
                     building.gender.charAt(0).toUpperCase() +
                     building.gender.slice(1)
                   }
-                  avatar={<img src={genderImg(building.gender)} alt="" />}
+                  avatar={<img src={genderImg(building?.gender)} alt="" />}
                   sx={{ backgroundColor: "#EAF5FD", marginLeft: "10px" }}
                 />
               </div>
@@ -623,12 +628,9 @@ export default function ShowBuilding() {
 
         {/* </div> */}
       </Grid>
+        </>
+      )}
+      
     </Grid>
-    // <Box
-    //     marginTop="90px"
-    //     marginLeft="80px"
-    // //style={{border: '1px solid black'}}
-    // >
-    // </Box>
   );
 }

@@ -140,9 +140,14 @@ export default function Rooms() {
             <ToastContainer/>
             <Grid 
               container 
-              style={{marginTop:"80px",marginLeft: "690px", marginBottom: '25px'}}
+              style={{
+                marginTop:"80px",
+                //marginLeft: "690px",
+                marginBottom: '25px',
+                width: '55%'
+              }}
             >
-              <Grid item xs={5}>
+              <Grid item xs={9}>
               <Typography
                 variant="body1"
                 fontWeight="bold"
@@ -155,7 +160,7 @@ export default function Rooms() {
                 You have {rooms?.data?.length} rooms
               </Typography>
               </Grid>
-              <Grid item xs={7}>
+              <Grid item xs={3}>
               <Button
                   style={{marginLeft: '30px'}}
                   variant="outlined"

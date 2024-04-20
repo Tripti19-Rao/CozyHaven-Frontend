@@ -18,6 +18,7 @@ import FinderContext from '../../ContextApi/FinderContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { StyledCard } from './styles';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 //import CurrencyRupee from '@mui/icons-material/CurrencyRupee';
 //import { BiMaleFemale,BiMale,BiFemale} from "react-icons/bi"
 
@@ -83,8 +84,8 @@ export default function SearchResults() {
 
     useEffect(()=>{
         searchDispatch({type: 'SET_IS_SEARCH', payload: true})
-
-            const wishList = finder?.data?.wishList
+            if(!isEmpty(finder.data)) {
+                const wishList = finder?.data?.wishList
             const newClickStatus = [isClicked]
             searchResults.data?.map(ele => ele._id).forEach((ele,i) => {
                 if(wishList.includes(ele)) {
@@ -95,9 +96,10 @@ export default function SearchResults() {
             });
             setIsClicked(newClickStatus)
             console.log(wishList,'wish','builid',newClickStatus)
+            }
         
         // eslint-disable-next-line
-    },[searchResults.data])
+    },[searchResults.data,finder.data])
 
     const handleWishlist = async (buildingId,index) => {
         
@@ -122,7 +124,7 @@ export default function SearchResults() {
                     Authorization: token
                 }
             })
-            localStorage.setItem('finderData',JSON.stringify(response.data))
+            //localStorage.setItem('finderData',JSON.stringify(response.data))
             findersDispatch({type: 'SET_FINDER', payload: response.data})
             console.log('res',response.data)
             

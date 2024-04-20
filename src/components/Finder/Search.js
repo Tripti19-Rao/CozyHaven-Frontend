@@ -18,11 +18,11 @@ import { FaSearch } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import SearchContext from "../../ContextApi/searchContext";
-import FinderContext from "../../ContextApi/FinderContext";
+//import FinderContext from "../../ContextApi/FinderContext";
 
 export default function Search() {
   const {searchDispatch} = useContext(SearchContext)
-  const {finder} = useContext(FinderContext)
+  //const {finder} = useContext(FinderContext)
 
   const [guests, setGuests] = useState([])
 
@@ -33,7 +33,7 @@ export default function Search() {
     (async function(){
       try{
         const token = localStorage.getItem('token')
-        const response = await axios.get(`http://localhost:3055/api/finderid/${finder.data._id}/guests`,{
+        const response = await axios.get(`http://localhost:3055/api/guests/pending-registration`,{
           headers: {
             Authorization: token
           }
@@ -93,7 +93,7 @@ export default function Search() {
         
         navigate(`/search-results?${String(queryParams)}`)
         //navigate('/search')
-        localStorage.setItem('queryparams',String(queryParams))
+        //localStorage.setItem('queryparams',String(queryParams))
     } catch (err) {
       setServerErrors(err.response.data);
       searchDispatch({type: 'SET_IS_SEARCH',payload: false})
@@ -155,11 +155,12 @@ export default function Search() {
           sx={{
             backgroundColor: 'rgba(255, 0, 0, 0.7)', // Red color with 70% opacity
             color: 'white',
-            padding: '10px',
+            padding: '10px 0px 10px 0px',
+
             width: '100%', // Make it span the entire page width
             position: 'absolute',
             // Stick it to the top of the page
-            left: 0, // Stretch it from the left
+            //left: 0, // Stretch it from the left
             zIndex: 9999, // Ensure it's on top of other elements
           }}
         >
