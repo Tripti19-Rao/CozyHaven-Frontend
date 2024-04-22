@@ -1,5 +1,6 @@
 import './App.css';
-import { useEffect, useReducer } from 'react';
+import { useReducer, useEffect } from 'react';
+import axios from 'axios'
 import {Routes, Route } from 'react-router-dom'
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
@@ -38,7 +39,6 @@ import roomsReducer from './Reducer/roomsReducer';
 import RoomContext from './ContextApi/RoomContext';
 
 import {jwtDecode} from 'jwt-decode'
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserAccount } from './Actions/UserActions';
 import PrivateRoutes from './components/Auth/PrivateRoutes';
@@ -55,8 +55,8 @@ function App() {
   }
 
   const buildingsInitialState = {
-    data:JSON.parse(localStorage.getItem('buildings')) || [],
-    amenities:JSON.parse(localStorage.getItem('amenities')) || [],
+    data:[],
+    amenities:[],
     serverError:[]
  }
 
@@ -100,6 +100,13 @@ function App() {
             console.log(response.data, 'insitde useeffect')
             findersDispatch({type: 'SET_FINDER', payload: response.data})
           }
+          else if(jwtDecode(token).role === 'owner'){
+            const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
+            buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
+
+            const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
+            buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
+          }
         } catch(err) {
           console.log(err)
         }
@@ -109,6 +116,29 @@ function App() {
     // eslint-disable-next-line
   },[])
 
+  // useEffect(()=>{
+  //   const token = localStorage.getItem('token')
+  //   if(token){
+  //     (async()=>{
+  //       try{
+  //         const tokenHeader = {
+  //           headers:{
+  //             Authorization:token
+  //           }
+  //         }
+  //         if(jwtDecode(token).role === 'owner'){
+  //           const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
+  //           buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
+
+  //           const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
+  //           buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
+  //         }
+  //       }catch(err){
+  //         console.log(err)
+  //       }
+  //     })()
+  //   } 
+  // },[])
   return (
     <div>
       <BuildingContext.Provider value={{buildings, buildingsDispatch}}>

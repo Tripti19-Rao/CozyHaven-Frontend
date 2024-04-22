@@ -1,17 +1,13 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Grid,
   Chip,
-  Tooltip,
-  IconButton,
   Typography,
   Rating,
   Paper,
   Card,
-  CardActions,
   CardMedia,
   CardContent,
-  Button,
   Tabs ,
   Tab,
   Box
@@ -26,6 +22,7 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import { Carousel } from "react-responsive-carousel";
+import {isEmpty} from 'lodash'
 
 
 
@@ -100,7 +97,7 @@ export default function ViewBuildingForm() {
   };
 
   return (
-    <div>
+    !isEmpty(building) && (<div>
       <Grid container height="100vh">
         <Grid
           item
@@ -142,7 +139,9 @@ export default function ViewBuildingForm() {
               style={{ width: "100%", height: "100%" }}
             >
               <TileLayer
-                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" //leafletjs.com -- copy the url
+                // url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" //leafletjs.com -- copy the url
+                url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                    attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a> contributors'
               />
 
               <Marker
@@ -221,23 +220,7 @@ export default function ViewBuildingForm() {
                 marginLeft: "590px",
               }}
             >
-              {/* <div style={{ display: "flex"}}>
-                
-              </div> */}
-              {/* <Typography
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "30px",
-                  color: "#6698E1",
-                }}
-              >
-                
-                {new Date(building.createdAt).toLocaleDateString()}
-              </Typography> */}
-              {/* <PhoneIcon
-                sx={{ width: "20px", height: "20px", color: "#6698E1" }}
-              /> */}
+    
             </div>
           </div>
           <Card sx={{ maxWidth: 850, maxHeight:'auto', marginTop: 1, marginBottom: 2 }}>
@@ -248,15 +231,7 @@ export default function ViewBuildingForm() {
               src={building.profilePic}
             />
             <CardContent>
-              {/* <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-            fontWeight="bold"
-            className="blue"
-          >
-            Address
-          </Typography> */}
+            
               <Typography mb={1} color="text.secondary">
                 {building.address}
               </Typography>
@@ -278,15 +253,7 @@ export default function ViewBuildingForm() {
                 />
                 {building.contact}
               </Typography>
-              {/* <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-            fontWeight="bold"
-            className="blue"
-          >
-            Deposit
-          </Typography> */}
+              
               <Typography
                 sx={{
                   display: "flex",
@@ -300,6 +267,7 @@ export default function ViewBuildingForm() {
                 {building.deposit}/-
               </Typography>
 
+              <div style={{display:'flex'}}>
               <Typography
                 sx={{
                   display: "flex",
@@ -309,6 +277,8 @@ export default function ViewBuildingForm() {
               >
                 {" "}
                 Amenities :
+                </Typography>
+
                 {building.amenities.map((id) => {
                   const matchingAmenity = buildings.amenities.find(
                     (element) => element._id === id
@@ -331,15 +301,10 @@ export default function ViewBuildingForm() {
                   }
                   return null;
                 })}
-              </Typography>
+              </div>
+              
 
-              {/* <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography> */}
+              
         <Box sx={{ borderBottom: 1, borderColor: "divider"}}>
                 <Tabs
                   value={value}
@@ -407,100 +372,8 @@ export default function ViewBuildingForm() {
               </CustomTabPanel>
             </CardContent>
           </Card>
-
-          {/* <div style={{ display: "flex", alignItems: "center" }}>
-            <Typography
-              fontSize="30px"
-              fontFamily="Roboto"
-              fontWeight="bold"
-              sx={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              {building.name}
-            </Typography>
-          </div> */}
-
-          {/* <div style={{ display: "flex", alignItems: "center" }}>
-            <Rating
-              name="read-only"
-              value={+building.rating}
-              precision={0.5}
-              readOnly
-            />
-            <Typography
-              fontSize={15}
-              fontWeight="bold"
-              style={{ marginLeft: "8px" }}
-            >
-              {building.rating}
-            </Typography>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginLeft: "590px",
-              }}
-            >
-              <Typography
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "30px",
-                  color: "#6698E1",
-                }}
-              >
-               
-                {new Date(building.createdAt).toLocaleDateString()}
-              </Typography>
-            </div>
-          </div>
-          <img
-            src={building.profilePic}
-            alt="Building"
-            width="850"
-            height="430"
-            style={{
-              borderRadius: "10px",
-              marginTop: "20px",
-              marginBottom: "20px",
-            }}
-          />
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-            fontWeight="bold"
-            className="blue"
-          >
-            Address
-          </Typography>
-          <Typography variant="p">{building.address}</Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            component="div"
-            fontWeight="bold"
-            className="blue"
-          >
-            Deposit
-          </Typography>
-          <Typography
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              paddingBottom: "10px",
-            }}
-          >
-            <CurrencyRupeeIcon sx={{ width: "20px", height: "20px" }} />
-            {building.deposit}/-
-          </Typography> */}
         </Grid>
       </Grid>
-    </div>
+    </div>)
   );
 }

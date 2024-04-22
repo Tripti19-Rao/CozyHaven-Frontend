@@ -1,6 +1,4 @@
-import { useEffect, useContext, useState } from "react";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddSharpIcon from "@mui/icons-material/AddSharp";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
@@ -34,7 +32,7 @@ export default function Home() {
     setEditId(id);
   };
   const handleEditClose = () => setEditOpen(false);
-  const { buildings, buildingsDispatch } = useContext(BuildingContext);
+  const { buildings } = useContext(BuildingContext);
 
   const handleView = (id) => {
     navigate(`/view-building/${id}`);
@@ -44,37 +42,7 @@ export default function Home() {
     navigate(`/view-rooms/${id}`)
   }
 
-  useEffect(() => {
-    (async () => {
-      const token = localStorage.getItem("token");
-      if (token && typeof token === "string") {
-        const { id } = jwtDecode(token);
-        const response = await axios.get(
-          `http://localhost:3055/api/buildings/${id}`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        buildingsDispatch({ type: "SET_BUILDINGS", payload: response.data });
-        localStorage.setItem("buildings", JSON.stringify(response.data));
-        const amenities = await axios.get(
-          "http://localhost:3055/api/amenities",
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        buildingsDispatch({ type: "SET_AMENITIES", payload: amenities.data });
-        localStorage.setItem("amenities", JSON.stringify(amenities.data));
-      } else {
-        navigate("/notfound");
-      }
-    })();
-    // eslint-disable-next-line
-  }, []);
+
   return (
     <div
       style={{
@@ -258,7 +226,7 @@ export default function Home() {
           >
             EDIT YOUR PG DETAILS
           </Typography>
-          <EditBuildingForm editId={editId} buildings={buildings} />
+          <EditBuildingForm editId={editId} buildings={buildings} handleEditClose={handleEditClose} />
         </Box>
       </Modal>
     </div>
