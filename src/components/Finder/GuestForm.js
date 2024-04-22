@@ -20,6 +20,10 @@ export default function GuestForm() {
 
     })
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
+
     return (
         <Box
             sx={{
@@ -37,7 +41,7 @@ export default function GuestForm() {
             >
                 Guest Resgistration Form
             </Typography>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <FormControl sx={{width: '100%'}}>
                 <Stack spacing={2} direction='column'>
                     <TextField
@@ -49,8 +53,6 @@ export default function GuestForm() {
                         autoFocus
                         margin="dense"
                         value={formData.roomNo}
-                        
-
                     />
                 </Stack> 
                 </FormControl>
