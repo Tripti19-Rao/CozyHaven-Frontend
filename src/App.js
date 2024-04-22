@@ -55,8 +55,8 @@ function App() {
   }
 
   const buildingsInitialState = {
-    data:JSON.parse(localStorage.getItem('buildings')) || [],
-    amenities:JSON.parse(localStorage.getItem('amenities')) || [],
+    data:[],
+    amenities:[],
     serverError:[]
  }
 
