@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FinderContext from '../../ContextApi/FinderContext'
+import BuildingContext from '../../ContextApi/BuildingContext'
 import { useDispatch } from 'react-redux'
 import { setUserAccount } from '../../Actions/UserActions'
 import BuildingContext from '../../ContextApi/BuildingContext'
@@ -54,11 +55,10 @@ export default function Login() {
                  const {role} = jwtDecode(token)
 
                  const tokenHeader = {
-                    headers: {
-                      Authorization: token
+                    headers:{
+                        Authorization: token
                     }
-                  }
-
+                }
                 //setting the finder
                 if(role === 'finder') {
                     const finderData = response.data.finder_details
@@ -69,27 +69,23 @@ export default function Login() {
 
                 
                 //getting the user's account
-                const user = await axios.get('http://localhost:3055/api/users/account', tokenHeader)
+                const user = await axios.get('http://localhost:3055/api/users/account',tokenHeader)
                 //console.log(user.data)
                 usersDispatch(setUserAccount(user.data))
 
-                //fetching data based on role
-                if(role === 'finder') {
+                if(jwtDecode(token).role === 'finder') {
                     const response = await axios.get('http://localhost:3055/api/finders/findOne',tokenHeader)
                     console.log(response.data, 'insitde useeffect')
                     findersDispatch({type: 'SET_FINDER', payload: response.data});
-                }
-                else if(role === 'owner'){
+                  }
+                  else if(jwtDecode(token).role === 'owner'){
+                    console.log("finding owner data")
                     const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
-                    console.log('inside useeff0',buildingResponse.data)
                     buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
-
+        
                     const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
                     buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
-                }
-
-                // const role = jwtDecode(token)
-                // toast.success('Successfully Logged In!')
+                  }
                 toast.success('Successfully Logged In!', {
                     autoClose: 1000,
                     onClose: () => {

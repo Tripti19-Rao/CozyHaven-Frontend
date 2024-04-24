@@ -33,16 +33,20 @@ export default function Home() {
   };
   const handleEditClose = () => setEditOpen(false);
   const { buildings } = useContext(BuildingContext);
+  console.log(buildings)
+
 
   const handleView = (id) => {
     navigate(`/view-building/${id}`);
   };
 
-  const handleRooms = (id) =>{
-    navigate(`/view-rooms/${id}`)
-  }
+  const handleRooms = (id) => {
+    navigate(`/view-rooms/${id}`);
+  };
 
-  console.log('home',buildings.data)
+  const handleGuest = (id) =>{
+    navigate(`/manage-guest/${id}`)
+  }
 
   return (
     <div
@@ -51,14 +55,13 @@ export default function Home() {
         backgroundAttachment: "fixed",
         backgroundSize: "contain",
         // backgroundPosition: "bottom left",
-        minHeight: "100vh", 
+        minHeight: "100vh",
         backgroundRepeat: "no-repeat", // Prevent the background image from repeating
         // opacity: 0.1
         // backgroundColor: rgba(255, 255, 255, 0.5)
-              }}
+      }}
     >
-      
-      {buildings.data ? (
+      {buildings?.data ? (
         buildings.data.length === 0 ? (
           <div>
             <Typography
@@ -81,7 +84,7 @@ export default function Home() {
               fontSize="30px"
               // margin="50px"
             >
-             Your current buildings
+              Your current buildings
             </Typography>
             {buildings.data
               .filter((element) => {
@@ -99,7 +102,9 @@ export default function Home() {
                       marginBottom: "40px",
                     }}
                   >
-                    <Card sx={{ maxWidth: 600, maxHeight: 300, marginLeft: 60 }}>
+                    <Card
+                      sx={{ maxWidth: 600, maxHeight: 300, marginLeft: 60 }}
+                    >
                       <CardMedia
                         sx={{ height: 140 }}
                         image={ele.profilePic}
@@ -138,6 +143,7 @@ export default function Home() {
                         <Button
                           variant="outlined"
                           startIcon={<ListAltOutlinedIcon />}
+                          onClick={()=>{handleGuest(ele._id)}}
                         >
                           Manage
                         </Button>
@@ -152,7 +158,9 @@ export default function Home() {
                         </Button>
                         <Button
                           variant="outlined"
-                          onClick={()=>{handleRooms(ele._id)}}
+                          onClick={() => {
+                            handleRooms(ele._id);
+                          }}
                           startIcon={<BedroomChildOutlinedIcon />}
                         >
                           Rooms
@@ -164,7 +172,18 @@ export default function Home() {
               })}
           </div>
         )
-      ): <h1 style={{marginTop: '100px'}}>Loading</h1>}
+      ) : (
+        <Typography
+          variant="body1"
+          fontWeight="bold"
+          fontFamily="Prociono"
+          textAlign="center"
+          fontSize="30px"
+          margin="50px"
+        >
+          Loading...!{" "}
+        </Typography>
+      )}
 
       <Box display="flex" justifyContent="center">
         <Button
@@ -230,7 +249,11 @@ export default function Home() {
           >
             EDIT YOUR PG DETAILS
           </Typography>
-          <EditBuildingForm editId={editId} buildings={buildings} handleEditClose={handleEditClose} />
+          <EditBuildingForm
+            editId={editId}
+            buildings={buildings}
+            handleEditClose={handleEditClose}
+          />
         </Box>
       </Modal>
     </div>

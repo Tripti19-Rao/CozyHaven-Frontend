@@ -12,7 +12,6 @@ import Profile from './components/Finder/Profile';
 import PaymentHistory from './components/Finder/PaymentHistory';
 import Dashboard from './components/Admin/Dashboard'
 import Home from './components/Owner/Home'
-import NotFound from './components/NotFound';
 import SearchResults from './components/Finder/SearchResults';
 import BuildingForm from './components/Owner/BuildingForm';
 import ViewBuildingForm from './components/Owner/ViewBuildingForm'
@@ -23,6 +22,7 @@ import PaymentSuccess from './components/Finder/Payment/PaymentSuccess';
 import PaymentCancel from './components/Finder/Payment/PaymentCancel'
 import GuestForm from './components/Finder/GuestForm';
 import UnauthorizedPage from './components/Auth/UnauthorizedPage';
+import GuestManagement from './components/Owner/GuestManagement'
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -58,7 +58,7 @@ function App() {
   const buildingsInitialState = {
     data: null,
     amenities:[],
-    serverError:[]
+    serverError:''
  }
 
   const roomsInitialState = {
@@ -76,13 +76,10 @@ function App() {
   //   return state.user.userData
   // })
   const usersDispatch = useDispatch()
-  // console.log('user',user)
-  // console.log('app', buildings.data)
 
 
   useEffect(()=> {
     const token = localStorage.getItem('token')
-    console.log(token,'tooooo')
     if(token) {
       //const {role} = jwtDecode(token)
       (async function(){
@@ -92,21 +89,16 @@ function App() {
               Authorization: token
             }
           }
-          const {role} = jwtDecode(token)
           //get user account
           const response = await axios.get('http://localhost:3055/api/users/account',tokenHeader)
-          //console.log('inside use',response.data)
           usersDispatch(setUserAccount(response.data));
-
           //fetching data based on role
           if(role === 'finder') {
             const response = await axios.get('http://localhost:3055/api/finders/findOne',tokenHeader)
-            //console.log(response.data, 'insitde useeffect')
             findersDispatch({type: 'SET_FINDER', payload: response.data});
           }
           else if(role === 'owner'){
             const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
-            //console.log('inside useeff0',buildingResponse.data)
             buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
 
             const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
@@ -117,33 +109,10 @@ function App() {
         }
       })();
     }
-
     // eslint-disable-next-line
   },[])
 
-  // useEffect(()=>{
-  //   const token = localStorage.getItem('token')
-  //   if(token){
-  //     (async()=>{
-  //       try{
-  //         const tokenHeader = {
-  //           headers:{
-  //             Authorization:token
-  //           }
-  //         }
-  //         if(jwtDecode(token).role === 'owner'){
-  //           const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
-  //           buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
 
-  //           const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
-  //           buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
-  //         }
-  //       }catch(err){
-  //         console.log(err)
-  //       }
-  //     })()
-  //   } 
-  // },[])
   return (
     <div>
       <BuildingContext.Provider value={{buildings, buildingsDispatch}}>
@@ -192,7 +161,6 @@ function App() {
           <Home/>
         </PrivateRoutes>
         }/>
-        <Route path="/notfound" element={<NotFound/>}/>
         <Route path="/form" element={
           <PrivateRoutes permittedRoles={['owner']}>
           <BuildingForm/>
@@ -206,6 +174,11 @@ function App() {
         <Route path="/view-rooms/:id" element={
           <PrivateRoutes permittedRoles={['owner']}>
           <Rooms />
+        </PrivateRoutes>
+        } />
+        <Route path="/manage-guest/:id" element={
+          <PrivateRoutes permittedRoles={['owner']}>
+          <GuestManagement />
         </PrivateRoutes>
         } />
         <Route path="/booking-details/:bookingid" element={

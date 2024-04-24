@@ -243,7 +243,9 @@ export default function ShowBuilding() {
             style={{ width: "100%", height: "100%" }}
           >
             <TileLayer
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" //leafletjs.com -- copy the url
+              // url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" //leafletjs.com -- copy the url
+              url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                    attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a> contributors'
             />
 
             <Marker
@@ -434,28 +436,22 @@ export default function ShowBuilding() {
               >
                 {" "}
                 Amenities :
-                {/* {building.amenities.map((id) => {
-                  const matchingAmenity = buildings.amenities.find(
-                    (element) => element._id === id
+                {building.amenities.map((pic)=>{
+                  return (
+                    <img
+                      key={pic._id}
+                      src={pic.iconName}
+                      alt={pic.name}
+                      style={{
+                        height: "30px",
+                        width: "30px",
+                        paddingLeft: "15px",
+                        filter:
+                          "invert(29%) sepia(72%) saturate(5023%) hue-rotate(203deg) brightness(95%) contrast(95%)",
+                      }}
+                    />
                   );
-                  if (matchingAmenity) {
-                    return (
-                      <img
-                        key={matchingAmenity._id}
-                        src={matchingAmenity.iconName}
-                        alt={matchingAmenity.name}
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          paddingLeft: "15px",
-                          filter:
-                            "invert(29%) sepia(72%) saturate(5023%) hue-rotate(203deg) brightness(95%) contrast(95%)",
-                        }}
-                      />
-                    );
-                  }
-                  return null;
-                })} */}
+                })}
               </Typography>
 
         <Box sx={{ borderBottom: 1, borderColor: "divider"}}>

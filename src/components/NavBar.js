@@ -82,7 +82,7 @@ import { handleLogout } from '../Actions/UserActions';
           </Tooltip>
           <Tooltip title="view profile">
             <IconButton onClick={handleClick} sx={{ p: 0 }}>
-              <FaUser style={{color: "blue", fontSize: "28px"}}/>
+              <FaUser style={{color: "#27438e", fontSize: "28px"}}/>
             </IconButton>
             
           </Tooltip>
@@ -106,12 +106,12 @@ import { handleLogout } from '../Actions/UserActions';
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>
-          <Link to={'/profile'} style={{textDecoration: 'none', color: "blue"}}>Profile</Link>
+          <Link to={'/profile'} style={{textDecoration: 'none', color: "#27438e"}}>Profile</Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Link to={'/paymentHistory'} style={{textDecoration: 'none',color: "blue"}}>Payment History</Link>
+          <Link to={'/paymentHistory'} style={{textDecoration: 'none',color: "#27438e"}}>Payment History</Link>
         </MenuItem>
-        <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+        <MenuItem onClick={handleLogOut} style={{textDecoration: 'none',color: "#27438e"}}>Log Out</MenuItem>
       </Menu>
         </>
       )

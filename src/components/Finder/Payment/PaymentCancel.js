@@ -10,13 +10,11 @@ export default function PaymentCancel() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const [paymentDetails, setPaymentDetails] = useState({})
+  const [ setPaymentDetails] = useState({})
 
   const updateFailedResponse =(data) =>{
     setPaymentDetails(data)
   }
-  // console.log("details" ,paymentDetails)
-  // console.log("status" ,paymentDetails.status)
 
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
