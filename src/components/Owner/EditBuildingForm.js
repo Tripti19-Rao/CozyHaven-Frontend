@@ -407,9 +407,9 @@ export default function EditBuildingForm(props) {
   };
 
   //Remove lisence picture
-  const handleRemoveLicenseFile = () => {
-    setFormData({ ...formData, license: null });
-  };
+  // const handleRemoveLicenseFile = () => {
+  //   setFormData({ ...formData, license: null });
+  // };
 
   const textwidth = 500;
 

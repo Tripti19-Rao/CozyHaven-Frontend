@@ -20,13 +20,22 @@ export default function PaymentSuccess() {
 
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
+    const buildingId = localStorage.getItem('buildingId')
+
     dispatch(startUpdatePayment(stripId,updateSucessResponse))
     toast.success('Redirecting to Guest Registration Page', {
       autoClose: 5000,
       onClose: () => {
-        navigate('/search')
+        navigate(`/guest-form/${buildingId}`)
       }
     })
+
+    //remove building
+    return () => {
+      console.log('successPage unmounted')
+      localStorage.removeItem('building')
+    }
+    // eslint-disable-next-line
   },[])
 
   return (

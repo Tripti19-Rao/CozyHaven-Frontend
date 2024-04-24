@@ -42,6 +42,7 @@ export default function Home() {
     navigate(`/view-rooms/${id}`)
   }
 
+  console.log('home',buildings.data)
 
   return (
     <div
@@ -51,116 +52,119 @@ export default function Home() {
         backgroundSize: "contain",
         // backgroundPosition: "bottom left",
         minHeight: "100vh", 
-            backgroundRepeat: "no-repeat", // Prevent the background image from repeating
+        backgroundRepeat: "no-repeat", // Prevent the background image from repeating
         // opacity: 0.1
         // backgroundColor: rgba(255, 255, 255, 0.5)
               }}
     >
-      {buildings.data.length === 0 ? (
-        <div>
-          <Typography
-            variant="body1"
-            fontWeight="bold"
-            fontFamily="Prociono"
-            textAlign="center"
-            fontSize="30px"
-            margin="50px"
-          >
-            Oops you dont have a buildings yet... Create one now!{" "}
-          </Typography>
-        </div>
-      ) : (
-        <div style={{ marginTop: "70px" }}>
-          <Typography
-            variant="body1"
-            fontWeight="bold"
-            textAlign="center"
-            fontSize="30px"
-            // margin="50px"
-          >
-           Your current buildings
-          </Typography>
-          {buildings.data
-            .filter((element) => {
-              return element.isApproved === "Accepted";
-            })
-            .map((ele) => {
-              return (
-                <Box
-                  key={ele._id}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItem: "center",
-                    marginTop: "20px",
-                    marginBottom: "40px",
-                  }}
-                >
-                  <Card sx={{ maxWidth: 600, maxHeight: 300, marginLeft: 60 }}>
-                    <CardMedia
-                      sx={{ height: 140 }}
-                      image={ele.profilePic}
-                      title="View building"
-                      onClick={() => {
-                        handleView(ele._id);
-                      }}
-                    />
-                    <CardContent>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        sx={{
-                          "&:hover": {
-                            textDecoration: "underline",
-                            color: "#5785FD",
-                            cursor: "pointer",
-                          },
-                        }}
+      
+      {buildings.data ? (
+        buildings.data.length === 0 ? (
+          <div>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              fontFamily="Prociono"
+              textAlign="center"
+              fontSize="30px"
+              margin="50px"
+            >
+              Oops you dont have a buildings yet... Create one now!{" "}
+            </Typography>
+          </div>
+        ) : (
+          <div style={{ marginTop: "70px" }}>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              textAlign="center"
+              fontSize="30px"
+              // margin="50px"
+            >
+             Your current buildings
+            </Typography>
+            {buildings.data
+              .filter((element) => {
+                return element.isApproved === "Accepted";
+              })
+              .map((ele) => {
+                return (
+                  <Box
+                    key={ele._id}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItem: "center",
+                      marginTop: "20px",
+                      marginBottom: "40px",
+                    }}
+                  >
+                    <Card sx={{ maxWidth: 600, maxHeight: 300, marginLeft: 60 }}>
+                      <CardMedia
+                        sx={{ height: 140 }}
+                        image={ele.profilePic}
+                        title="View building"
                         onClick={() => {
                           handleView(ele._id);
                         }}
-                      >
-                        {ele.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {ele.contact}
-                      </Typography>
-                    </CardContent>
-                    <CardActions
-                      sx={{
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        startIcon={<ListAltOutlinedIcon />}
-                      >
-                        Manage
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => {
-                          handleEditOpen(ele._id);
+                      />
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                          sx={{
+                            "&:hover": {
+                              textDecoration: "underline",
+                              color: "#5785FD",
+                              cursor: "pointer",
+                            },
+                          }}
+                          onClick={() => {
+                            handleView(ele._id);
+                          }}
+                        >
+                          {ele.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {ele.contact}
+                        </Typography>
+                      </CardContent>
+                      <CardActions
+                        sx={{
+                          justifyContent: "flex-end",
                         }}
-                        startIcon={<ModeEditOutlineOutlinedIcon />}
                       >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={()=>{handleRooms(ele._id)}}
-                        startIcon={<BedroomChildOutlinedIcon />}
-                      >
-                        Rooms
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Box>
-              );
-            })}
-        </div>
-      )}
+                        <Button
+                          variant="outlined"
+                          startIcon={<ListAltOutlinedIcon />}
+                        >
+                          Manage
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            handleEditOpen(ele._id);
+                          }}
+                          startIcon={<ModeEditOutlineOutlinedIcon />}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          onClick={()=>{handleRooms(ele._id)}}
+                          startIcon={<BedroomChildOutlinedIcon />}
+                        >
+                          Rooms
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Box>
+                );
+              })}
+          </div>
+        )
+      ): <h1 style={{marginTop: '100px'}}>Loading</h1>}
 
       <Box display="flex" justifyContent="center">
         <Button

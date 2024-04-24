@@ -48,14 +48,15 @@ function App() {
 
   //initial data
   const searchInitialState = {
-    data: [], //JSON.parse(localStorage.getItem('searchResults')) || 
+    data: [], 
+    amenities: [],
     building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
     isSearched: false
   }
 
   const buildingsInitialState = {
-    data:[],
+    data: null,
     amenities:[],
     serverError:[]
  }
@@ -71,15 +72,17 @@ function App() {
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
 
-  const user = useSelector((state)=>{
-    return state.user.userData
-  })
+  // const user = useSelector((state)=>{
+  //   return state.user.userData
+  // })
   const usersDispatch = useDispatch()
-  console.log('user',user)
+  // console.log('user',user)
+  // console.log('app', buildings.data)
 
 
   useEffect(()=> {
     const token = localStorage.getItem('token')
+    console.log(token,'tooooo')
     if(token) {
       //const {role} = jwtDecode(token)
       (async function(){
@@ -89,19 +92,21 @@ function App() {
               Authorization: token
             }
           }
-
+          const {role} = jwtDecode(token)
           //get user account
           const response = await axios.get('http://localhost:3055/api/users/account',tokenHeader)
-          usersDispatch(setUserAccount(response.data))
+          //console.log('inside use',response.data)
+          usersDispatch(setUserAccount(response.data));
 
           //fetching data based on role
-          if(jwtDecode(token).role === 'finder') {
+          if(role === 'finder') {
             const response = await axios.get('http://localhost:3055/api/finders/findOne',tokenHeader)
-            console.log(response.data, 'insitde useeffect')
-            findersDispatch({type: 'SET_FINDER', payload: response.data})
+            //console.log(response.data, 'insitde useeffect')
+            findersDispatch({type: 'SET_FINDER', payload: response.data});
           }
-          else if(jwtDecode(token).role === 'owner'){
+          else if(role === 'owner'){
             const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
+            //console.log('inside useeff0',buildingResponse.data)
             buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
 
             const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
@@ -219,7 +224,7 @@ function App() {
           <PaymentCancel />
        </PrivateRoutes>
         } />
-        <Route path='/guest-form' element={
+        <Route path='/guest-form/:buildingid' element={
           <PrivateRoutes permittedRoles={['finder']}>
           <GuestForm/>
        </PrivateRoutes>

@@ -164,7 +164,7 @@ export default function Search() {
             zIndex: 9999, // Ensure it's on top of other elements
           }}
         >
-          Please fill your registration form of {ele?.buildingId?.name} ! <Link to={'/guest-form'}>click here</Link>
+          Please complete your registration form of {ele?.buildingId?.name} ! <Link to={`/guest-form/${ele.buildingId._id}`}>click here</Link>
           
         </Typography>
           )

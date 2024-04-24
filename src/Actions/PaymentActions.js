@@ -10,8 +10,8 @@ export const startPayment = (data) =>{
                 }
             })
             localStorage.setItem('stripId',response.data.id)
-            localStorage.setItem('invoiceId', response.data.invoiceId)
-            localStorage.setItem('paymentId', response.data.paymentId)
+            localStorage.setItem('buildingId', response.data.buildingId)
+            //localStorage.setItem('paymentId', response.data.paymentId)
             window.location = response.data.url
         }catch(err){
             console.log(err)
