@@ -9,14 +9,11 @@ export default function PaymentSuccess() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
-  const [paymentDetails, setPaymentDetails] = useState({});
+  const [ setPaymentDetails] = useState({});
 
   const updateSucessResponse = (data) => {
     setPaymentDetails(data);
   };
-
-  // console.log("details", paymentDetails);
-  // console.log("status", paymentDetails.status);
 
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
@@ -27,6 +24,7 @@ export default function PaymentSuccess() {
         navigate('/search')
       }
     })
+  // eslint-disable-next-line
   },[])
 
   return (

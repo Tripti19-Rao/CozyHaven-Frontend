@@ -42,7 +42,7 @@ import "react-quill/dist/quill.snow.css";
 import quillEmoji from "quill-emoji";
 import "quill-emoji/dist/quill-emoji.css";
 import { isEmpty } from "lodash";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer,Bounce } from "react-toastify";
 const { EmojiBlot, ShortNameEmoji, ToolbarEmoji, TextAreaEmoji } = quillEmoji;
 const Quill = QuillEditor.Quill;
 
@@ -179,9 +179,10 @@ export default function BuildingForm(props) {
           }
         );
         buildingsDispatch({ type: "ADD_BUILDING", payload: response.data });
+        buildingsDispatch({type:"SET_SERVERERROR", payload:""});
         props.handleClose();
       } catch (err) {
-        toast.error("Please ensure all the feilds are filled correctly");
+        buildingsDispatch({type:"SET_SERVERERROR", payload:"Please ensure all the feilds are filled corectly"});
       }
     } else {
       setClientErrors(errors);
@@ -353,6 +354,21 @@ export default function BuildingForm(props) {
     whiteSpace: "nowrap",
     width: 1,
   });
+
+  if (buildings.serverErrors) {
+    toast.error(buildings.serverErrors, {
+      position: "top-center",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  }
+
 
   //Steps for multiform
   const steps = ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"];
@@ -712,7 +728,20 @@ export default function BuildingForm(props) {
       case 4:
         return (
           <div>
-            <ToastContainer position="top-center" />
+            {buildings.serverErrors && 
+              <ToastContainer
+                position="top-center"
+                autoClose={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                theme="light"
+                transition={Bounce} // Use curly braces for the value
+              />
+            }
+            {/* <ToastContainer position="top-center" /> */}
             {loading && (
               <div
               style={{

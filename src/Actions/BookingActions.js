@@ -53,7 +53,7 @@ const updateBooking = (bookingDeatils) =>{
 export const startDestroyBooking = (id) =>{
     return async(dispatch)=>{
         try{
-            const response = await axios.delete(`http://localhost:3055/api/invoice/${id}`,{
+            await axios.delete(`http://localhost:3055/api/invoice/${id}`,{
                 headers:{
                     Authorization:localStorage.getItem('token')
                 }

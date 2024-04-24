@@ -68,7 +68,7 @@ export default function ViewBuildingForm() {
   const { id } = useParams();
   const { buildings } = useContext(BuildingContext);
 
-  const building = buildings.data.find((ele) => ele._id === id);
+  const building = buildings?.data?.find((ele) => ele._id === id);
   console.log(building);
 
 //tab start

@@ -56,9 +56,6 @@ Quill.register(
   true
 );
 
-//Images validations are removed...string data are getting updated but not able to reflect m guessing bcoz of images and validations...string data are getting updated but not able to reflect
-//have to fix the images b4 being able to use the d this correctly
-
 export default function EditBuildingForm(props) {
   const { editId, buildings } = props;
   const { buildingsDispatch } = useContext(BuildingContext);
@@ -175,6 +172,7 @@ export default function EditBuildingForm(props) {
     // if (formData.deposit !== null && formData.deposit !== undefined && !formData.deposit.trim().length) {
     //   errors.deposit = "Deposite amount is required";
     // }
+    //isempty
     if (String(+formData.deposit) === "NaN") {
       errors.deposit = "Deposit amount must be a number";
     }
@@ -257,15 +255,15 @@ export default function EditBuildingForm(props) {
 
   const onDelete = (index) => {
     const updatedAmenitiesPic = [...formData.amenitiesPic];
-    updatedAmenitiesPic.splice(index, 1); // Remove the image URL at the specified index
-    setFormData({ ...formData, amenitiesPic: updatedAmenitiesPic }); // Update the state with the modified amenitiesPic array
+    updatedAmenitiesPic.splice(index, 1); 
+    setFormData({ ...formData, amenitiesPic: updatedAmenitiesPic });
   };
   const onProfileDelete = () => {
-    setFormData({ ...formData, profilePic: null }); // Update the state with the modified amenitiesPic array
+    setFormData({ ...formData, profilePic: null }); 
   };
 
   const onLicenseDelete = () => {
-    setFormData({ ...formData, license: null }); // Update the state with the modified amenitiesPic array
+    setFormData({ ...formData, license: null }); 
   };
   //thumbnail of images end
 
@@ -290,16 +288,13 @@ export default function EditBuildingForm(props) {
     setActiveStep(0);
   };
 
-  //Remove profile picture
-  // const handleProfileRemoveFile = () => {
-  //   setFormData({ ...formData, profilePic: null });
-  // };
+
 
   //Map features
   const customIcon = new Icon({
     // iconUrl: "https://cdn-icons-png.flaticon.com/512/447/447031.png",
     iconUrl: "../../home.png",
-    iconSize: [38, 38], // size of the icon
+    iconSize: [38, 38], 
   });
   const mapStyle = { height: "80vh", overflow: "hidden" };
   const center = {
@@ -309,7 +304,7 @@ export default function EditBuildingForm(props) {
 
   const handleAddress = (e) => {
     e.preventDefault();
-    //   setShow(false);
+   
     // Hide the map and marker before fetching new coordinates
     const formattedAddress = encodeURIComponent(formData.address);
     const config = {
@@ -345,7 +340,12 @@ export default function EditBuildingForm(props) {
           if (marker != null) {
             setPosition(marker.getLatLng());
             // console.log(marker.getLatLng());
-            //final lat and long
+            //final lat and long'
+            const { lat, lng } = marker.getLatLng();
+            setFormData({
+              ...formData,
+              geolocation: { ...formData.geolocation, lng: lng, lat: lat },
+            });
           }
         },
       }),
@@ -406,11 +406,6 @@ export default function EditBuildingForm(props) {
     }
   };
 
-  //Remove lisence picture
-  const handleRemoveLicenseFile = () => {
-    setFormData({ ...formData, license: null });
-  };
-
   const textwidth = 500;
 
   //Rich Text editor
@@ -447,10 +442,10 @@ export default function EditBuildingForm(props) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 9999,
-                width: "150px", // Adjust width to match the spinner size
-                height: "150px", // Adjust height to match the spinner size
-                backgroundColor: "rgba(255, 255, 255)", // Adjust background color to make it less transparent
-                borderRadius: "10px", // Optional: Add border-radius for a nicer look
+                width: "150px",
+                height: "150px", 
+                backgroundColor: "rgba(255, 255, 255)", 
+                borderRadius: "10px", 
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -471,7 +466,6 @@ export default function EditBuildingForm(props) {
               }}
             >
               <TextField
-                // autoFocus
                 margin="dense"
                 id="name"
                 label="Name"
@@ -515,7 +509,7 @@ export default function EditBuildingForm(props) {
                   <p>Selected file :</p>
                   <ImageThumbnail
                     imageUrl={formData.profilePic}
-                    onDelete={onProfileDelete} // Assuming `onProfileDelete` is a function to handle deletion
+                    onDelete={onProfileDelete} 
                   />
                 </div>
               )}
@@ -719,10 +713,10 @@ export default function EditBuildingForm(props) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 9999,
-                width: "150px", // Adjust width to match the spinner size
-                height: "150px", // Adjust height to match the spinner size
-                backgroundColor: "rgba(255, 255, 255)", // Adjust background color to make it less transparent
-                borderRadius: "10px", // Optional: Add border-radius for a nicer look
+                width: "150px", 
+                height: "150px", 
+                backgroundColor: "rgba(255, 255, 255)",
+                borderRadius: "10px", 
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -842,10 +836,10 @@ export default function EditBuildingForm(props) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 9999,
-                width: "150px", // Adjust width to match the spinner size
-                height: "150px", // Adjust height to match the spinner size
-                backgroundColor: "rgba(255, 255, 255)", // Adjust background color to make it less transparent
-                borderRadius: "10px", // Optional: Add border-radius for a nicer look
+                width: "150px",
+                height: "150px",
+                backgroundColor: "rgba(255, 255, 255)",
+                borderRadius: "10px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",

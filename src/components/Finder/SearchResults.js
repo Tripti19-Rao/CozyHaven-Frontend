@@ -169,7 +169,9 @@ export default function SearchResults() {
             {isCoordsValid && (
                 <MapContainer center={center} zoom={13} style={{ width: "100%", height: "100%" }}>
                 <TileLayer 
-                    url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'//leafletjs.com -- copy the url
+                    // url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'//leafletjs.com -- copy the url
+                    url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                    attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a> contributors'
                 />
                 {searchResults.data.map(ele => {
                 return <Marker position={[ele.geolocation.lat, ele.geolocation.lng]} icon={customIcon} key={ele._id}>

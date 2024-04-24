@@ -156,16 +156,12 @@ export default function Search() {
             backgroundColor: 'rgba(255, 0, 0, 0.7)', // Red color with 70% opacity
             color: 'white',
             padding: '10px 0px 10px 0px',
-
             width: '100%', // Make it span the entire page width
             position: 'absolute',
-            // Stick it to the top of the page
-            //left: 0, // Stretch it from the left
             zIndex: 9999, // Ensure it's on top of other elements
           }}
         >
-          Please fill your registration form of {ele?.buildingId?.name} ! <Link to={'/guest-form'}>click here</Link>
-          
+        Please fill your registration form of {ele?.buildingId?.name} ! <Link to={'/guest-form'}>click here</Link> 
         </Typography>
           )
         )
@@ -176,7 +172,6 @@ export default function Search() {
         alt="Signup Page Banner"
         style={{
            marginLeft: "150px", height: "450px", position: "relative" 
-           //width: '100%', maxWidth: '100%', height: 'auto', marginLeft: 'auto', marginRight: 'auto', display: 'block'
           }}
 
       />
