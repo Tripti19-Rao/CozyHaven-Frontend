@@ -51,6 +51,7 @@ export default function SearchResults() {
 
      // Function to update URL with new search parameters
      const updateSearchParams = (searchParams) => {
+        console.log('searPar',searchParams)
         const newSearch = new URLSearchParams(searchParams).toString();
         navigate(`/search-results?${newSearch}`);
     };
