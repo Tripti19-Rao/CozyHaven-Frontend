@@ -25,7 +25,13 @@ export default function PaymentCancel() {
         navigate('/search')
       }
     })
-  // eslint-disable-next-line
+
+    //removing building
+    return () => {
+      console.log('cancelPage unmounted')
+      localStorage.removeItem('building')
+    }
+    // eslint-disable-next-line
   },[])
   return (
     <div>

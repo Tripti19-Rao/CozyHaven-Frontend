@@ -48,14 +48,15 @@ function App() {
 
   //initial data
   const searchInitialState = {
-    data: [], //JSON.parse(localStorage.getItem('searchResults')) || 
+    data: [], 
+    amenities: [],
     building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
     isSearched: false
   }
 
   const buildingsInitialState = {
-    data:null,
+    data: null,
     amenities:[],
     serverError:''
  }
@@ -71,16 +72,15 @@ function App() {
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
 
-  const user = useSelector((state)=>{
-    return state.user.userData
-  })
+  // const user = useSelector((state)=>{
+  //   return state.user.userData
+  // })
   const usersDispatch = useDispatch()
 
 
   useEffect(()=> {
     const token = localStorage.getItem('token')
-    if(token && !user) {
-
+    if(token) {
       //const {role} = jwtDecode(token)
       (async function(){
         try {
@@ -93,11 +93,11 @@ function App() {
           const response = await axios.get('http://localhost:3055/api/users/account',tokenHeader)
           usersDispatch(setUserAccount(response.data));
           //fetching data based on role
-          if(jwtDecode(token).role === 'finder') {
+          if(role === 'finder') {
             const response = await axios.get('http://localhost:3055/api/finders/findOne',tokenHeader)
             findersDispatch({type: 'SET_FINDER', payload: response.data});
           }
-          else if(jwtDecode(token).role === 'owner'){
+          else if(role === 'owner'){
             const buildingResponse = await axios.get("http://localhost:3055/api/buildings",tokenHeader)
             buildingsDispatch({ type: "SET_BUILDINGS", payload: buildingResponse.data });
 
@@ -197,7 +197,7 @@ function App() {
           <PaymentCancel />
        </PrivateRoutes>
         } />
-        <Route path='/guest-form' element={
+        <Route path='/guest-form/:buildingid' element={
           <PrivateRoutes permittedRoles={['finder']}>
           <GuestForm/>
        </PrivateRoutes>

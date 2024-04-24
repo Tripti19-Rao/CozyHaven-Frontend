@@ -15,6 +15,9 @@ export default function searchResultsReducer(state, action) {
         case 'SET_BUILDING': {
             return {...state, building: {...action.payload}}
         }
+        case 'SET_AMENITIES':{
+            return {...state, amenities:action.payload}
+        }
         default : {
             return {...state}
         }

@@ -1,8 +1,9 @@
 import 'leaflet/dist/leaflet.css'
 import { useContext, useEffect, useState } from "react"
 import SearchContext from "../../ContextApi/searchContext"
-import { Grid, Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton} from "@mui/material" 
+import { Grid, Modal,Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton,Select,MenuItem,InputLabel,FormControl, Stack, Divider, Button,Pagination} from "@mui/material" 
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import TuneIcon from '@mui/icons-material/Tune';
 import HotelIcon from '@mui/icons-material/Hotel';
 //import GirlIcon from '@mui/icons-material/Girl';
 // import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
@@ -17,7 +18,7 @@ import axios from 'axios';
 import FinderContext from '../../ContextApi/FinderContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { StyledCard } from './styles';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 //import CurrencyRupee from '@mui/icons-material/CurrencyRupee';
 //import { BiMaleFemale,BiMale,BiFemale} from "react-icons/bi"
@@ -25,13 +26,41 @@ import { isEmpty } from 'lodash';
 export default function SearchResults() {
     const navigate = useNavigate()
     const location = useLocation()
-
+    
     const {finder,findersDispatch} = useContext(FinderContext)
     const {searchResults, searchDispatch} = useContext(SearchContext)
 
     const initialClickedState = searchResults && searchResults.data ? Array(searchResults.data.length).fill(false) : [];
     const [isClicked, setIsClicked] = useState(initialClickedState)
 
+    //modal
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+     //search query
+     const [query, setQuery] = useState({
+        address: '',
+        gender: '',
+        sharing: '',
+        amenities: [],
+        price: ''
+    })
+
+    const [tempAmenities, setTempAmenities] = useState([])
+
+     // Function to update URL with new search parameters
+     const updateSearchParams = (searchParams) => {
+        const newSearch = new URLSearchParams(searchParams).toString();
+        navigate(`/search-results?${newSearch}`);
+    };
+
+    const handleQueryChange = (e) => {
+        const {name, value} = e.target
+        setQuery({...query, [name]: value})
+        updateSearchParams({ ...query, [name]: value });
+    }
+    console.log('QQqqqqq',query)
     console.log(searchResults.data)
     
     const customIcon = new Icon({
@@ -46,12 +75,36 @@ export default function SearchResults() {
     useEffect(()=>{
         (async function(){
             try {
-               
+                // const queryParams = new URLSearchParams();
+                // queryParams.append('address', query.address);
+                // queryParams.append('sharing', query.sharing);
+                // queryParams.append('gender', query.gender);
+                // queryParams.append('price', query.price);
+                // queryParams.append('amenities', query.amenities);
+                // navigate(`/search-results?${String(queryParams)}`)
                 const response = await axios.get(`http://localhost:3055/api/search${location.search}`)
                 console.log(response.data)
         //console.log(values.address)
                 searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
                 searchDispatch({type: 'SET_IS_SEARCH',payload: true})
+            } catch(err) {
+                console.log(err)
+            }
+        })(); 
+
+       
+
+        //get all the amenities
+        (async function(){
+            try {
+                const token = localStorage.getItem('token')
+                const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',{
+                    headers: {
+                        Authorization: token
+                    }
+                })
+                console.log('ameni',ameneitiesResponse.data)
+                searchDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
             } catch(err) {
                 console.log(err)
             }
@@ -150,6 +203,36 @@ export default function SearchResults() {
         navigate(`/show-building/${id}`)
     }
     
+    //Amenities
+  const handleItemClick = (id) => {
+    const isSelected = query.amenities.includes(id)
+   
+    if (isSelected) {
+        
+        const arr = tempAmenities.filter((ele) => ele !== id)
+        setTempAmenities([...arr])
+    } else {
+        setTempAmenities([...tempAmenities, id])
+    }
+    
+    // const isSelected = query.amenities.includes(id);
+    // if (isSelected) {
+    //   setQuery({
+    //     ...query,
+    //     amenities: query.amenities.filter((itemId) => itemId !== id),
+    //   });
+    // } else {
+    //   setQuery({ ...query, amenities: [...query.amenities, id] });
+    // }
+  };
+
+  const addAmenities = () => {
+    setQuery({
+        ...query, amenities: [...tempAmenities]
+    })
+    handleClose()
+  }
+
     return (
         <Grid
             container
@@ -161,7 +244,93 @@ export default function SearchResults() {
 
         > 
         <ToastContainer/>
+            <Grid 
+                container
+                //xs={10} 
+                pb={3}
+                direction="row"
+                alignItems="center"
+                style={{
+                    width: '66%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto'
+                }}
+            >
             <Grid item xs={4}>
+                <Typography
+                    fontFamily='Roboto'
+                    fontWeight='bold'
+                    fontSize='20px'
+                >
+                    {searchResults?.data?.length} PG's are waiting for You
+                </Typography>
+            </Grid>
+            <Grid  item xs={8} sx={{paddingLeft: '50px'}}>
+                <Stack direction="row" spacing={2}>
+            <FormControl>
+            <InputLabel id="gender" size='small'>Gender</InputLabel>
+            <Select
+              labelId="gender"
+              id="gender"
+              size='small'
+              name="gender"
+              label="Gender"
+                value={query.gender}
+                onChange={handleQueryChange}
+                style={{width: '120px'}}
+            > 
+              <MenuItem value={"male"}>Male</MenuItem>
+              <MenuItem value={"female"}>Female</MenuItem>
+              <MenuItem value={"co-living"}>Co-living</MenuItem>
+            </Select>
+            </FormControl>
+            <FormControl>
+            <InputLabel id="price" size='small'>Price</InputLabel>
+            <Select
+                labelId="price"
+                id="price"
+                size='small'
+                name="price"
+                label="Price"
+                value={query.price}
+                onChange={handleQueryChange}
+              style={{ width: "150px" }}
+            > 
+              <MenuItem value={"asc"}>Lowest - Highest</MenuItem>
+              <MenuItem value={"dsc"}>Highest - Lowest</MenuItem>
+            </Select>
+            </FormControl>
+            <FormControl>
+            <InputLabel id="sharing" size='small'>Sharing</InputLabel>
+            <Select
+              labelId="sharing"
+              id="sharing"
+              size='small'
+              name="sharing"
+              label="sharing"
+                value={query.sharing}
+                onChange={handleQueryChange}
+              style={{ width: "150px" }}
+            > 
+              <MenuItem value={1}>Single</MenuItem>
+              <MenuItem value={2}>Two Sharing</MenuItem>
+              <MenuItem value={3}>Three Sharing</MenuItem>
+              <MenuItem value={4}>Four Sharing</MenuItem>
+              <MenuItem value={5}>Five Sharing</MenuItem>
+            </Select>
+            </FormControl>
+            <Chip 
+                label='More Filters'
+                variant="outlined"
+                avatar={<TuneIcon style={{ color: 'blue' }}/>}
+                sx={{height: '40px'}}
+                onClick={handleOpen} 
+            />
+            
+            </Stack>
+            </Grid>
+            </Grid>
+            <Grid item xs={3}>
             <Paper 
                 elevation={6} 
                 style={{overflow: "hidden",width: "1000px", height: "400px"}}
@@ -182,7 +351,7 @@ export default function SearchResults() {
             )}
             </Paper>
             </Grid>
-            <Grid item xs={8}  marginTop='50px'>
+            <Grid item xs={7}  mt={3}>
             {searchResults.data?.map((ele,i) => {
                 return (
                 <Paper 
@@ -288,7 +457,145 @@ export default function SearchResults() {
                     </Paper>
                 )
             })}
+            <Pagination 
+                count={10} 
+                variant="outlined" 
+                shape="rounded" 
+                color="primary"
+                style={{marginLeft: "640px", marginBottom: '20px'}}
+            />
             </Grid>
+
+
+            <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >
+          <Box
+            sx={{
+              marginTop: "100px",
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              bgcolor: "background.paper",
+              border: "2px ",
+              boxShadow: 24,
+              p: 4,
+              width: "50%",
+            }}
+          >
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              fontFamily='Roboto'
+              sx={{ textAlign: "center" }}
+            >
+              Filters
+            </Typography>
+            <Divider/>
+            <Box
+                sx={{
+                    width: '80%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    paddingTop: '10px'
+                }}
+            >
+            <Typography
+                fontFamily='Roboto'
+                fontSize='18px'
+                paddingBottom="20px"
+                color="text.secondary"
+            >
+                Amenites
+            </Typography>
+            <Grid
+              container
+            //   sx={{
+            //     height: "320px",
+            //     marginLeft: "100px",
+            //     padding: "20px",
+            //   }}
+            >
+              <Grid item xs={4} sx={{ 
+                //paddingLeft: "200px" 
+                }}>
+                {searchResults.amenities.slice(0, 4).map((item) => (
+                <div key={item._id} style={{paddingBottom: '20px'}}>
+                <Chip 
+                    label={item.name}
+                    variant="outlined"
+                    avatar={<img src={item.iconName} alt='*'/>}
+                    sx={{
+                        padding: '20px',
+                        backgroundColor: tempAmenities.includes(item._id) ? '#C9E6F9' : 'white', // Change background color based on condition
+                    }}
+                    onClick={() => handleItemClick(item._id)} 
+                />
+                </div>
+                ))}
+              </Grid>
+              <Grid item xs={4}>
+                {searchResults.amenities.slice(4,8).map((item) => (
+                  <div key={item._id} style={{paddingBottom: '20px'}}>
+                    <Chip 
+                    key={item._id}
+                    label={item.name}
+                    variant="outlined"
+                    avatar={<img src={item.iconName} alt='*'/>}
+                    sx={{
+                        padding: '20px',
+                        backgroundColor: tempAmenities.includes(item._id) ? '#C9E6F9' : 'white', // Change background color based on condition
+                    }}
+                    onClick={() => handleItemClick(item._id)}
+                    
+                    />
+                  </div>
+                ))}
+              </Grid>
+              <Grid item xs={4}>
+                {searchResults.amenities.slice(8).map((item) => (
+                  <div key={item._id} style={{paddingBottom: '20px'}}>
+                    <Chip 
+                    key={item._id}
+                    label={item.name}
+                    variant="outlined"
+                    avatar={<img src={item.iconName} alt='*'/>}
+                    sx={{
+                        padding: '20px',
+                        backgroundColor: tempAmenities.includes(item._id) ? '#C9E6F9' : 'white', // Change background color based on condition
+                        //backgroundColor: query.amenities.includes(item._id) ? '#C9E6F9' : 'white', // Change background color based on condition
+                        // '&:hover': {
+                        //    backgroundColor: query.amenities.includes(item._id) ? '#C9E6F9' : 'white', // Prevent background color change on hover
+                        // },
+                    }}
+                    onClick={() => handleItemClick(item._id)}
+                    
+                    />
+                  </div>
+                ))}
+              </Grid>
+            </Grid>
+            <Button
+                variant="contained"
+                size='small'
+                style={{marginLeft: '400px'}}
+                onClick={()=>{setQuery({...query, amenities: []})}}
+            >
+                Clear
+            </Button>
+            <Button
+                variant='contained'
+                size='small'
+                style={{marginLeft: '10px'}}
+                onClick={addAmenities}
+            >
+                Save
+            </Button>
+            </Box>
+          </Box>
+        </Modal>
         </Grid>
     )
 }

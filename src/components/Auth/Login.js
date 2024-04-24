@@ -12,6 +12,7 @@ import FinderContext from '../../ContextApi/FinderContext'
 import BuildingContext from '../../ContextApi/BuildingContext'
 import { useDispatch } from 'react-redux'
 import { setUserAccount } from '../../Actions/UserActions'
+import BuildingContext from '../../ContextApi/BuildingContext'
  
 export default function Login() {
     const navigate = useNavigate()
@@ -66,6 +67,7 @@ export default function Login() {
                     //console.log(finderData)
                 }
 
+                
                 //getting the user's account
                 const user = await axios.get('http://localhost:3055/api/users/account',tokenHeader)
                 //console.log(user.data)
@@ -84,8 +86,6 @@ export default function Login() {
                     const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
                     buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
                   }
-                // const role = jwtDecode(token)
-                // toast.success('Successfully Logged In!')
                 toast.success('Successfully Logged In!', {
                     autoClose: 1000,
                     onClose: () => {

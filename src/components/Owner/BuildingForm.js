@@ -189,6 +189,7 @@ export default function BuildingForm(props) {
     }
   };
 
+  //console.log('pic', formData.profilePic)
   //Multistep form functions
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

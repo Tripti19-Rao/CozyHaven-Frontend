@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { Carousel } from "react-responsive-carousel";
 import { ImageContainer,RoundedImage,Overlay,Info } from "../Finder/styles";
 import Swal from 'sweetalert2'
+import EditRoomForm from "./EditRoomForm";
 //import {jwtDecode} from 'jwt-decode'
 
 export default function Rooms() {
@@ -21,10 +22,12 @@ export default function Rooms() {
     
     const [open, setOpen] = useState(false);
     const [viewRoomOpen, setViewRoomOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
 
     const { id } = useParams();
 
     const building = buildings?.data?.find((ele) => ele._id === id)
+    console.log(buildings.data, building)
     
     const handleOpen = () => setOpen(true); 
     const handleViewRoomOpen = (id) => {
@@ -32,28 +35,36 @@ export default function Rooms() {
       setRoomId(id)
     }
 
+    const handleEditOpen = (id) => {
+      setEditOpen(true)
+      setRoomId(id)
+    }
+
     const handleClose = () => setOpen(false);
     const handleViewRommClose = () => setViewRoomOpen(false)
+    const handleEditClose = () => setEditOpen(false)
 
     useEffect(()=>{
       (async function(){
-        try{
-          const token = localStorage.getItem('token')
-          const response = await axios.get(`http://localhost:3055/api/${building._id}/rooms`,{
-            headers: {
-              Authorization: token
-            }
-          })
-          //console.log(response.data)
-          roomsDispatch({type:'SET_ROOMS',payload: response.data})
-          
-        } catch(err) {
-          console.log(err)
-          toast.error(err.message, {
-            autoClose: 1000,
-            position: 'top-center'
-          })
-        }
+        // if(id) {
+          try {
+            const token = localStorage.getItem('token') 
+            const response = await axios.get(`http://localhost:3055/api/${id}/rooms`,{
+              headers: {
+                Authorization: token
+              }
+            })
+            //console.log(response.data)
+            roomsDispatch({type:'SET_ROOMS',payload: response.data})
+            
+          } catch(err) {
+            console.log(err)
+            toast.error(err.message, {
+              autoClose: 1000,
+              position: 'top-center'
+            })
+          }
+        //}
       })();
       // eslint-disable-next-line
     },[])
@@ -222,7 +233,12 @@ export default function Rooms() {
                             >
                               View
                             </Button>
-                            <Button variant="contained" size="small" sx={{color: 'white'}}>
+                            <Button 
+                              variant="contained"
+                              size="small" 
+                              sx={{color: 'white'}}
+                              onClick={()=>{handleEditOpen(ele._id)}}
+                              >
                               Edit
                             </Button>
                             <Button 
@@ -277,7 +293,7 @@ export default function Rooms() {
               ADD YOUR ROOM DETAILS
             </Typography>
             {/* <BuildingForm handleClose={handleClose} /> */}
-            <RoomForm handleClose={handleClose} rooms={rooms} roomsDispatch={roomsDispatch} buildingId={building._id}/>
+            <RoomForm handleClose={handleClose} rooms={rooms} roomsDispatch={roomsDispatch} buildingId={building?._id}/>
           </Box>
         </Modal>
 
@@ -308,6 +324,42 @@ export default function Rooms() {
               ROOM DETAILS
             </Typography>
             <ViewRoom roomId={roomId} rooms={rooms}/>
+          </Box>
+        </Modal>
+
+        {/*Modal for editing room */}
+        <Modal
+            open={editOpen}
+            onClose={handleEditClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+          <Box
+            sx={{
+              marginTop: "50px",
+              marginLeft: "200px",
+              bgcolor: "background.paper",
+              border: "2px ",
+              boxShadow: 24,
+              p: 4,
+              width: "70%",
+            }}
+          >
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              sx={{ textAlign: "center" }}
+            >
+              Edit ROOM DETAILS
+            </Typography>
+            <EditRoomForm 
+              roomId={roomId}
+              rooms={rooms}
+              handleEditClose={handleEditClose}
+              buildingId={building?._id}
+              roomsDispatch={roomsDispatch}
+              />
           </Box>
         </Modal>
         
