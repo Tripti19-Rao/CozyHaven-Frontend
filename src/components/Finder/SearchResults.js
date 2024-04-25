@@ -27,6 +27,7 @@ export default function SearchResults() {
     const navigate = useNavigate()
     const location = useLocation()
     
+    console.log('llll',location.search.address)
     const {finder,findersDispatch} = useContext(FinderContext)
     const {searchResults, searchDispatch} = useContext(SearchContext)
 
@@ -38,11 +39,17 @@ export default function SearchResults() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    //to get the previous query
+    const previousQuery = new URLSearchParams(location.search)
+    console.log(previousQuery.toString())
+    console.log('va0',previousQuery.get('price'))
+    
+
      //search query
      const [query, setQuery] = useState({
-        address: '',
-        gender: '',
-        sharing: '',
+        address: previousQuery.get('address'),
+        gender: previousQuery.get('gender'),
+        sharing: previousQuery.get('sharing'),
         amenities: [],
         price: ''
     })
@@ -51,6 +58,7 @@ export default function SearchResults() {
 
      // Function to update URL with new search parameters
      const updateSearchParams = (searchParams) => {
+        console.log('searPar',searchParams)
         const newSearch = new URLSearchParams(searchParams).toString();
         navigate(`/search-results?${newSearch}`);
     };
@@ -61,6 +69,28 @@ export default function SearchResults() {
         updateSearchParams({ ...query, [name]: value });
     }
     console.log('QQqqqqq',query)
+
+     //Amenities
+    const handleItemClick = (id) => {
+        const isSelected = query.amenities.includes(id)
+    
+        if (isSelected) {
+            
+            const arr = tempAmenities.filter((ele) => ele !== id)
+            setTempAmenities([...arr])
+        } else {
+            setTempAmenities([...tempAmenities, id])
+        }
+    };
+
+    const addAmenities = () => {
+        setQuery({
+            ...query, amenities: [...tempAmenities]
+        })
+        handleClose()
+        updateSearchParams({ ...query, amenities: [...tempAmenities]});
+    }
+
     console.log(searchResults.data)
     
     const customIcon = new Icon({
@@ -75,13 +105,6 @@ export default function SearchResults() {
     useEffect(()=>{
         (async function(){
             try {
-                // const queryParams = new URLSearchParams();
-                // queryParams.append('address', query.address);
-                // queryParams.append('sharing', query.sharing);
-                // queryParams.append('gender', query.gender);
-                // queryParams.append('price', query.price);
-                // queryParams.append('amenities', query.amenities);
-                // navigate(`/search-results?${String(queryParams)}`)
                 const response = await axios.get(`http://localhost:3055/api/search${location.search}`)
                 console.log(response.data)
         //console.log(values.address)
@@ -136,7 +159,6 @@ export default function SearchResults() {
     }
 
     useEffect(()=>{
-        searchDispatch({type: 'SET_IS_SEARCH', payload: true})
             if(!isEmpty(finder.data)) {
                 const wishList = finder?.data?.wishList
             const newClickStatus = [isClicked]
@@ -203,35 +225,7 @@ export default function SearchResults() {
         navigate(`/show-building/${id}`)
     }
     
-    //Amenities
-  const handleItemClick = (id) => {
-    const isSelected = query.amenities.includes(id)
    
-    if (isSelected) {
-        
-        const arr = tempAmenities.filter((ele) => ele !== id)
-        setTempAmenities([...arr])
-    } else {
-        setTempAmenities([...tempAmenities, id])
-    }
-    
-    // const isSelected = query.amenities.includes(id);
-    // if (isSelected) {
-    //   setQuery({
-    //     ...query,
-    //     amenities: query.amenities.filter((itemId) => itemId !== id),
-    //   });
-    // } else {
-    //   setQuery({ ...query, amenities: [...query.amenities, id] });
-    // }
-  };
-
-  const addAmenities = () => {
-    setQuery({
-        ...query, amenities: [...tempAmenities]
-    })
-    handleClose()
-  }
 
     return (
         <Grid
@@ -581,7 +575,10 @@ export default function SearchResults() {
                 variant="contained"
                 size='small'
                 style={{marginLeft: '400px'}}
-                onClick={()=>{setQuery({...query, amenities: []})}}
+                onClick={()=>{
+                    setTempAmenities([])
+                    setQuery({...query, amenities: []})
+                }}
             >
                 Clear
             </Button>

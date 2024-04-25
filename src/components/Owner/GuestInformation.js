@@ -182,7 +182,7 @@ export default function GuestInformation(props) {
         <Grid container>
         <Grid item xs={6}>
         <Typography variant="body1" mt={2}>
-            <span style={{ color: "#6698e1", marginRight: "4px" }}>Guardian Name : </span>{" "}
+            <span style={{ color: "#6698e1", marginRight: "4px" }}>Guardian : </span>{" "}
             {details.guardian}
           </Typography>
           <Typography variant="body1" mt={1}>

@@ -12,7 +12,6 @@ import FinderContext from '../../ContextApi/FinderContext'
 import BuildingContext from '../../ContextApi/BuildingContext'
 import { useDispatch } from 'react-redux'
 import { setUserAccount } from '../../Actions/UserActions'
-import BuildingContext from '../../ContextApi/BuildingContext'
  
 export default function Login() {
     const navigate = useNavigate()
