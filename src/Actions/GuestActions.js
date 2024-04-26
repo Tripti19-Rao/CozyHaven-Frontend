@@ -28,7 +28,7 @@ export const startRemoveGuest = (id, buildingid) =>{
     console.log(token)
     return async(dispatch)=>{
         try{
-            const guest = await axios.put(`http://localhost:3055/api/${buildingid}/guests/${id}`,{stay:false},{
+            const guest = await axios.put(`http://localhost:3055/api/stay/${buildingid}/guests/${id}`,{stay:false},{
                 headers:{
                     Authorization:token
                 }

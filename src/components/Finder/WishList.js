@@ -127,7 +127,7 @@ export default function WishList() {
                 <Paper 
                 key={ele._id}
                 elevation={4} 
-                style={{ overflow: "hidden", width: "1000px", marginBottom: "10px", transition: 'box-shadow 0.3s' }} // Add transition for elevation change
+                style={{ overflow: "hidden", width: "1000px", marginBottom: "25px", transition: 'box-shadow 0.3s' }} // Add transition for elevation change
                 onMouseOver={(e) => {
                     e.currentTarget.style.transition = 'box-shadow 0.3s'; // Add transition on hover
                     e.currentTarget.style.boxShadow = '12px 12px 12px rgba(0, 0, 0, 0.2)'; // Increase elevation on hover
