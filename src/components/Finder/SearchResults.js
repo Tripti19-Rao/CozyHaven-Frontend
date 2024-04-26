@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css'
 import { useContext, useEffect, useState } from "react"
 import SearchContext from "../../ContextApi/searchContext"
-import { Grid, Modal,Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton,Select,MenuItem,InputLabel,FormControl, Stack, Divider, Button,Pagination} from "@mui/material" 
+import { Grid, Modal,Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton,Select,MenuItem,InputLabel,FormControl, Stack, Divider, Button,Pagination, Skeleton} from "@mui/material" 
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import TuneIcon from '@mui/icons-material/Tune';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -27,6 +27,7 @@ export default function SearchResults() {
     const navigate = useNavigate()
     const location = useLocation()
     
+    console.log('llll',location.search.address)
     const {finder,findersDispatch} = useContext(FinderContext)
     const {searchResults, searchDispatch} = useContext(SearchContext)
 
@@ -38,13 +39,21 @@ export default function SearchResults() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    //to get the previous query
+    const previousQuery = new URLSearchParams(location.search)
+    console.log(previousQuery.toString())
+    console.log('va0',previousQuery.get('price'))
+    
+
      //search query
      const [query, setQuery] = useState({
-        address: '',
-        gender: '',
-        sharing: '',
+        address: previousQuery.get('address'),
+        gender: previousQuery.get('gender'),
+        sharing: previousQuery.get('sharing'),
         amenities: [],
-        price: ''
+        price: '',
+        limit: '',
+        page: previousQuery.get('page') || 1
     })
 
     const [tempAmenities, setTempAmenities] = useState([])
@@ -58,11 +67,46 @@ export default function SearchResults() {
 
     const handleQueryChange = (e) => {
         const {name, value} = e.target
-        setQuery({...query, [name]: value})
-        updateSearchParams({ ...query, [name]: value });
+        if(name === 'limit') {
+            setQuery(prevQuery => {
+                const updatedQuery = { ...prevQuery, [name]: value, page: 1 }; // Reset page to 1
+                updateSearchParams(updatedQuery);
+                return updatedQuery;
+            });
+        } else {
+            setQuery({...query, [name]: value})
+            updateSearchParams({ ...query, [name]: value });
+        }
+    }
+
+    const handlePageChange = (e,value) => {
+        setQuery({...query, page: value})
+        updateSearchParams({...query, page: value})
     }
     console.log('QQqqqqq',query)
+
+     //Amenities
+    const handleItemClick = (id) => {
+        const isSelected = tempAmenities.includes(id)
+    
+        if (isSelected) {
+            const arr = tempAmenities.filter((ele) => ele !== id)
+            setTempAmenities([...arr])
+        } else {
+            setTempAmenities([...tempAmenities, id])
+        }
+    };
+
+    const addAmenities = () => {
+        setQuery({
+            ...query, amenities: [...tempAmenities]
+        })
+        handleClose()
+        updateSearchParams({ ...query, amenities: [...tempAmenities]});
+    }
+
     console.log(searchResults.data)
+    console.log(searchResults.pagination)
     
     const customIcon = new Icon({
         iconUrl: '../../home.png',
@@ -76,18 +120,11 @@ export default function SearchResults() {
     useEffect(()=>{
         (async function(){
             try {
-                // const queryParams = new URLSearchParams();
-                // queryParams.append('address', query.address);
-                // queryParams.append('sharing', query.sharing);
-                // queryParams.append('gender', query.gender);
-                // queryParams.append('price', query.price);
-                // queryParams.append('amenities', query.amenities);
-                // navigate(`/search-results?${String(queryParams)}`)
                 const response = await axios.get(`http://localhost:3055/api/search${location.search}`)
                 console.log(response.data)
         //console.log(values.address)
                 searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
-                searchDispatch({type: 'SET_IS_SEARCH',payload: true})
+                searchDispatch({type: 'SET_INITIALSEARCH',payload: false})
             } catch(err) {
                 console.log(err)
             }
@@ -137,7 +174,6 @@ export default function SearchResults() {
     }
 
     useEffect(()=>{
-        searchDispatch({type: 'SET_IS_SEARCH', payload: true})
             if(!isEmpty(finder.data)) {
                 const wishList = finder?.data?.wishList
             const newClickStatus = [isClicked]
@@ -204,35 +240,7 @@ export default function SearchResults() {
         navigate(`/show-building/${id}`)
     }
     
-    //Amenities
-  const handleItemClick = (id) => {
-    const isSelected = query.amenities.includes(id)
    
-    if (isSelected) {
-        
-        const arr = tempAmenities.filter((ele) => ele !== id)
-        setTempAmenities([...arr])
-    } else {
-        setTempAmenities([...tempAmenities, id])
-    }
-    
-    // const isSelected = query.amenities.includes(id);
-    // if (isSelected) {
-    //   setQuery({
-    //     ...query,
-    //     amenities: query.amenities.filter((itemId) => itemId !== id),
-    //   });
-    // } else {
-    //   setQuery({ ...query, amenities: [...query.amenities, id] });
-    // }
-  };
-
-  const addAmenities = () => {
-    setQuery({
-        ...query, amenities: [...tempAmenities]
-    })
-    handleClose()
-  }
 
     return (
         <Grid
@@ -244,7 +252,23 @@ export default function SearchResults() {
             //display='flex'
 
         > 
-        <ToastContainer/>
+        {
+            searchResults.initialSearch ? (
+            <Grid item xs={12}>
+            <Stack spacing={1}>
+      {/* For variant="text", adjust the height via font-size */}
+            <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+
+            {/* For other variants, adjust the size with `width` and `height` */}
+            <Skeleton variant="rectangular" width="850px" height="450px" sx={{marginLeft: 'auto',
+                    marginRight: 'auto'}} />
+            <Skeleton variant="rectangular" width="850px"height={80} />
+            <Skeleton variant="rounded" width="850px" height={80} />
+            </Stack>
+            </Grid>
+            ) : (
+            <>
+            <ToastContainer/>
             <Grid 
                 container
                 //xs={10} 
@@ -280,6 +304,7 @@ export default function SearchResults() {
                 onChange={handleQueryChange}
                 style={{width: '120px'}}
             > 
+            <MenuItem value="">none</MenuItem>
               <MenuItem value={"male"}>Male</MenuItem>
               <MenuItem value={"female"}>Female</MenuItem>
               <MenuItem value={"co-living"}>Co-living</MenuItem>
@@ -297,6 +322,7 @@ export default function SearchResults() {
                 onChange={handleQueryChange}
               style={{ width: "150px" }}
             > 
+                <MenuItem value="">none</MenuItem>
               <MenuItem value={"asc"}>Lowest - Highest</MenuItem>
               <MenuItem value={"dsc"}>Highest - Lowest</MenuItem>
             </Select>
@@ -313,6 +339,7 @@ export default function SearchResults() {
                 onChange={handleQueryChange}
               style={{ width: "150px" }}
             > 
+              <MenuItem value="">none</MenuItem>
               <MenuItem value={1}>Single</MenuItem>
               <MenuItem value={2}>Two Sharing</MenuItem>
               <MenuItem value={3}>Three Sharing</MenuItem>
@@ -331,7 +358,34 @@ export default function SearchResults() {
             </Stack>
             </Grid>
             </Grid>
-            <Grid item xs={3}>
+            {
+                    searchResults.data.length === 0 ? (
+                        <Grid item xs={12}>
+                        <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        textAlign="center"
+                        fontSize="20px"
+                        marginTop="20px"
+                    >
+                        We couldn't keep up with your filters.
+                        Try expanding your search?
+                    </Typography>
+                    <Box
+                        component="img"
+                        sx={{
+                        height: "400px",
+                        width: "400px",
+                        marginLeft:"60px",
+                        borderRadius: "5px",
+                        }}
+                        alt="Search Not Found"
+                        src="/notFound.jpg"
+                    />
+                        </Grid>
+                    ) : (
+                        <>
+                        <Grid item xs={3}>
             <Paper 
                 elevation={6} 
                 style={{overflow: "hidden",width: "1000px", height: "400px"}}
@@ -458,14 +512,55 @@ export default function SearchResults() {
                     </Paper>
                 )
             })}
-            <Pagination 
-                count={10} 
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: "500px",
+                marginBottom: '20px'}}>
+            <Typography>
+                Rows per page
+            </Typography>
+            <FormControl sx={{ m: 1, minWidth: 50 }} size="small">
+            <Select
+                labelId="demo-select-small-label"
+                id="demo-select-small"
+                //value={age}
+                //label="Age"
+                //onChange={handleChange}
+              //id="limit"
+              //size='small'
+              name="limit"
+              //variant=''
+            // label="sharing"
+              value={query.limit}
+              onChange={handleQueryChange}
+              //style={{ height: "35px" , width: '55px'}}
+            > 
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+            </Select>
+            </FormControl>
+            <Pagination
+                name="page"
+                count={searchResults.pagination.totalPages} 
+                page={query.page}
+                onChange={(e, value) => handlePageChange(e, value)}
                 variant="outlined" 
                 shape="rounded" 
                 color="primary"
-                style={{marginLeft: "640px", marginBottom: '20px'}}
             />
+            </div>
             </Grid>
+                        </>
+                    )
+            }
+            
+            </>)
+        }
+        
 
 
             <Modal
@@ -531,7 +626,16 @@ export default function SearchResults() {
                     sx={{
                         padding: '20px',
                         backgroundColor: tempAmenities.includes(item._id) ? '#C9E6F9' : 'white', // Change background color based on condition
+                        // '&:hover': {
+                        //     false
+                        // }
+                        // '&:hover': {
+                        //     backgroundColor: 'transparent', // Change background color on hover
+                        //     cursor: 'pointer', // Show pointer cursor on hover
+                        //   },
+                        
                     }}
+                    //hover= {false}
                     onClick={() => handleItemClick(item._id)} 
                 />
                 </div>
@@ -582,7 +686,10 @@ export default function SearchResults() {
                 variant="contained"
                 size='small'
                 style={{marginLeft: '400px'}}
-                onClick={()=>{setQuery({...query, amenities: []})}}
+                onClick={()=>{
+                    setTempAmenities([])
+                    setQuery({...query, amenities: []})
+                }}
             >
                 Clear
             </Button>

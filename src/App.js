@@ -39,7 +39,7 @@ import roomsReducer from './Reducer/roomsReducer';
 import RoomContext from './ContextApi/RoomContext';
 
 import {jwtDecode} from 'jwt-decode'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { setUserAccount } from './Actions/UserActions';
 import PrivateRoutes from './components/Auth/PrivateRoutes';
 
@@ -49,10 +49,11 @@ function App() {
   //initial data
   const searchInitialState = {
     data: [], 
+    pagination: [],
     amenities: [],
+    initialSearch: false,
     building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
-    isSearched: false
   }
 
   const buildingsInitialState = {
@@ -81,9 +82,10 @@ function App() {
   useEffect(()=> {
     const token = localStorage.getItem('token')
     if(token) {
-      //const {role} = jwtDecode(token)
+      
       (async function(){
         try {
+          const {role} = jwtDecode(token)
           const tokenHeader = {
             headers: {
               Authorization: token

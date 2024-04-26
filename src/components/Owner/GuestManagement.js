@@ -391,6 +391,9 @@ export default function GuestManagement() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
+        
+
+        <Box>
         {/* <Box
           sx={{
             marginTop: "20px",
@@ -405,7 +408,7 @@ export default function GuestManagement() {
         > */}
           
           <GuestInformation details={details} handleDetailsClose={handleDetailsClose}/>
-        {/* </Box> */}
+        </Box>
       </Modal>
     </div>
     

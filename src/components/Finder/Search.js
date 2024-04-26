@@ -56,23 +56,11 @@ export default function Search() {
   });
 
   const onSubmit = async() => {
-    // const formData = {
-    //   address: values.address,
-    //   gender: values.gender,
-    //   sharing: values.sharing,
-    // };
     try {
         const queryParams = new URLSearchParams();
         queryParams.append('address', values.address);
         queryParams.append('sharing', values.sharing);
         queryParams.append('gender', values.gender);
-
-        // const response = await axios.get(`http://localhost:3055/api/search?${queryParams.toString()}`)
-        // //console.log(values.address)
-        // searchDispatch({type: 'SET_BUILDINGS',payload: response.data})
-        // searchDispatch({type: 'SET_IS_SEARCH',payload: true})
-
-        //localStorage.setItem('searchResults',JSON.stringify(response.data))
 
         //Geoapify search for getting search cordinates
         const encodedAddress = values.address
@@ -91,7 +79,9 @@ export default function Search() {
         })
         .catch(error => console.log('error', error));
         
+        searchDispatch({type: 'SET_INITIALSEARCH',payload: true})
         navigate(`/search-results?${String(queryParams)}`)
+
         //navigate('/search')
         //localStorage.setItem('queryparams',String(queryParams))
     } catch (err) {
