@@ -67,9 +67,14 @@ function App() {
     clientErrors: {},
     serverError: ''
   }
+
+  const finderInitalState = {
+    data:{},
+    wishlist:{}
+  }
   //State
   const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
-  const [finder, findersDispatch] = useReducer(findersReducer, {data: {}})
+  const [finder, findersDispatch] = useReducer(findersReducer,finderInitalState )
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
 
@@ -82,7 +87,6 @@ function App() {
   useEffect(()=> {
     const token = localStorage.getItem('token')
     if(token) {
-      
       (async function(){
         try {
           const {role} = jwtDecode(token)

@@ -119,7 +119,8 @@ export default function GuestManagement() {
   };
 
   const handleMembers = () => {
-    setQueryData({ ...queryData, stay: !queryData.stay });
+    setQueryData({ ...queryData, stay: !queryData.stay , page:1 });
+    
   };
 
   const handlePageChange = (page) => {
@@ -145,7 +146,7 @@ export default function GuestManagement() {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, Remove it!"
     }).then((result)=>{
       if(result.isConfirmed){
         dispatch(startRemoveGuest(gid,id))
@@ -314,6 +315,7 @@ export default function GuestManagement() {
                           sx={{
                             backgroundColor: "#5785FD",
                           }}
+                          disabled={row.stay===false}
                           onClick={()=>{handleRemove(row._id)}}
                         >
                           Remove
@@ -391,8 +393,6 @@ export default function GuestManagement() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        
-
         <Box>
         {/* <Box
           sx={{
