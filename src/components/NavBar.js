@@ -1,10 +1,9 @@
-import { useContext, useState } from 'react';
-import { AppBar, Box, Toolbar, Typography, Button, Stack, Tooltip,IconButton,Menu,MenuItem,FormControl,Select,InputLabel} from '@mui/material';
+import { useState } from 'react';
+import { AppBar, Box, Toolbar, Typography, Button, Stack, Tooltip,IconButton,Menu,MenuItem} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode'
 import { FcLike } from "react-icons/fc";
 import { FaUser } from "react-icons/fa";
-import SearchContext from '../ContextApi/searchContext';
 import { useDispatch } from 'react-redux';
 import { handleLogout } from '../Actions/UserActions';
 
@@ -16,8 +15,6 @@ import { handleLogout } from '../Actions/UserActions';
   const usersDispatch = useDispatch()
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const {searchResults} = useContext(SearchContext)
-  const [gender, setGender] = useState('')
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -44,37 +41,6 @@ import { handleLogout } from '../Actions/UserActions';
       //console.log(id,role)
       return (
         <>
-          {searchResults.isSearched && (
-            <>
-            <FormControl
-            sx={{ m: 1, minWidth: 120}}
-          >
-            <InputLabel id="gender-label"  size="small">Gender</InputLabel>
-            <Select
-              labelId="gender-label"
-              id="gender"
-              name="gender"
-              size="small"
-              value={gender}
-              onChange={(e)=>{setGender(e.target.value)}}
-              //sx={{ '&:focus': { backgroundColor: '#B6D1F8', borderRadius: '16px' } }}
-              // value={values.gender}
-              // onBlur={handleBlur}
-              // label="Gender"
-              // onChange={(e) => {
-              //   handleChange(e);
-              //   setFieldValue("gender", e.target.value); // Manually set the field value for Formik
-              // }}
-             //style={{ width: "200px" }}
-            >
-              <MenuItem value=" ">Select Gender</MenuItem>
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="co-living">Co-living</MenuItem>
-            </Select>
-          </FormControl>
-            </>
-          )}
           <Tooltip title="view wishlist">
           <IconButton>
               <Link to={"/wishlist"}><FcLike style={{fontSize: "35px"}}/></Link>

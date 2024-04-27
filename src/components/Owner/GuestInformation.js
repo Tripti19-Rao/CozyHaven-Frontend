@@ -1,26 +1,10 @@
 import {
-  styled,
   Typography,
   Grid,
   Divider,
   Tooltip,
-  TableCell,
-  tableCellClasses,
-  TableRow,
-  TablePagination,
-  MenuItem,
-  TableContainer,
-  TextField,
-  Select,
-  Paper,
-  Table,
-  TableHead,
-  TableBody,
-  Button,
-  FormControl,
-  InputLabel,
-  Modal,
   Box,
+  Button
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -163,6 +147,7 @@ export default function GuestInformation(props) {
         >
           <img
             src="https://cdn-icons-png.flaticon.com/128/10828/10828934.png"
+            alt="*"
             style={{
               height: "30px",
               width: "30px",

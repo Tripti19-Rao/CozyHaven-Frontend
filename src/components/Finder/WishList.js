@@ -1,18 +1,12 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect} from "react"
 import SearchContext from "../../ContextApi/searchContext"
-import { Grid, Modal,Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton,Select,MenuItem,InputLabel,FormControl, Stack, Divider, Button,Pagination} from "@mui/material" 
+import { Grid,Paper,Box, CardContent, CardMedia, Chip, Typography,Rating,Tooltip,IconButton} from "@mui/material" 
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import TuneIcon from '@mui/icons-material/Tune';
 import HotelIcon from '@mui/icons-material/Hotel';
-import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet"
-import { Icon } from 'leaflet'
-import { CiHeart } from "react-icons/ci";
 import { FcLike } from "react-icons/fc";
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
 import { StyledCard } from './styles';
 import { useNavigate } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import Swal from 'sweetalert2'
 import FinderContext from "../../ContextApi/FinderContext"
 
@@ -64,7 +58,7 @@ export default function WishList() {
     const handleWishlist = async(id)=>{
         
         const updatedWishlist = finder?.wishlist?.wishList.filter((ele)=>{
-            return ele._id !=id
+            return ele._id != id
         })
         const update = {
             ...finder?.wishlist,

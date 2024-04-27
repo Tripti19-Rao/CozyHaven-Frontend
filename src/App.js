@@ -39,7 +39,7 @@ import roomsReducer from './Reducer/roomsReducer';
 import RoomContext from './ContextApi/RoomContext';
 
 import {jwtDecode} from 'jwt-decode'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { setUserAccount } from './Actions/UserActions';
 import PrivateRoutes from './components/Auth/PrivateRoutes';
 
@@ -49,10 +49,11 @@ function App() {
   //initial data
   const searchInitialState = {
     data: [], 
+    pagination: [],
     amenities: [],
+    initialSearch: false,
     building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
-    isSearched: false
   }
 
   const buildingsInitialState = {
@@ -191,10 +192,18 @@ function App() {
            <BookingDetails/>
         </PrivateRoutes>
        } />
-        <Route path="/success" element={ <PaymentSuccess /> }/>
-
-        <Route path="/cancel" element={<PaymentCancel />} />
-
+        <Route path="/success" element={
+          <PaymentSuccess />
+      //     <PrivateRoutes permittedRoles={['finder']}>
+      //     <PaymentSuccess />
+      //  </PrivateRoutes>
+        
+        } />
+        <Route path="/cancel" element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <PaymentCancel />
+       </PrivateRoutes>
+        } />
         <Route path='/guest-form/:buildingid' element={
           <PrivateRoutes permittedRoles={['finder']}>
           <GuestForm/>
@@ -210,4 +219,4 @@ function App() {
   )
 }
 
-export default App
+export default App

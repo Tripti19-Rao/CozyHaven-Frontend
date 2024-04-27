@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { startUpdatePayment , startLinkSuccessPayment } from "../../../Actions/PaymentActions";
+import { useNavigate } from "react-router-dom";
+import { startUpdatePayment, startUpdatePaymentviaId } from "../../../Actions/PaymentActions";
 import { toast, ToastContainer } from 'react-toastify';
 import { Box, Typography } from "@mui/material";
-
 
 export default function PaymentSuccess() {
   const navigate = useNavigate()
@@ -12,26 +11,36 @@ export default function PaymentSuccess() {
 
   const [ setPaymentDetails] = useState({});
 
+  const urlParams = new URLSearchParams(window.location.search);
+  console.log(urlParams.toString())
+  const paymentId = urlParams.get('paymentId');
+
+  console.log('paymentid',paymentId)
+
   const updateSucessResponse = (data) => {
     setPaymentDetails(data);
   };
 
-  const { id } = useParams()
-
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
-    if(stripId){
-      const buildingId = localStorage.getItem('buildingId')
+    const buildingId = localStorage.getItem('buildingId')
 
+    if(paymentId) {
+      dispatch(startUpdatePaymentviaId(paymentId, updateSucessResponse))
+      toast.success('Payment successful', {
+        autoClose: 5000,
+        // onClose: () => {
+        //   navigate(/guest-form/${buildingId})
+        // }
+      })
+    } else {
       dispatch(startUpdatePayment(stripId,updateSucessResponse))
       toast.success('Redirecting to Guest Registration Page', {
         autoClose: 5000,
         onClose: () => {
-          navigate(`/guest-form/${buildingId}`)
+          navigate(/guest-form/${buildingId})
         }
       })
-    }else{
-      dispatch(startLinkSuccessPayment(id))
     }
     
 
@@ -66,6 +75,6 @@ export default function PaymentSuccess() {
         alt="Success Picture"
         src="/success.jpg"
       />
-    </div>
-  );
+    </div>
+  );
 }

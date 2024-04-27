@@ -1,13 +1,19 @@
 export default function searchResultsReducer(state, action) {
     switch(action.type) {
         case 'SET_BUILDINGS': {
-            return {...state, data: [...action.payload]}
+            return {...state, 
+                data: [...action.payload.buildings],
+                pagination: {...action.payload.pagination}
+            }
+        }
+        case 'SET_INITIALSEARCH': {
+            return {
+                ...state,
+                initialSearch: action.payload
+            }
         }
         case 'SET_GEOAPIFY': {
             return {...state, geoapifyResult: [...action.payload]}
-        }
-        case 'SET_IS_SEARCH': {
-            return {...state, isSearched: action.payload}
         }
         case 'SET_ISCLICKED': {
             return {...state, isClicked: [...action.payload]}
