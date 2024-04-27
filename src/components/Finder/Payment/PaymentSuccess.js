@@ -38,7 +38,7 @@ export default function PaymentSuccess() {
       toast.success('Redirecting to Guest Registration Page', {
         autoClose: 5000,
         onClose: () => {
-          navigate(/guest-form/${buildingId})
+          navigate(`/guest-form/${buildingId}`)
         }
       })
     }
@@ -75,6 +75,6 @@ export default function PaymentSuccess() {
         alt="Success Picture"
         src="/success.jpg"
       />
-    </div>
-  );
+ </div>
+);
 }
