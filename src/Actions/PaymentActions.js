@@ -54,5 +54,29 @@ export const startCancelPayment = (stripeId , updateFailedResponse)=>{
     }
 }
 
+export const startLinkSuccessPayment = (id)=>{
+    return async(dispatch)=>{
+        try{
+            await axios.put(`http://localhost:3055/api/link/payments/update/${id}`,{status:"Successful"},{
+                headers:{
+                    Authorization:localStorage.getItem('token')
+                }
+            })
+        }catch(err){console.log(err)}
+    }
+}
+
+
+export const startLinkCancelPayment = (id)=>{
+    return async(dispatch)=>{
+        try{
+            await axios.put(`http://localhost:3055/api/link/payments/update/${id}`,{status:"Failed"},{
+                headers:{
+                    Authorization:localStorage.getItem('token')
+                }
+            })
+        }catch(err){console.log(err)}
+    }
+}
 
 

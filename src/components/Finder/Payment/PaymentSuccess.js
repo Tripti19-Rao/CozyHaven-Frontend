@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { startUpdatePayment } from "../../../Actions/PaymentActions";
+import { useNavigate, useParams } from "react-router-dom";
+import { startUpdatePayment , startLinkSuccessPayment } from "../../../Actions/PaymentActions";
 import { toast, ToastContainer } from 'react-toastify';
 import { Box, Typography } from "@mui/material";
+
 
 export default function PaymentSuccess() {
   const navigate = useNavigate()
@@ -15,17 +16,24 @@ export default function PaymentSuccess() {
     setPaymentDetails(data);
   };
 
+  const { id } = useParams()
+
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
-    const buildingId = localStorage.getItem('buildingId')
+    if(stripId){
+      const buildingId = localStorage.getItem('buildingId')
 
-    dispatch(startUpdatePayment(stripId,updateSucessResponse))
-    toast.success('Redirecting to Guest Registration Page', {
-      autoClose: 5000,
-      onClose: () => {
-        navigate(`/guest-form/${buildingId}`)
-      }
-    })
+      dispatch(startUpdatePayment(stripId,updateSucessResponse))
+      toast.success('Redirecting to Guest Registration Page', {
+        autoClose: 5000,
+        onClose: () => {
+          navigate(`/guest-form/${buildingId}`)
+        }
+      })
+    }else{
+      dispatch(startLinkSuccessPayment(id))
+    }
+    
 
     //remove building
     return () => {

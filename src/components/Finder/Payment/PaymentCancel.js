@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import { useNavigate } from "react-router-dom";
-import {startCancelPayment} from '../../../Actions/PaymentActions' 
+import { useNavigate, useParams } from "react-router-dom";
+import {startCancelPayment , startLinkCancelPayment} from '../../../Actions/PaymentActions' 
 import { toast, ToastContainer } from 'react-toastify';
 import { Box, Typography } from "@mui/material";
 
@@ -15,16 +15,24 @@ export default function PaymentCancel() {
   const updateFailedResponse =(data) =>{
     setPaymentDetails(data)
   }
+    const { id } = useParams()
+
 
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
-    dispatch(startCancelPayment(stripId,updateFailedResponse))
-    toast.error('Redirecting to Home Page', {
-      autoClose: 5000,
-      onClose: () => {
-        navigate('/search')
-      }
-    })
+    if(stripId){
+      dispatch(startCancelPayment(stripId,updateFailedResponse))
+      toast.error('Redirecting to Home Page', {
+        autoClose: 5000,
+        onClose: () => {
+          navigate('/search')
+        }
+      })
+    }else{
+      dispatch(startLinkCancelPayment(id))
+
+    }
+
 
     //removing building
     return () => {

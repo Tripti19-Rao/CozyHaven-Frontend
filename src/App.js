@@ -191,17 +191,10 @@ function App() {
            <BookingDetails/>
         </PrivateRoutes>
        } />
-        <Route path="/success" element={
-          <PrivateRoutes permittedRoles={['finder']}>
-          <PaymentSuccess />
-       </PrivateRoutes>
-        
-        } />
-        <Route path="/cancel" element={
-          <PrivateRoutes permittedRoles={['finder']}>
-          <PaymentCancel />
-       </PrivateRoutes>
-        } />
+        <Route path="/success" element={ <PaymentSuccess /> }/>
+
+        <Route path="/cancel" element={<PaymentCancel />} />
+
         <Route path='/guest-form/:buildingid' element={
           <PrivateRoutes permittedRoles={['finder']}>
           <GuestForm/>
