@@ -193,9 +193,10 @@ function App() {
         </PrivateRoutes>
        } />
         <Route path="/success" element={
-          <PrivateRoutes permittedRoles={['finder']}>
           <PaymentSuccess />
-       </PrivateRoutes>
+      //     <PrivateRoutes permittedRoles={['finder']}>
+      //     <PaymentSuccess />
+      //  </PrivateRoutes>
         
         } />
         <Route path="/cancel" element={
