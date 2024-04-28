@@ -30,7 +30,7 @@ export default function PaymentCancel() {
     const stripId = localStorage.getItem('stripId')
     if(paymentId) {
       dispatch(startCancelPaymentviaId(paymentId, updateFailedResponse))
-      toast.success('Payment Canceled! Redirecting to home page', {
+      toast.error('Payment Canceled! Redirecting to home page', {
         autoClose: 5000,
         onClose: () => {
           navigate('/search')
