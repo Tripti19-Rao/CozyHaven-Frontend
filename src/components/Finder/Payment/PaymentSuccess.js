@@ -78,6 +78,6 @@ export default function PaymentSuccess() {
         alt="Success Picture"
         src="/success.jpg"
       />
-    </div>
-  );
+ </div>
+);
 }

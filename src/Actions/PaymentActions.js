@@ -84,9 +84,6 @@ export const startCancelPayment = (stripeId , updateFailedResponse)=>{
             updateFailedResponse(response.data)
         }catch(err){
             console.log(err)
-        }
-    }
+        }
+    }
 }
-
-
-
