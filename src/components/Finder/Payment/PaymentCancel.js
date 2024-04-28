@@ -20,7 +20,7 @@ export default function PaymentCancel() {
   const token = urlParams.get('token');
 
   console.log('paymentid',token)
-  const {paymentId} = jwtDecode(token)
+  
 
   const updateFailedResponse =(data) =>{
     setPaymentDetails(data)
@@ -28,15 +28,19 @@ export default function PaymentCancel() {
 
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
-    if(paymentId) {
-      dispatch(startCancelPaymentviaId(paymentId, updateFailedResponse))
-      toast.error('Payment Canceled! Redirecting to home page', {
-        autoClose: 5000,
-        onClose: () => {
-          navigate('/search')
-        }
-      })
-    } else {
+    if(token) {
+      const {paymentId} = jwtDecode(token)
+      if(paymentId) {
+        dispatch(startCancelPaymentviaId(paymentId, updateFailedResponse))
+        toast.error('Payment Canceled! Redirecting to home page', {
+          autoClose: 5000,
+          onClose: () => {
+            navigate('/search')
+          }
+        })
+      } 
+    }
+    else {
       dispatch(startCancelPayment(stripId,updateFailedResponse))
       toast.success('Payment Canceled! Redirecting to home page', {
         autoClose: 5000,

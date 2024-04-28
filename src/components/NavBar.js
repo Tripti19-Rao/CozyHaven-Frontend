@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode'
 import { FcLike } from "react-icons/fc";
 import { FaUser } from "react-icons/fa";
-import { useDispatch } from 'react-redux';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';import { useDispatch } from 'react-redux';
 import { handleLogout } from '../Actions/UserActions';
 
 //import Search from './Finder/Search';
@@ -41,8 +41,13 @@ import { handleLogout } from '../Actions/UserActions';
       //console.log(id,role)
       return (
         <>
-          <Tooltip title="view wishlist">
+          <Tooltip title="Home">
           <IconButton>
+              <Link to={"/search"}><HomeRoundedIcon style={{fontSize: "40px", color: "#27438e"}}/></Link>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="view wishlist">
+          <IconButton style={{marginLeft: '0px'}}>
               <Link to={"/wishlist"}><FcLike style={{fontSize: "35px"}}/></Link>
             </IconButton>
           </Tooltip>
@@ -90,9 +95,9 @@ import { handleLogout } from '../Actions/UserActions';
     } else if(role === "owner") {
       return (
         <>
-          <Tooltip title="view Profile">
+          <Tooltip title="view profile">
             <IconButton onClick={handleClick} sx={{ p: 0 }}>
-              <Typography>Owner</Typography>
+              <FaUser style={{color: "#27438e", fontSize: "28px"}}/>
             </IconButton>
           </Tooltip>
           <Menu

@@ -18,7 +18,8 @@ export default function PaymentSuccess() {
   const token = urlParams.get('token');
 
   console.log('paymentid',token)
-  const {paymentId} = jwtDecode(token)
+  
+  
 
   const updateSucessResponse = (data) => {
     setPaymentDetails(data);
@@ -27,15 +28,19 @@ export default function PaymentSuccess() {
   useEffect(()=>{
       const stripId = localStorage.getItem('stripId')
       const buildingId = localStorage.getItem('buildingId')
-      if(paymentId) {
-        dispatch(startUpdatePaymentviaId(paymentId, updateSucessResponse))
-        toast.success('Payment successful! Redirecting to home page', {
-          autoClose: 5000,
-          onClose: () => {
-            navigate('/search')
-          }
-        })
-      } else {
+      if(token) {
+        const {paymentId} = jwtDecode(token)
+        if(paymentId) {
+          dispatch(startUpdatePaymentviaId(paymentId, updateSucessResponse))
+          toast.success('Payment successful! Redirecting to home page', {
+            autoClose: 5000,
+            onClose: () => {
+              navigate('/search')
+            }
+          })
+        }
+      }
+       else {
         dispatch(startUpdatePayment(stripId,updateSucessResponse))
         toast.success('Redirecting to Guest Registration Page', {
           autoClose: 5000,

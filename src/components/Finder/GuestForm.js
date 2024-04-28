@@ -23,6 +23,12 @@ export default function GuestForm() {
     })
     let aadharError = ''
 
+    const [profile, setProfile] = useState({
+        pic: null,
+        error: ''
+    })
+    let profileError = ''
+
     //yup validations
     const basicSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
@@ -30,6 +36,10 @@ export default function GuestForm() {
             .string()
             .oneOf(["female", "male", "others"], "Please select the gender")
             .required('Gender is required'),
+        age: yup
+            .string()
+            .matches(/^[0-9]+$/, 'Age must be a number')
+            .required('Age is required'),
         dob: yup
             .date()
             .required('Date of birth is required'),
@@ -70,21 +80,30 @@ export default function GuestForm() {
             
     })
 
-    const aadharPicValidations = () => {
+    const picValidations = () => {
         if(!aadharPic.pic) {
             aadharError = 'Aadhar Picture is required'
         }
+        if(!profile.pic) {
+            profileError = 'Profile is required'
+        }
+
     }
     //handle submit
     const onSubmit =  async (values, actions) => {
-        aadharPicValidations()
-        if(!aadharError) {
+        picValidations()
+        if(!aadharError && !profileError) {
             try {
                 setAadharPic({...aadharPic, error: ''})
+                setProfile({...profile, error: ''})
 
                 const formData = new FormData()
                 formData.append('name',values.name)
+                Object.entries(profile.pic).forEach(ele => {
+                    formData.append('profile',ele[1])
+                })
                 formData.append('gender',values.gender)
+                formData.append('age',values.age)
                 formData.append('dob',values.dob)
                 formData.append('phoneNo',values.phoneNo)
                 formData.append('address',values.address)
@@ -120,8 +139,10 @@ export default function GuestForm() {
                 setServerErrors('Please ensure all the fields are filled correctly.. Encountered server error!')
             }
             setAadharPic({...aadharPic, error: ''})
+
         } else {
             setAadharPic({...aadharPic, error: aadharError})
+            setProfile({...profile, error: profileError})
             console.log(aadharError)
         }
 
@@ -131,6 +152,7 @@ export default function GuestForm() {
         initialValues: {
             name: '',
             gender: '',
+            age: '',
             dob: '',
             phoneNo: '',
             address: '',
@@ -147,8 +169,13 @@ export default function GuestForm() {
     // console.log('errors',errors)
 
     //Remove aadhar picture
-  const handleProfileRemoveFile = () => {;
+  const handleAadharRemove= () => {;
     setAadharPic({...aadharPic, pic: null})
+  };
+
+   //Remove Profile picture
+   const handleProfileRemove = () => {;
+    setProfile({...profile, pic: null})
   };
 
     
@@ -221,6 +248,40 @@ export default function GuestForm() {
                             ) : null
                         }
                     />
+                    <Button
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        size="small"
+                        tabIndex={-1}
+                        startIcon={<CloudUploadIcon />}
+                        //style={{ width: textwidth }}
+                    >
+                        Upload your Profile Picture
+                        <VisuallyHiddenInput
+                        type="file"
+                        name="profile"
+                        onChange={(e)=>{
+                            setProfile({...profile, pic: e.target.files})
+                        }}
+                        />
+                    </Button>
+                        {profile.error && (
+                            <FormHelperText style={{ color: "red", marginLeft: "15px" }}>
+                            {profile.error}
+                            </FormHelperText>
+                        )}
+                        {profile.pic && (
+                            <p>
+                            Selected file : {profile.pic[0].name}
+                            <IconButton
+                                sx={{ color: "black" }}
+                                onClick={handleProfileRemove}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                            </p>
+                        )}
                     <Box
                         sx={{
                             border: errors.gender ? '1px solid red' : '',
@@ -257,6 +318,24 @@ export default function GuestForm() {
                     </Box>
                     <FormHelperText style={{color: 'red',marginTop: '3px',marginLeft: '10px'}}>{errors.gender}</FormHelperText>
                     <FormControl>
+                    <TextField
+                        id="age"
+                        name="age"
+                        label="Age"
+                        variant="outlined"
+                        size="small"
+                        type="text"
+                        margin="dense"
+                        value={values.age}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={errors.age && touched.age}
+                        helperText={
+                            errors.age && touched.age ? (
+                                <span style={{color: 'red'}}>{errors.age}</span>
+                            ) : null
+                        }
+                    />
                     <Typography 
                         htmlFor="dob"
                         fontSize='16px'
@@ -408,7 +487,7 @@ export default function GuestForm() {
                             Selected file : {aadharPic.pic[0].name}
                             <IconButton
                                 sx={{ color: "black" }}
-                                onClick={handleProfileRemoveFile}
+                                onClick={handleAadharRemove}
                             >
                                 <CloseIcon />
                             </IconButton>
