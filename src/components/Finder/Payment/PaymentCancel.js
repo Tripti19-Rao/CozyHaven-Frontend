@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import { useNavigate, useParams } from "react-router-dom";
-import {startCancelPayment , startLinkCancelPayment} from '../../../Actions/PaymentActions' 
+import {startCancelPayment } from '../../../Actions/PaymentActions' 
 import { toast, ToastContainer } from 'react-toastify';
 import { Box, Typography } from "@mui/material";
 
@@ -29,7 +29,7 @@ export default function PaymentCancel() {
         }
       })
     }else{
-      dispatch(startLinkCancelPayment(id))
+      //dispatch(startLinkCancelPayment(id))
 
     }
 
