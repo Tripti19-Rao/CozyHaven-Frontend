@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles"
-import {Card} from '@mui/material'
+import {Card, TableCell,TableRow,tableCellClasses} from '@mui/material'
 
 export const StyledCard = styled(Card)({
     transition: 'box-shadow 0.3s',
@@ -63,3 +63,24 @@ export const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
+
+//table
+
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#6698e1",
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+export const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));

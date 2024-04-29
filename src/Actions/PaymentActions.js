@@ -39,12 +39,12 @@ export const startUpdatePayment = (stripeId , updateSucessResponse)=>{
 export const startUpdatePaymentviaId = (paymentId , updateSucessResponse)=>{
     return async(dispatch)=>{
         try{
-            const response = await axios.put(`http://localhost:3055/api/payments/${paymentId}`,{status:"Successful"}
-            // {
-            //     headers:{
-            //         Authorization:localStorage.getItem('token')
-            //     }
-            // }
+            const response = await axios.put(`http://localhost:3055/api/payments/${paymentId}`,{status:"Successful"},
+            {
+                headers:{
+                    Authorization:localStorage.getItem('token')
+                }
+            }
         )
             //localStorage.removeItem('stripId')
             updateSucessResponse(response.data)
@@ -55,6 +55,22 @@ export const startUpdatePaymentviaId = (paymentId , updateSucessResponse)=>{
 }
 
 
+
+export const startCancelPaymentviaId = (paymentId , updateFailedResponse)=>{
+    return async(dispatch)=>{
+        try{
+            const response = await axios.put(`http://localhost:3055/api/payments/${paymentId}`,{status:"Failed"},{
+                headers:{
+                    Authorization:localStorage.getItem('token')
+                }
+            })
+            //localStorage.removeItem('stripId')
+            updateFailedResponse(response.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
+}
 
 export const startCancelPayment = (stripeId , updateFailedResponse)=>{
     return async(dispatch)=>{

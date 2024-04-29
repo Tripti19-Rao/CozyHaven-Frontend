@@ -23,6 +23,7 @@ import PaymentCancel from './components/Finder/Payment/PaymentCancel'
 import GuestForm from './components/Finder/GuestForm';
 import UnauthorizedPage from './components/Auth/UnauthorizedPage';
 import GuestManagement from './components/Owner/GuestManagement'
+import PaymentLinkPage from './components/Finder/PaymentLinkPage';
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -193,10 +194,10 @@ function App() {
         </PrivateRoutes>
        } />
         <Route path="/success" element={
+          //<PaymentSuccess />
+          <PrivateRoutes permittedRoles={['finder']}>
           <PaymentSuccess />
-      //     <PrivateRoutes permittedRoles={['finder']}>
-      //     <PaymentSuccess />
-      //  </PrivateRoutes>
+       </PrivateRoutes>
         
         } />
         <Route path="/cancel" element={
@@ -204,6 +205,9 @@ function App() {
           <PaymentCancel />
        </PrivateRoutes>
         } />
+        <Route
+          path='/payment-link' element={<PaymentLinkPage/>}
+        />
         <Route path='/guest-form/:buildingid' element={
           <PrivateRoutes permittedRoles={['finder']}>
           <GuestForm/>

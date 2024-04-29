@@ -182,7 +182,7 @@ console.log("room", room);
 
 
               
-<Grid container spacing={2} marginTop="15px" marginLeft="150px" marginBottom="15px">
+<Grid container spacing={2} marginTop="0px" marginLeft="150px" marginBottom="15px">
       <Grid item>
         <Button variant="contained" color="primary" onClick={handleCancel}>
           Cancel

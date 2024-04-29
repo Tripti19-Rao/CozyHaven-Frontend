@@ -1,38 +1,54 @@
 import {useState, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import { useNavigate, useParams } from "react-router-dom";
-import {startCancelPayment } from '../../../Actions/PaymentActions' 
+import { useNavigate,useLocation } from "react-router-dom";
+import {startCancelPayment, startCancelPaymentviaId} from '../../../Actions/PaymentActions' 
 import { toast, ToastContainer } from 'react-toastify';
 import { Box, Typography } from "@mui/material";
+import {jwtDecode} from 'jwt-decode'
+
 
 
 export default function PaymentCancel() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const location = useLocation()
 
   const [ setPaymentDetails] = useState({})
+
+  const urlParams = new URLSearchParams(location.search);
+  console.log(urlParams.toString())
+  const token = urlParams.get('token');
+
+  console.log('paymentid',token)
+  
 
   const updateFailedResponse =(data) =>{
     setPaymentDetails(data)
   }
-    const { id } = useParams()
-
 
   useEffect(()=>{
     const stripId = localStorage.getItem('stripId')
-    if(stripId){
+    if(token) {
+      const {paymentId} = jwtDecode(token)
+      if(paymentId) {
+        dispatch(startCancelPaymentviaId(paymentId, updateFailedResponse))
+        toast.error('Payment Canceled! Redirecting to home page', {
+          autoClose: 5000,
+          onClose: () => {
+            navigate('/search')
+          }
+        })
+      } 
+    }
+    else {
       dispatch(startCancelPayment(stripId,updateFailedResponse))
-      toast.error('Redirecting to Home Page', {
+      toast.success('Payment Canceled! Redirecting to home page', {
         autoClose: 5000,
         onClose: () => {
           navigate('/search')
         }
       })
-    }else{
-      //dispatch(startLinkCancelPayment(id))
-
     }
-
 
     //removing building
     return () => {

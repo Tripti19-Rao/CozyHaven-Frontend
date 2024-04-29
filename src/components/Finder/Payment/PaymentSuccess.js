@@ -1,48 +1,56 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch} from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import { startUpdatePayment, startUpdatePaymentviaId } from "../../../Actions/PaymentActions";
 import { toast, ToastContainer } from 'react-toastify';
 import { Box, Typography } from "@mui/material";
+import {jwtDecode} from 'jwt-decode'
 
 export default function PaymentSuccess() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const location = useLocation()
 
   const [ setPaymentDetails] = useState({});
 
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(location.search);
   console.log(urlParams.toString())
-  const paymentId = urlParams.get('paymentId');
+  const token = urlParams.get('token');
 
-  console.log('paymentid',paymentId)
+  console.log('paymentid',token)
+  
+  
 
   const updateSucessResponse = (data) => {
     setPaymentDetails(data);
   };
 
   useEffect(()=>{
-    const stripId = localStorage.getItem('stripId')
-    const buildingId = localStorage.getItem('buildingId')
-
-    if(paymentId) {
-      dispatch(startUpdatePaymentviaId(paymentId, updateSucessResponse))
-      toast.success('Payment successful', {
-        autoClose: 5000,
-        // onClose: () => {
-        //   navigate(/guest-form/${buildingId})
-        // }
-      })
-    } else {
-      dispatch(startUpdatePayment(stripId,updateSucessResponse))
-      toast.success('Redirecting to Guest Registration Page', {
-        autoClose: 5000,
-        onClose: () => {
-          navigate(`/guest-form/${buildingId}`)
+      const stripId = localStorage.getItem('stripId')
+      const buildingId = localStorage.getItem('buildingId')
+      if(token) {
+        const {paymentId} = jwtDecode(token)
+        if(paymentId) {
+          dispatch(startUpdatePaymentviaId(paymentId, updateSucessResponse))
+          toast.success('Payment successful! Redirecting to home page', {
+            autoClose: 5000,
+            onClose: () => {
+              navigate('/search')
+            }
+          })
         }
-      })
-    }
+      }
+       else {
+        dispatch(startUpdatePayment(stripId,updateSucessResponse))
+        toast.success('Redirecting to Guest Registration Page', {
+          autoClose: 5000,
+          onClose: () => {
+            navigate(`/guest-form/${buildingId}`)
+          }
+        })
+      }
     
+   
 
     //remove building
     return () => {

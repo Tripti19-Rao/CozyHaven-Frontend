@@ -2,7 +2,7 @@ import {useContext, useState} from 'react'
 import {isEmpty} from 'lodash'
 import axios from 'axios'
 import {jwtDecode} from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {Grid,Box,Typography,FormControl,TextField,Button,Stack,Alert,Divider} from '@mui/material'
 import { Link } from 'react-router-dom'
 // import toast, { Toaster } from 'react-hot-toast';
@@ -15,6 +15,11 @@ import { setUserAccount } from '../../Actions/UserActions'
  
 export default function Login() {
     const navigate = useNavigate()
+    const location = useLocation()
+
+    //to redirect to success page 
+    const sessionToken = location.state?.token
+
     const {findersDispatch} = useContext(FinderContext)
     const {buildingsDispatch} = useContext(BuildingContext)
     const usersDispatch = useDispatch()
@@ -93,7 +98,11 @@ export default function Login() {
                         }
                         else if(role==="owner"){
                             navigate("/home")
-                        }else{
+                        }
+                        else if(role==="finder" && sessionToken) {
+                            navigate(`/payment-link?session=${sessionToken}`)
+                        }
+                        else{
                             navigate("/search")
                         }
                     }
