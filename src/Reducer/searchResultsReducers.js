@@ -24,6 +24,12 @@ export default function searchResultsReducer(state, action) {
         case 'SET_AMENITIES':{
             return {...state, amenities:action.payload}
         }
+        case 'SET_REVIEWS':{
+            return {...state, reviews:action.payload}
+        }
+        case 'UPDATE_REVIEW':{
+            return {...state, reviews:[action.payload, ...state.reviews]}
+        }
         default : {
             return {...state}
         }

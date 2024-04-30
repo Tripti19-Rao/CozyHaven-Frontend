@@ -55,6 +55,7 @@ function App() {
     initialSearch: false,
     building: JSON.parse(localStorage.getItem('building')) || {},
     geoapifyResult: JSON.parse(localStorage.getItem('center')) || [],
+    reviews:[]
   }
 
   const buildingsInitialState = {
@@ -79,9 +80,7 @@ function App() {
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
 
-  // const user = useSelector((state)=>{
-  //   return state.user.userData
-  // })
+  
   const usersDispatch = useDispatch()
 
 

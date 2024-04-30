@@ -30,6 +30,7 @@ import {
 import moment from "moment";
 import Swal from 'sweetalert2'
 import { toast,Bounce, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
