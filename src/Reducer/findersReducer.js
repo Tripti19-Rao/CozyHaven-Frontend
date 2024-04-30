@@ -9,6 +9,9 @@ export default function findersReducer(state, action) {
         case 'UPDATE_WISHLIST':{
             return {...state, wishlist:action.payload}
         }
+        case 'SET_MYSTAY': {
+            return {...state, mystay: [...action.payload]}
+        }
         default: return  {...state}
     }
 }

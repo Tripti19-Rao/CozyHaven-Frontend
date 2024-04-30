@@ -1,4 +1,4 @@
-import { Typography,Stack, Skeleton, TableContainer, Paper,Button, Table, TableRow, TableCell, TableHead, TableBody} from "@mui/material"
+import { Typography,Stack, Skeleton, TableContainer, Paper,Button, Table, TableRow, TableHead, TableBody,Box} from "@mui/material"
 import React, { useContext, useEffect} from "react"
 import FinderContext from "../../ContextApi/FinderContext"
 import axios from 'axios';
@@ -52,7 +52,43 @@ export default function PaymentHistory() {
             </Stack>
         ) : (
             finder.wishlist.paymentHistory.length === 0 ? (
-                <h1>isEmpty</h1>
+                <Box
+                sx={{
+                marginLeft: "100px",
+                justifyContent: "center",
+                bgcolor: "background.paper",
+                border: "2px ",
+                p: 7,
+                width: "800px",
+                borderRadius: "10px",
+                position: "relative",
+                }}
+                >
+                <Box
+                    component="img"
+                    style={{
+                        display: "block",
+                        margin: "auto",
+                        height: "400px",
+                        width: "400px",
+                        maxWidth: "100%",
+                        borderRadius: "50%",
+                        objectFit: "fill",
+                    }}
+                    src="/NoBuildingsData.jpg"
+                    alt="Image"
+                /> 
+                <Typography
+                variant="body1"
+                fontWeight="bold"
+                fontFamily="Roboto"
+                textAlign="center"
+                fontSize="30px"
+                //marginTop="50px"
+            >
+                No Payment's Yet
+            </Typography>
+                </Box>
             ) : (
             <>
                 <Typography
