@@ -24,7 +24,8 @@ export default function WishList() {
             const response = await axios.get('http://localhost:3055/api/finders/wishlist',tokenHeader)
             console.log("b4 finderdispatch wishlist",response.data)
             findersDispatch({type: 'SET_WISHLIST', payload: response.data})
-        })()
+        })();
+        // eslint-disable-next-line
     },[])
 
 
@@ -58,7 +59,7 @@ export default function WishList() {
     const handleWishlist = async(id)=>{
         
         const updatedWishlist = finder?.wishlist?.wishList.filter((ele)=>{
-            return ele._id != id
+            return ele._id !== id
         })
         const update = {
             ...finder?.wishlist,

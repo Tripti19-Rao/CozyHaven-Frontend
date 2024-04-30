@@ -80,6 +80,9 @@ import { handleLogout } from '../Actions/UserActions';
           <Link to={'/profile'} style={{textDecoration: 'none', color: "#27438e"}}>Profile</Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
+          <Link to={'/myStay'} style={{textDecoration: 'none', color: "#27438e"}}>My Stay</Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
           <Link to={'/paymentHistory'} style={{textDecoration: 'none',color: "#27438e"}}>Payment History</Link>
         </MenuItem>
         <MenuItem onClick={handleLogOut} style={{textDecoration: 'none',color: "#27438e"}}>Log Out</MenuItem>

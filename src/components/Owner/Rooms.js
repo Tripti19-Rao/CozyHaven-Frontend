@@ -125,19 +125,34 @@ export default function Rooms() {
         {
            rooms?.data?.length===0 ? (
             <>
+            <Box
+              component="img"
+              style={{
+                display: "block",
+                //margin: "auto",
+                marginTop:"80px",
+                height: "400px",
+                width: "400px",
+                maxWidth: "100%",
+                borderRadius: "50%",
+                objectFit: "fill",
+                }}
+              src="/NoBuildingsData.jpg"
+              alt="Image"
+                /> 
             <Typography
             variant="body1"
             fontWeight="bold"
             fontFamily="Prociono"
             textAlign="center"
             fontSize="30px"
-            margin="50px"
-            marginTop="80px"
+            //margin="50px"
+            //marginTop="80px"
           >
             Oops you dont have any rooms yet... Create one now!{" "}
           </Typography>
           <Button
-          style={{marginLeft: '30px'}}
+          style={{marginLeft: '30px',marginTop: '30px'}}
           variant="outlined"
           onClick={handleOpen}
           startIcon={<AddSharpIcon />}

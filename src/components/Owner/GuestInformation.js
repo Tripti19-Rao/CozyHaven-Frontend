@@ -44,7 +44,7 @@ export default function GuestInformation(props) {
           borderRadius: "50%", 
           objectFit: "fill",
         }}
-        src={details.picture}
+        src={details.profile}
         alt="Image"
       />
       <Typography variant="body1" textAlign="center" fontSize="25px" mt={1}>

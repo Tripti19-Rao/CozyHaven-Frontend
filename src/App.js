@@ -24,6 +24,7 @@ import GuestForm from './components/Finder/GuestForm';
 import UnauthorizedPage from './components/Auth/UnauthorizedPage';
 import GuestManagement from './components/Owner/GuestManagement'
 import PaymentLinkPage from './components/Finder/PaymentLinkPage';
+import MyStay from './components/Finder/MyStay';
 //import SearchResults from './components/Finder/SearchResults';
 
 //Reducers
@@ -43,7 +44,6 @@ import {jwtDecode} from 'jwt-decode'
 import { useDispatch} from 'react-redux';
 import { setUserAccount } from './Actions/UserActions';
 import PrivateRoutes from './components/Auth/PrivateRoutes';
-
 
 function App() {
 
@@ -71,7 +71,8 @@ function App() {
 
   const finderInitalState = {
     data:{},
-    wishlist:{}
+    wishlist:{},
+    mystay: null
   }
   //State
   const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
@@ -155,6 +156,11 @@ function App() {
         <Route path='/profile' element={
           <PrivateRoutes permittedRoles={['finder']}>
           <Profile/>
+        </PrivateRoutes>
+        }/>
+        <Route path='/myStay' element={
+          <PrivateRoutes permittedRoles={['finder']}>
+          <MyStay/>
         </PrivateRoutes>
         }/>
         <Route path='/paymentHistory' element={
