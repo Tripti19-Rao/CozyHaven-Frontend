@@ -19,6 +19,9 @@ export default function buildingsReducer ( state, action )  {
                 }
             })}
         }
+        case 'SET_REVIEWS':{
+            return{...state, reviews:action.payload}
+        }
         case 'SET_SERVERERROR' :{
             return {...state , serverErrors:action.payload}
         }

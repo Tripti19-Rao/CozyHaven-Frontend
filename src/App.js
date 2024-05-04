@@ -61,6 +61,7 @@ function App() {
   const buildingsInitialState = {
     data: null,
     amenities:[],
+    reviews:[],
     serverError:''
  }
 

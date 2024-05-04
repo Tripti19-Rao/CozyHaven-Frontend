@@ -21,7 +21,7 @@ export default function GuestInformation(props) {
         {details?.isComplete ? (<div>
             <Box
           sx={{
-            marginTop: "20px",
+            marginTop: "5px",
             marginLeft: "430px",
             bgcolor: "background.paper",
             border: "2px ",

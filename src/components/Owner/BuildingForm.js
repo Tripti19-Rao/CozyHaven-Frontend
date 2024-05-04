@@ -132,7 +132,7 @@ export default function BuildingForm(props) {
       errors.license = "License Picture is required";
     }
     if (!formData.rules.trim().length) {
-      errors.rules = "Name is required";
+      errors.rules = "Rules are required";
     }
   };
 

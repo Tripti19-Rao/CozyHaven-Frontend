@@ -716,60 +716,7 @@ export default function ShowBuilding() {
                             No Reviews Yet!
                           </Typography>
                         </div>)}
-                      {/* {searchResults.reviews.map((ele) => (
-                        <div>
-                          <Typography
-                            fontWeight="bold"
-                            mt={2}
-                            sx={{ display: "flex", alignItems: "center" }}
-                          >
-                            <Box
-                              component="img"
-                              style={{
-                                display: "block",
-                                height: "45px",
-                                width: "45px",
-                                marginRight: "15px",
-                                borderRadius: "50%",
-                                objectFit: "fill",
-                              }}
-                              src={ele.profile}
-                              alt="Image"
-                            />
-                            {ele.name}
-                          </Typography>
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <Rating
-                              name="read-only"
-                              value={ele.stars}
-                              precision={0.5}
-                              readOnly
-                            />
-                            <Typography
-                              mt={2}
-                              mb={2}
-                              ml={2}
-                              sx={{ display: "flex", alignItems: "center" }}
-                            >
-                              {moment(ele.createdAt).format("DD-MM-YYYY")}
-                            </Typography>
-                          </div>
-
-                          <Typography
-                            mt={2}
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            {ele.description}
-                          </Typography>
-                          <Divider />
-                        </div>
-                      ))} */}
+                     
                     </Box>
                   </CustomTabPanel>
                 </CardContent>

@@ -137,7 +137,7 @@ export default function Login() {
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <Box sx={{ backgroundColor: "#6698E1" , height:"100vh", position: "relative" }}>
+                    <Box sx={{ backgroundColor: "#6698E1" , height:"100vh", position: "relative" , marginTop:"30px" }}>
                         <Box
                             height={470}
                             width={400}

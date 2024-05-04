@@ -115,6 +115,7 @@ export default function Signup() {
         <Grid item xs={6}>
           <Box
             sx={{
+              marginTop:"30px",
               backgroundColor: "#6698E1",
               height: "100vh",
               position: "relative",

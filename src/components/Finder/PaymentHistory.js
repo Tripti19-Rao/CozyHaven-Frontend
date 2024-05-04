@@ -115,7 +115,6 @@ export default function PaymentHistory() {
                         <StyledTableCell>Room No</StyledTableCell>
                         <StyledTableCell>Rent</StyledTableCell>
                         <StyledTableCell>Status</StyledTableCell>
-                        <StyledTableCell align="center">Actions</StyledTableCell>
                     </TableRow>
                     </TableHead>
                     <TableBody>
@@ -139,17 +138,6 @@ export default function PaymentHistory() {
                                 </StyledTableCell>
                                 <StyledTableCell>
                                     {ele.status}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                <Button
-                                    variant="contained"
-                                    type="button"
-                                    sx={{
-                                        backgroundColor: "#5785FD",
-                                    }}
-                                    >
-                                    Remove
-                                </Button>
                                 </StyledTableCell>
                             </StyledTableRow>
                         )

@@ -10,10 +10,12 @@ import {
   CardContent,
   Tabs ,
   Tab,
-  Box
+  Box,
+  Divider
 } from "@mui/material";
 import PropTypes from 'prop-types';
-import { useContext ,useState } from "react";
+import { useContext ,useState, useEffect } from "react";
+import axios from "axios"
 import BuildingContext from "../../ContextApi/BuildingContext";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -23,6 +25,10 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import { Carousel } from "react-responsive-carousel";
 import {isEmpty} from 'lodash'
+import StarIcon from "@mui/icons-material/Star";
+import moment from "moment";
+
+
 
 
 
@@ -66,7 +72,7 @@ function a11yProps(index) {
 
 export default function ViewBuildingForm() {
   const { id } = useParams();
-  const { buildings } = useContext(BuildingContext);
+  const { buildings, buildingsDispatch} = useContext(BuildingContext);
 
   const building = buildings?.data?.find((ele) => ele._id === id);
   console.log(building);
@@ -95,6 +101,26 @@ export default function ViewBuildingForm() {
       return "https://cdn-icons-png.flaticon.com/128/20/20373.png";
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+          const checkResponse = await axios.get(
+            `http://localhost:3055/api/${id}/reviews`,
+            {
+              headers: {
+                Authorization: localStorage.getItem('token'),
+              },
+            }
+          );
+          console.log("Reviews", checkResponse.data);
+          buildingsDispatch({type:'SET_REVIEWS', payload:checkResponse.data})
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     !isEmpty(building) && (<div>
@@ -315,6 +341,7 @@ export default function ViewBuildingForm() {
                   <Tab label="Amenties Pictures" {...a11yProps(0)} />
                   <Tab label="Rules" {...a11yProps(1)} />
                   <Tab label="License" {...a11yProps(2)} />
+                  <Tab label="Reviews" {...a11yProps(3)} />
                 </Tabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
@@ -370,6 +397,125 @@ export default function ViewBuildingForm() {
                   src={building.license}
                 />
               </CustomTabPanel>
+              <CustomTabPanel value={value} index={3}>
+                    <Box
+                      style={{
+                        width: "100vh",
+                        height: "430px",
+                        marginLeft: "40px",
+                        overflowY: "auto",
+                        paddingRight: "20px", // Add padding to accommodate scrollbar width
+                        scrollbarWidth: "none", // Hide scrollbar for Firefox
+                        msOverflowStyle: "none", // Hide scrollbar for IE/Edge
+                        "&::WebkitScrollbar": {
+                          display: "none", // Hide scrollbar for Chrome/Safari/Opera
+                        },
+                        // marginBottom: "30px",
+                      }}
+                    >
+                      <Grid container mb={1}>
+                        <Grid item xs={6}>
+                          <Typography
+                            fontWeight="bold"
+                            fontSize="30px"
+                            mt={2}
+                            sx={{ display: "flex", alignItems: "center" }}
+                          >
+                            {building.rating}/5
+                            <StarIcon
+                              sx={{
+                                fontSize: "30px",
+                                marginLeft: "5px",
+                                verticalAlign: "middle",
+                                color: "#faaf00",
+                              }}
+                            />
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          {/* {role === "finder" && check && (
+                            <Button
+                              variant="contained"
+                              sx={{ float: "right" }}
+                              onClick={handleReviewOpen}
+                            >
+                              Add Review
+                            </Button>
+                          )} */}
+                        </Grid>
+                      </Grid>
+                      <Divider mb={1} />
+
+            
+                        {buildings?.reviews?.length>0 ? (<div>
+                        {buildings?.reviews.map((ele) => (
+                        <div>
+                          <Typography
+                            fontWeight="bold"
+                            mt={2}
+                            sx={{ display: "flex", alignItems: "center" }}
+                          >
+                            <Box
+                              component="img"
+                              style={{
+                                display: "block",
+                                height: "45px",
+                                width: "45px",
+                                marginRight: "15px",
+                                borderRadius: "50%",
+                                objectFit: "fill",
+                              }}
+                              src={ele.profile}
+                              alt="Image"
+                            />
+                            {ele.name}
+                          </Typography>
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <Rating
+                              name="read-only"
+                              value={ele.stars}
+                              precision={0.5}
+                              readOnly
+                            />
+                            <Typography
+                              mt={2}
+                              mb={2}
+                              ml={2}
+                              sx={{ display: "flex", alignItems: "center" }}
+                            >
+                              {moment(ele.createdAt).format("DD-MM-YYYY")}
+                            </Typography>
+                          </div>
+
+                          <Typography
+                            mt={2}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "10px",
+                            }}
+                          >
+                            {ele.description}
+                          </Typography>
+                          <Divider />
+                        </div>
+                      ))}
+                        </div>):(<div>
+                          <Typography
+                            fontWeight="bold"
+                            fontSize={40}
+                            mt={20}
+                            ml={25}
+                            sx={{ display: "flex", alignItems: "center" }}
+                          >
+                            No Reviews Yet!
+                          </Typography>
+                        </div>)}
+                     
+                    </Box>
+                  </CustomTabPanel>
             </CardContent>
           </Card>
         </Grid>
