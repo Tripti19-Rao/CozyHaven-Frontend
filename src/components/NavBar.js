@@ -10,6 +10,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Paper
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -44,9 +45,7 @@ export default function Navbar() {
 
   const token = localStorage.getItem("token");
   const navBasedOnRole = () => {
-    const { role,  email } = jwtDecode(token);
-    const {username} = jwtDecode(token)
-    console.log(email)
+    const { role, name, email } = jwtDecode(token);
 
     if (role === "finder") {
       //console.log(id,role)
@@ -61,14 +60,14 @@ export default function Navbar() {
               </Link>
             </IconButton>
           </Tooltip>
-          <Tooltip title="view wishlist">
+          <Tooltip title="View wishlist">
             <IconButton style={{ marginLeft: "0px" }}>
               <Link to={"/wishlist"}>
                 <FcLike style={{ fontSize: "35px" }} />
               </Link>
             </IconButton>
           </Tooltip>
-          <Tooltip title="view profile">
+          <Tooltip title="View profile">
             <IconButton onClick={handleClick} sx={{ p: 0 }}>
               <FaUser style={{ color: "#27438e", fontSize: "28px" }} />
             </IconButton>
@@ -78,7 +77,7 @@ export default function Navbar() {
               mt: "45px",
               "& .MuiMenu-paper": {
                 backgroundColor: "white",
-                color: "blue",
+                color: "#375ab2",
                 fontWeight: "bold",
               },
             }}
@@ -95,6 +94,12 @@ export default function Navbar() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
+            <Typography variant="body1" textAlign="center" sx={{ px: 2, py: 1 }}>
+              {name}
+            </Typography>
+            <Typography variant="body1" sx={{ px: 2, py: 1 }}>
+               {email} 
+            </Typography>
             <MenuItem onClick={handleClose}>
               <Link
                 to={"/profile"}
@@ -131,24 +136,17 @@ export default function Navbar() {
     } else if (role === "admin") {
       return (
         <>
-          <Button>Admin</Button>
-        </>
-      );
-    } else if (role === "owner") {
-      return (
-        <>
-          <Tooltip title="view profile">
+          <Tooltip title="View profile">
             <IconButton onClick={handleClick} sx={{ p: 0 }}>
               <FaUser style={{ color: "#27438e", fontSize: "28px" }} />
             </IconButton>
           </Tooltip>
-
           <Menu
             sx={{
               mt: "45px",
               "& .MuiMenu-paper": {
                 backgroundColor: "white",
-                color: "blue",
+                color: "#375ab2",
                 fontWeight: "bold",
               },
             }}
@@ -165,8 +163,52 @@ export default function Navbar() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
+            <Typography variant="body1" textAlign="center" sx={{ px: 2, py: 1 }}>
+              {name}
+            </Typography>
             <Typography variant="body1" sx={{ px: 2, py: 1 }}>
-              Hello, {username} !
+               {email} 
+            </Typography>
+            <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+          </Menu>
+        </>
+      );
+    } else if (role === "owner") {
+      return (
+        <>
+          <Tooltip title="View profile">
+            <IconButton onClick={handleClick} sx={{ p: 0 }}>
+              <FaUser style={{ color: "#27438e", fontSize: "28px" }} />
+            </IconButton>
+          </Tooltip>
+
+          <Menu
+            sx={{
+              mt: "45px",
+              "& .MuiMenu-paper": {
+                backgroundColor: "white",
+                color: "#375ab2",
+                fontWeight: "bold",
+              },
+            }}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <Typography variant="body1" textAlign="center" sx={{ px: 2, py: 1 }}>
+              {name}
+            </Typography>
+            <Typography variant="body1" sx={{ px: 2, py: 1 }}>
+               {email} 
             </Typography>
             <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
           </Menu>
