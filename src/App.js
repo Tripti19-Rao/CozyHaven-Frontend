@@ -31,7 +31,7 @@ import MyStay from './components/Finder/MyStay';
 import searchResultsReducer from './Reducer/searchResultsReducers';
 import findersReducer from './Reducer/findersReducer';
 import buildingsReducer from './Reducer/buildingsReducer';
-
+import adminReducer from './Reducer/adminReducer';
 
 //ContextApi
 import SearchContext from './ContextApi/searchContext';
@@ -39,6 +39,7 @@ import FinderContext from './ContextApi/FinderContext';
 import BuildingContext from './ContextApi/BuildingContext';
 import roomsReducer from './Reducer/roomsReducer';
 import RoomContext from './ContextApi/RoomContext';
+import AdminContext from './ContextApi/AdminContext';
 
 import {jwtDecode} from 'jwt-decode'
 import { useDispatch} from 'react-redux';
@@ -76,12 +77,18 @@ function App() {
     wishlist:{},
     mystay: null
   }
+
+  const adminInitalState = {
+    users:[],
+    buildings:[]
+  }
+  
   //State
   const [searchResults, searchDispatch] = useReducer(searchResultsReducer, searchInitialState)
   const [finder, findersDispatch] = useReducer(findersReducer,finderInitalState )
   const [buildings, buildingsDispatch] = useReducer(buildingsReducer, buildingsInitialState)
   const [rooms, roomsDispatch] = useReducer(roomsReducer, roomsInitialState)
-
+  const [admin, adminsDispatch] = useReducer(adminReducer, adminInitalState)
   
   const usersDispatch = useDispatch()
 
@@ -112,6 +119,15 @@ function App() {
             const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
             buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
           }
+          else if(role === 'admin'){
+            const usersResponse = await axios.get("http://localhost:3055/api/chart/users",tokenHeader)
+            adminsDispatch({type:'SET_USERS', payload:usersResponse.data})
+            
+            const buildingsResponse = await axios.get("http://localhost:3055/api/chart/buildings",tokenHeader)
+            adminsDispatch({type:'SET_BUILDINGS', payload:buildingsResponse.data})
+
+          }
+
         } catch(err) {
           console.log(err)
         }
@@ -127,6 +143,7 @@ function App() {
       <FinderContext.Provider value={{finder, findersDispatch}}>
       <SearchContext.Provider value={{searchResults, searchDispatch}}>
       <RoomContext.Provider value={{rooms, roomsDispatch}}>
+        <AdminContext.Provider value={{admin, adminsDispatch}}>
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage/>}/>
@@ -221,6 +238,7 @@ function App() {
         } />
         <Route path='/unauthorized' element={<UnauthorizedPage/>}/>
       </Routes>
+      </AdminContext.Provider>
       </RoomContext.Provider>
       </SearchContext.Provider>
       </FinderContext.Provider>

@@ -10,6 +10,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FinderContext from '../../ContextApi/FinderContext'
 import BuildingContext from '../../ContextApi/BuildingContext'
+import AdminContext from '../../ContextApi/AdminContext'
 import { useDispatch } from 'react-redux'
 import { setUserAccount } from '../../Actions/UserActions'
  
@@ -22,6 +23,7 @@ export default function Login() {
 
     const {findersDispatch} = useContext(FinderContext)
     const {buildingsDispatch} = useContext(BuildingContext)
+    const {adminsDispatch} = useContext(AdminContext)
     const usersDispatch = useDispatch()
 
     const [email, setEmail] = useState('')
@@ -89,6 +91,13 @@ export default function Login() {
         
                     const ameneitiesResponse = await axios.get('http://localhost:3055/api/amenities',tokenHeader)
                     buildingsDispatch({ type: "SET_AMENITIES", payload: ameneitiesResponse.data });
+                  }
+                  else if(jwtDecode(token).role === 'admin'){
+                    const usersResponse = await axios.get("http://localhost:3055/api/chart/users",tokenHeader)
+                    adminsDispatch({type:'SET_USERS', payload:usersResponse.data})
+                    
+                    const buildingsResponse = await axios.get("http://localhost:3055/api/chart/buildings",tokenHeader)
+                    adminsDispatch({type:'SET_BUILDINGS', payload:buildingsResponse.data})
                   }
                 toast.success('Successfully Logged In!', {
                     autoClose: 1000,
