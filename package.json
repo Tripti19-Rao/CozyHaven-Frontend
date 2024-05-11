@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.2",
     "formik": "^2.4.5",
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
@@ -41,7 +42,8 @@
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.7",
     "web-vitals": "^2.1.4",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "yup-password": "^0.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,17 +1,7 @@
-import {useContext} from 'react'
-import AdminContext from "../../ContextApi/AdminContext"
+import React from 'react'
 
-function Dashboard() {
-
-  const { admin } = useContext(AdminContext)
-  console.log(admin)
+export default function Dashboard() {
   return (
-    <div>
-      <div>Dash Board</div>
-      <h1>hi</h1>
-      <div>{admin?.users?.length}</div>
-    </div>
+    <div>Dashboard</div>
   )
 }
-
-export default Dashboard
