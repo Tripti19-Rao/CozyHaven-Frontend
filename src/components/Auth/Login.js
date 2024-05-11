@@ -65,6 +65,24 @@ export default function Login() {
                         Authorization: token
                     }
                 }
+
+                toast.success('Successfully Logged In!', {
+                    autoClose: true,
+                    onClose: () => {
+                        if(role==="admin"){
+                            navigate("/dashboard")
+                        }
+                        else if(role==="owner"){
+                            navigate("/home")
+                        }
+                        else if(role==="finder" && sessionToken) {
+                            navigate(`/payment-link?session=${sessionToken}`)
+                        }
+                        else{
+                            navigate("/search")
+                        }
+                    }
+                  })
                 //setting the finder
                 if(role === 'finder') {
                     const finderData = response.data.finder_details
@@ -99,23 +117,7 @@ export default function Login() {
                     const buildingsResponse = await axios.get("http://localhost:3055/api/chart/buildings",tokenHeader)
                     adminsDispatch({type:'SET_BUILDINGS', payload:buildingsResponse.data})
                   }
-                toast.success('Successfully Logged In!', {
-                    autoClose: 1000,
-                    onClose: () => {
-                        if(role==="admin"){
-                            navigate("/dashboard")
-                        }
-                        else if(role==="owner"){
-                            navigate("/home")
-                        }
-                        else if(role==="finder" && sessionToken) {
-                            navigate(`/payment-link?session=${sessionToken}`)
-                        }
-                        else{
-                            navigate("/search")
-                        }
-                    }
-                  })
+                
                 setServerErrors({})
                 setEmail('')
                 setPassword('')
