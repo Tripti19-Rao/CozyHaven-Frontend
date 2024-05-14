@@ -25,8 +25,8 @@ export default function UnauthorizedPage() {
                 sx={{
                 height: "480px",
                 width: "500px",
-                marginLeft:"350px",
-                borderRadius: "5px",
+                marginLeft:"490px",
+                borderRadius: "5px"
                 }}
                 alt="Unauthorized"
                 src="/unauthorized.jpg"

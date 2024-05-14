@@ -45,6 +45,7 @@ import {jwtDecode} from 'jwt-decode'
 import { useDispatch} from 'react-redux';
 import { setUserAccount } from './Actions/UserActions';
 import PrivateRoutes from './components/Auth/PrivateRoutes';
+import Review from './components/Admin/Review';
 
 function App() {
 
@@ -80,7 +81,8 @@ function App() {
 
   const adminInitalState = {
     users:[],
-    buildings:[]
+    buildings:[],
+    pendingBuildings: []
   }
   
   //State
@@ -125,6 +127,10 @@ function App() {
             
             const buildingsResponse = await axios.get("http://localhost:3055/api/chart/buildings",tokenHeader)
             adminsDispatch({type:'SET_BUILDINGS', payload:buildingsResponse.data})
+
+            //set pending buildings
+            const pendingBuild = buildingsResponse.data?.filter(ele => ele.isApproved === 'Pending')
+            adminsDispatch({type: 'SET_Pending_BUILDINGS',payload: pendingBuild})
 
           }
 
@@ -186,6 +192,7 @@ function App() {
         </PrivateRoutes>
         }/>
         <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path='/review-building/:id' element={<Review/>}/>
         <Route path="/home" element={
           <PrivateRoutes permittedRoles={['owner']}>
           <Home/>
