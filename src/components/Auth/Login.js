@@ -116,6 +116,10 @@ export default function Login() {
                     
                     const buildingsResponse = await axios.get("http://localhost:3055/api/chart/buildings",tokenHeader)
                     adminsDispatch({type:'SET_BUILDINGS', payload:buildingsResponse.data})
+
+                    //set pending buildings
+    const pendingBuild = buildingsResponse.data?.filter(ele => ele.isApproved === 'Pending')
+    adminsDispatch({type: 'SET_Pending_BUILDINGS',payload: pendingBuild})
                   }
                 
                 setServerErrors({})
