@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { startSetGuest, startRemoveGuest, setServerErrors } from "../../Actions/GuestActions";
+import { startSetGuest, startRemoveGuest,startStatusChart,removeStatusChart, setServerErrors } from "../../Actions/GuestActions";
 import BuildingContext from "../../ContextApi/BuildingContext";
 import GuestPayment from "./GuestPayment";
 import GuestInformation from "./GuestInformation";
@@ -25,13 +25,17 @@ import {
   FormControl,
   InputLabel,
   Modal,
-  Box
+  Box,
+  Grid,
+  Card,
+  Divider
 } from "@mui/material";
 import moment from "moment";
 import Swal from 'sweetalert2'
 import { toast,Bounce, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import { isEmpty } from 'lodash'
+import Chart from 'chart.js/auto';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -75,6 +79,9 @@ export default function GuestManagement() {
     setsetDetailsOpen(false);
 
   }
+  const [statChart, setStatChart] = useState(null)
+  const [revenueChart, setRevenueChart] = useState(null)
+
   const { buildings } = useContext(BuildingContext);
 
   const building = buildings?.data?.find((ele) => ele._id === id);
@@ -82,6 +89,12 @@ export default function GuestManagement() {
   const guests = useSelector((state) => {
     return state.guests.data;
   });
+  const statusChart = useSelector((state) => {
+    return state.guests.statusChart;
+  });
+  // const statusChart = useSelector((state) => {
+  //   return state.guests.statusChart;
+  // });
   const serverErrors = useSelector((state) => {
     return state.guests.serverErrors;
   });
@@ -97,6 +110,90 @@ export default function GuestManagement() {
     totalPages: guests.totalPages,
     total: guests.total,
   });
+
+  useEffect(()=>{
+    dispatch(startStatusChart(id))
+
+  },[])
+  useEffect(()=>{
+    if(statusChart && !isEmpty(statusChart)){
+      let statusCounts = statusChart.status.reduce((counts,ele)=>{
+        counts[ele.status] = (counts[ele.status] || 0 ) +1
+        return counts
+      },{});
+      console.log(statusCounts)
+      
+      if(!statChart){
+        const ctx = document.getElementById('myChart');
+      const newChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Success', 'Pending', 'Failed'],
+          datasets: [{
+            label: 'No. of users',
+            data: [statusCounts['Successful'], statusCounts['Pending'], statusCounts['Failed']],
+            backgroundColor: [
+              '#e385ab',
+              '#83d2b7',
+              '#5e97d1',
+            ],
+            borderColor: [
+              'rgba(227, 133, 171, 1)',
+              'rgba(131, 210, 183, 1)',
+              'rgba(94, 151, 209, 1)',
+            ],
+            borderWidth: 1
+          }]
+        }
+      });
+      setStatChart(newChart);
+      }
+      
+      if(!revenueChart){
+        const ctx2 = document.getElementById('RevenueChart');
+
+        const newChart2 = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels:  ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+              label: 'Amount',
+              data:statusChart.revenue.map(ele=>ele.amount) ,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+              ],
+              borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
+              ],
+              borderWidth: 1
+            }]
+          }
+        });
+        setRevenueChart(newChart2);
+      }
+    }
+    return () =>{
+      if(statChart) {
+        console.log("Unmounted")
+        statChart.destroy()
+        dispatch(removeStatusChart())
+
+      }
+    }
+  },[statusChart, statChart])
+
 
   useEffect(() => {
     fetchData();
@@ -202,7 +299,66 @@ export default function GuestManagement() {
             >
               {queryData?.stay===true  ? `Currently there are ${guests.total} tenants are residing in your building`:`${guests.total} Previous tenants`}
       </Typography>
-      
+      <Grid container sx={{ marginTop: '30px',marginLeft:'auto',marginRight: 'auto'}}>
+        <Grid item xs={6} sx={{
+          position: 'relative',
+          paddingLeft:'150px',
+          height:'400px',
+          width:'600px'
+        }}>
+        <Card sx={{
+          boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;",
+          borderRadius: '10px',
+          padding:'10px',
+          height:'373px',
+          width:'400px'
+          
+        }}>
+                <Typography
+              fontWeight="bold"
+              textAlign="center"
+            >
+              Payment Statistic
+      </Typography>
+      <div style={{ height:'350px',
+          width:'400px'}}>
+      <canvas id='myChart' ></canvas>
+
+      </div>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sx={{
+          position: 'relative',
+          height:'400px',
+          width:'600px'
+        }}>
+           <Card sx={{
+          boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;",
+          borderRadius: '10px',
+          padding:'10px'
+
+        }}>
+                <Typography
+              fontWeight="bold"
+              textAlign="center"
+            >
+              Revenue Statistic
+      </Typography>
+        <canvas id='RevenueChart' ></canvas>
+        </Card>
+        </Grid>
+      </Grid>
+<Divider sx={{marginBottom:'35px', marginTop:'25px'}}/>
+<Typography
+              variant="body1"
+              fontWeight="bold"
+              textAlign="center"
+              fontSize="30px"
+              marginBottom="20px"
+            >
+              Guest Management Tabel
+      </Typography>
+      <div >
       <Button
       endIcon={<SortIcon/>}
       sx={{marginLeft:'40px', marginTop:"20px"}} 
@@ -241,6 +397,8 @@ export default function GuestManagement() {
         onChange={handleChange}
       />
       </div>
+      </div>
+      
 
       {guests.data && guests.data.length > 0 ? (
         <>

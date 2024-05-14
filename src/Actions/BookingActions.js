@@ -15,7 +15,7 @@ export const startBookingRoom = (data,navigate) =>{
 
         }catch(err){
             console.log(err)
-            toast.error(err.response.data.errors)
+            toast.error("An Error Occured")
             
         }
     }
@@ -39,6 +39,7 @@ export const startGetBookingDetails = (id) =>{
             dispatch(updateBooking(response.data))
         }catch(err){
             console.log(err)
+            toast.error("An Error Occured")
         }
     }
 }

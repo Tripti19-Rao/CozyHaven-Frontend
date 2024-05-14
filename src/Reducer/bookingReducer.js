@@ -1,5 +1,5 @@
 const initailBooking = {
-    bookingDetails:{},
+    bookingDetails:{}
 }
 
 const bookingReducer = (state=initailBooking , action)=>{

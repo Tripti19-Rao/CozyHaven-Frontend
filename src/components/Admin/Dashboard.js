@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash'
 import Chart from 'chart.js/auto';
 
 
-function Dashboard() {
+export default function Dashboard() {
 
   const { admin } = useContext(AdminContext)
   console.log(admin)
@@ -99,7 +99,7 @@ function Dashboard() {
     <div style={{ marginTop: "90px", width:"75%", marginLeft: "auto", marginRight:"auto"}}>
     {isEmpty(admin) ? 'Loading' : (
         <div>
-          <Typography
+        <Typography
         variant="body1"
         fontFamily='Roboto'
         fontWeight="bold"

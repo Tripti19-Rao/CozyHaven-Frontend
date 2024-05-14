@@ -5,7 +5,8 @@ import {startGetBookingDetails, startDestroyBooking} from '../../Actions/Booking
 import {startPayment} from '../../Actions/PaymentActions'
 import { Box, Typography, Grid, Button , Stack , CardContent, Card, Divider } from "@mui/material";
 import SearchContext from '../../ContextApi/searchContext'
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
  
 export default function BookingDetails() {
@@ -53,6 +54,7 @@ console.log("room", room);
     return (
 
     <div>
+      <ToastContainer position='top-center'/>
        <Typography
         variant="body1"
         fontWeight="bold"

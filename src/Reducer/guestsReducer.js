@@ -1,6 +1,8 @@
 const initialGuestState = {
     data: {},
+    statusChart:{},
     serverErrors:''
+
 }
 
 export default function guestsReducer(state = initialGuestState,action) {
@@ -10,6 +12,9 @@ export default function guestsReducer(state = initialGuestState,action) {
         }
         case 'REMOVE_GUEST' :{
             return {...state, data:{...state.data, data:state.data.data.filter(ele=>{return ele._id !==action.payload._id})}}
+        }
+        case 'SET_STATUSCHART':{
+            return {...state, statusChart: action.payload}
         }
         case 'SET_SERVERERROR' :{
             return {...state , serverErrors:action.payload}

@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+
 export const startSetGuest = (id, queryParams) =>{
     return async(dispatch)=>{
         try{
@@ -55,5 +56,39 @@ export const setServerErrors = (errors)=>{
     return{
         type:'SET_SERVERERROR',
         payload:errors
+    }
+}
+
+export const startStatusChart = (id)=>{
+    const token = localStorage.getItem('token')
+    console.log(token)
+    return async(dispatch)=>{
+        try{
+            const statusData = await axios.get(`http://localhost:3055/api/chart/status/${id}`,{
+                headers:{
+                    Authorization:token
+                }
+        })
+        dispatch(setStatusChart(statusData.data))
+    }catch(err){
+        console.log(err)
+        dispatch(setServerErrors('Server Error Occured'))
+
+    }
+}
+}
+
+const setStatusChart = (statusData) =>{
+    return {
+        type:'SET_STATUSCHART',
+        payload:statusData
+    }
+}
+
+
+export const removeStatusChart = () =>{
+    return{
+        type:'SET_STATUSCHART',
+        payload:{}
     }
 }

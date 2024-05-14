@@ -67,7 +67,7 @@ export default function Login() {
                 }
 
                 toast.success('Successfully Logged In!', {
-                    autoClose: true,
+                    autoClose: 500,
                     onClose: () => {
                         if(role==="admin"){
                             navigate("/dashboard")
