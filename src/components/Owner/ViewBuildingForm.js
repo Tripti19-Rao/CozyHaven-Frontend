@@ -381,6 +381,13 @@ export default function ViewBuildingForm() {
                       border: "1px solid #ccc",
                       padding: "10px",
                       backgroundColor: "#fff",
+                      overflowY: "auto",
+                        paddingRight: "20px", // Add padding to accommodate scrollbar width
+                        //scrollbarWidth: "none", // Hide scrollbar for Firefox
+                        //msOverflowStyle: "none", // Hide scrollbar for IE/Edge
+                        // "&::WebkitScrollbar": {
+                        //   display: "none", // Hide scrollbar for Chrome/Safari/Opera
+                        // },
                     }}
                   />
               </CustomTabPanel>

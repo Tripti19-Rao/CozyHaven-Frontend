@@ -170,10 +170,14 @@ export default function MyStay() {
                                 e.currentTarget.style.boxShadow = '0px 6px 8px rgba(0, 0, 0, 0.1)'; // Reset elevation on hover out
                             }}
                         >
-                         <StyledCard sx={{display: 'flex'}} onClick={() => {handleShowBuilding(ele.buildingId._id)}}>
+                         <StyledCard sx={{display: 'flex',width: '100%'}} onClick={() => {handleShowBuilding(ele.buildingId._id)}}>
                             <CardMedia
                                 component="img"
-                                sx={{ width: 450,height: 258 }}
+                                sx={{
+                                    width: '80%',
+                                    height: '258px',
+                                    objectFit: 'cover' 
+                                     }}
                                 image={ele.buildingId.profilePic}
                                 alt="Buildings Picture"
                             />

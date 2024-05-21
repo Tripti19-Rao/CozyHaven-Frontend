@@ -22,9 +22,11 @@ import {toast , ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import YupPassword from "yup-password";
-YupPassword(yup); // // Extend yup with password validation methods
 
+import YupPassword from "yup-password";
+// eslint-disable-next-line
+YupPassword(yup); // // Extend yup with password validation methods
+// eslint-disable-next-line
 
 export default function Signup() {
   const navigate = useNavigate()

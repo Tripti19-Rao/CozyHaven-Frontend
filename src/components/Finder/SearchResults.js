@@ -423,10 +423,14 @@ export default function SearchResults() {
                 }}
             >
                 {/* <Link to={`/show-building/${ele._id}`} style={{textDecoration: 'none'}}> */}
-                <StyledCard sx={{ display: 'flex'}}>
+                <StyledCard sx={{ display: 'flex',width: '100%'}}>
                 <CardMedia
                     component="img"
-                    sx={{ width: 450,height: 258 }}
+                    sx={{
+                        width: '80%',
+                        height: '258px',
+                        objectFit: 'cover' 
+                    }}
                     image={ele.profilePic}
                     alt="Buildings Picture"
                 />
@@ -538,9 +542,8 @@ export default function SearchResults() {
               onChange={handleQueryChange}
               //style={{ height: "35px" , width: '55px'}}
             > 
-              <MenuItem value={1}>1</MenuItem>
               <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
             </Select>
             </FormControl>
             <Pagination

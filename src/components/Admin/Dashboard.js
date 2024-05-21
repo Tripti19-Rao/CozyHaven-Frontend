@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { admin , adminsDispatch} = useContext(AdminContext)
+  const { admin} = useContext(AdminContext)
   console.log(admin.pendingBuildings,'pending')
   
 
@@ -113,6 +113,7 @@ export default function Dashboard() {
       buildingsChart.destroy();
     }
   };
+  // eslint-disable-next-line
 }, [usersChart, buildingsChart,admin.users, admin.buildings]);
 
 
@@ -129,12 +130,8 @@ export default function Dashboard() {
        sx={{
         display: "flex",
         flexDirection: "column",
-        // paddingLeft: "60px",
         paddingTop: "100px",
         marginLeft: '55px',
-        // marginRight: 'auto',
-        // width: '80%'
-        // marginLeft: "35%",
        }}
       >
       <Typography
@@ -143,11 +140,6 @@ export default function Dashboard() {
       fontWeight="bold"
       textAlign="center"
       fontSize="35px"
-      // style={{
-      //   borderRadius: '20px',
-      //   backgroundColor: 'white',
-      // }}
-      //marginTop="100px"
     >
       Welcome Admin
     </Typography>
@@ -160,10 +152,6 @@ export default function Dashboard() {
             textAlign="center"
             fontSize="25px"
             color='text.secondary'
-            // style={{
-            //   borderRadius: '20px',
-            //   backgroundColor: 'white',
-            // }}
             marginTop="15px"
           >
             You have {admin.pendingBuildings.length} pending buildings to review for today
@@ -187,16 +175,12 @@ export default function Dashboard() {
                 sx={{
                   
                    height: "auto",
-                    //marginLeft: "300px" 
                   }}
               >
                 <CardMedia
                   sx={{ height: "200px" }}
                   image={ele.profilePic}
                   title="View building"
-                  // onClick={() => {
-                  //   handleView(ele._id);
-                  // }}
                 />
                 <CardContent>
                 <Grid container>
@@ -212,9 +196,6 @@ export default function Dashboard() {
                             cursor: "pointer",
                           },
                         }}
-                        // onClick={() => {
-                        //   handleView(ele._id);
-                        // }}
                       >
                         {ele.name}
                       </Typography>
@@ -226,8 +207,6 @@ export default function Dashboard() {
                       item
                       xs={6}
                        sx={{ 
-                      //   display: "flex",
-                      //   flexDirection: 'column',
                          paddingLeft: '250px' 
                     }}
                     >
@@ -239,8 +218,6 @@ export default function Dashboard() {
                         avatar={<img src={genderImg(ele.gender)} alt="" />}
                         sx={{
                           backgroundColor: "#EAF5FD",
-                          //marginLeft: "60px",
-                          //marginTop: "15px",
                         }}
                       /><br/>
                       <Button
@@ -272,10 +249,6 @@ export default function Dashboard() {
             textAlign="center"
             fontSize="25px"
             color='text.secondary'
-            // style={{
-            //   borderRadius: '20px',
-            //   backgroundColor: 'white',
-            // }}
             marginTop="30px"
           >
             You don't have any pending buildings to review for today
@@ -303,13 +276,6 @@ export default function Dashboard() {
 
     <Grid item xs={4} 
       sx={{
-      //  position: "fixed",
-      //  backgroundColor: "#6698E1",
-      //  //backgroundColor: '#EAF5FD',
-      //  height: "100vh",
-      //  width: "500px",
-      //  zIndex: 1, // Ensure it's above other content
-      //  alignItems: "center",
       position: 'fixed',
       top: 0,
       right: 0,
@@ -334,8 +300,6 @@ export default function Dashboard() {
             fontFamily='Roboto'
             fontWeight="bold"
             textAlign="center"
-            //fontSize="35px"
-            //marginTop="100px"
           >
             Statistics of the Users
           </Typography>
@@ -343,7 +307,6 @@ export default function Dashboard() {
           position: 'relative',
           height:'250px',
           width:'250px',
-          //marginTop: '100px',
           marginLeft: 'auto',
           marginRight: 'auto',
           
@@ -366,8 +329,6 @@ export default function Dashboard() {
             fontFamily='Roboto'
             fontWeight="bold"
             textAlign="center"
-            //fontSize="35px"
-            //marginTop="100px"
           >
             Statistics of the Buildings
           </Typography>
@@ -375,11 +336,8 @@ export default function Dashboard() {
           position: 'relative',
           height:'250px',
           width:'250px',
-          // marginTop: '100px',
           marginLeft: 'auto',
           marginRight: 'auto',
-          // borderRadius: '10px',
-          // backgroundColor: 'white'
         }}>
           <canvas id='buildingChart' ></canvas>
         </div>

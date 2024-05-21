@@ -569,6 +569,8 @@ export default function ShowBuilding() {
                         border: "1px solid #ccc",
                         padding: "10px",
                         backgroundColor: "#fff",
+                        overflowY: "auto",
+                        paddingRight: "20px",
                       }}
                     />
                   </CustomTabPanel>

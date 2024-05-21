@@ -6,6 +6,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { isEmpty } from 'lodash';
 import { VisuallyHiddenInput } from './styles';
 import axios from 'axios';
+import { Loader } from './styles';
+import { FadeLoader  } from 'react-spinners';
 //import { toast } from 'react-toastify';
 
 export default function RoomForm (props) {
@@ -15,6 +17,7 @@ export default function RoomForm (props) {
         sharing: '',
         amount: ''
     })
+    const [loading, setLoading] = useState(false)
 
     const {rooms,roomsDispatch,buildingId, handleClose} = props
     const {clientErrors} = rooms
@@ -73,14 +76,14 @@ export default function RoomForm (props) {
                 Object.entries(form.pic).forEach(ele => formData.append('pic', ele[1]))
                 // console.log('formpic',Object.entries(form.pic))
                 // console.log('formdata',formData)
-
+                setLoading(true)
                 const token = localStorage.getItem('token')
                 const response = await axios.post(`http://localhost:3055/api/${buildingId}/rooms`,formData,{
                     headers: {
                         Authorization: token
                     }
                 })
-                //console.log('response',response.data)
+                setLoading(false)
                 roomsDispatch({type: 'ADD_ROOMS',payload: response.data})
                 roomsDispatch({type: 'SET_SERVERERRORS',payload: ''})
                 handleClose()
@@ -111,6 +114,11 @@ export default function RoomForm (props) {
                     {rooms.serverErrors}
                 </Alert>
             }
+            {loading && (
+            <Loader>
+                <FadeLoader  color="#007FFF" />
+            </Loader>
+        )}
         <form onSubmit={handleSubmit}>
             <FormControl sx={{width: '100%'}}>
             <Stack spacing={2} direction='column'>

@@ -113,8 +113,10 @@ export default function GuestManagement() {
 
   useEffect(()=>{
     dispatch(startStatusChart(id))
-
+// eslint-disable-next-line
   },[])
+
+  //console.log(statusChart,'sssssssss')
   useEffect(()=>{
     if(statusChart && !isEmpty(statusChart)){
       let statusCounts = statusChart.status.reduce((counts,ele)=>{
@@ -131,7 +133,7 @@ export default function GuestManagement() {
           labels: ['Success', 'Pending', 'Failed'],
           datasets: [{
             label: 'No. of users',
-            data: [statusCounts['Successful'], statusCounts['Pending'], statusCounts['Failed']],
+            data: [statusCounts['Successful'], statusCounts['Pending'], statusCounts['failed']],
             backgroundColor: [
               '#e385ab',
               '#83d2b7',
@@ -151,14 +153,25 @@ export default function GuestManagement() {
       
       if(!revenueChart){
         const ctx2 = document.getElementById('RevenueChart');
-
+        const ds = []
+        let j=0
+        for(let i=0;i<=6;i++) {
+          if(j < statusChart.revenue.length && statusChart.revenue[j].month == i+1) {
+            ds.push(statusChart.revenue[j].amount)
+             j++
+          } else {
+            ds.push(0)
+          }
+        }
+        console.log(ds,'ddd')
         const newChart2 = new Chart(ctx2, {
           type: 'bar',
           data: {
-            labels:  ["January", "February", "March", "April", "May", "June", "July"],
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
             datasets: [{
               label: 'Amount',
-              data:statusChart.revenue.map(ele=>ele.amount) ,
+              data: ds,
+              //data:statusChart.revenue.map(ele=>ele.amount) ,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
@@ -192,6 +205,7 @@ export default function GuestManagement() {
 
       }
     }
+    // eslint-disable-next-line
   },[statusChart, statChart])
 
 

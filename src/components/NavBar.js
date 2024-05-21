@@ -9,8 +9,7 @@ import {
   Tooltip,
   IconButton,
   Menu,
-  MenuItem,
-  Paper
+  MenuItem
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -102,14 +101,6 @@ export default function Navbar() {
             </Typography>
             <MenuItem onClick={handleClose}>
               <Link
-                to={"/profile"}
-                style={{ textDecoration: "none", color: "#27438e" }}
-              >
-                Profile
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <Link
                 to={"/myStay"}
                 style={{ textDecoration: "none", color: "#27438e" }}
               >
@@ -136,6 +127,15 @@ export default function Navbar() {
     } else if (role === "admin") {
       return (
         <>
+          <Tooltip title="Home">
+            <IconButton>
+              <Link to={"/dashboard"}>
+                <HomeRoundedIcon
+                  style={{ fontSize: "40px", color: "#27438e" }}
+                />
+              </Link>
+            </IconButton>
+          </Tooltip>
           <Tooltip title="View profile">
             <IconButton onClick={handleClick} sx={{ p: 0 }}>
               <FaUser style={{ color: "#27438e", fontSize: "28px" }} />
@@ -176,6 +176,15 @@ export default function Navbar() {
     } else if (role === "owner") {
       return (
         <>
+          <Tooltip title="Home">
+            <IconButton>
+              <Link to={"/home"}>
+                <HomeRoundedIcon
+                  style={{ fontSize: "40px", color: "#27438e" }}
+                />
+              </Link>
+            </IconButton>
+          </Tooltip>
           <Tooltip title="View profile">
             <IconButton onClick={handleClick} sx={{ p: 0 }}>
               <FaUser style={{ color: "#27438e", fontSize: "28px" }} />

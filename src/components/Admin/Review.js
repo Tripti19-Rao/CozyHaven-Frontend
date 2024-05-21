@@ -2,7 +2,6 @@ import {
     Grid,
     Chip,
     Typography,
-    Rating,
     Paper,
     Card,
     CardMedia,
@@ -72,7 +71,6 @@ export default function Review() {
    
     const { admin } = useContext(AdminContext)
     const building = admin?.buildings?.find(ele => ele._id === id)
-    //console.log(building)
 
     const customIcon = new Icon({
         iconUrl: "../../home.png",
@@ -162,7 +160,6 @@ export default function Review() {
                         hideProgressBar: true
                     }
                 )
-                //toast.error({err.message} => {})
             }
         }
     return (
@@ -176,7 +173,6 @@ export default function Review() {
                 sx={{
                     position: "fixed",
                     backgroundColor: "#6698E1",
-                    //backgroundColor: '#EAF5FD',
                     height: "100vh",
                     width: "500px",
                     zIndex: 1, // Ensure it's above other content
@@ -210,7 +206,6 @@ export default function Review() {
               style={{ width: "100%", height: "100%" }}
             >
               <TileLayer
-                // url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" //leafletjs.com -- copy the url
                 url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
                     attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a> contributors'
               />
@@ -361,7 +356,6 @@ export default function Review() {
                         width: "90vh",
                         height: "430px",
                         marginLeft: "50px",
-                        // marginBottom: "30px",
                       }}
                     >
                         <Carousel showThumbs={false} infiniteLoop >
@@ -393,6 +387,8 @@ export default function Review() {
                         border: "1px solid #ccc",
                         padding: "10px",
                         backgroundColor: "#fff",
+                        overflowY: "auto",
+                        paddingRight: "20px",
                       }}
                     />
                   </CustomTabPanel>

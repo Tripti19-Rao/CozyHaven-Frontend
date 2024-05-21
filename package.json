@@ -43,7 +43,7 @@
     "sweetalert2": "^11.10.7",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0",
-    "yup-password": "^0.4.0"
+    "yup-password": "^0.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -9,12 +9,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { useParams, useNavigate} from "react-router-dom";
 import {toast , ToastContainer} from 'react-toastify' 
-
+import { Loader } from "../Owner/styles";
+import { FadeLoader  } from 'react-spinners';
 
 
 export default function GuestForm() {
     const {buildingid} = useParams()
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
     const [serverErrors,setServerErrors] = useState('')
     const [aadharPic, setAadharPic] = useState({
@@ -58,13 +60,6 @@ export default function GuestForm() {
             .min(12, 'Aadhar Number must contain 12 digits')
             .max(12, 'Contact must contain 12 digits')
             .required('Aadhar Number is required'),
-        // aadharPic: yup
-        //     .mixed()
-        //     .required('Aadhar picture is required'),
-            // .test('fileType', 'Invalid file type. Only images are allowed', (value) => {
-            // if (!value) return true; // Skip validation if no file is uploaded
-            // return value && ['image/jpeg', 'image/png','image/jpg'].includes(value.type);
-            // }),
         qualification: yup
             .string()
             .required('Qualification is required'),
@@ -97,6 +92,7 @@ export default function GuestForm() {
                 setAadharPic({...aadharPic, error: ''})
                 setProfile({...profile, error: ''})
 
+                setLoading(true)
                 const formData = new FormData()
                 formData.append('name',values.name)
                 Object.entries(profile.pic).forEach(ele => {
@@ -125,6 +121,7 @@ export default function GuestForm() {
                     }
                 })
                 console.log(response.data)
+                setLoading(false)
                 actions.resetForm()
                 setServerErrors('')
                 //remove buildingId from localStorage
@@ -199,6 +196,7 @@ export default function GuestForm() {
             height: '600px', // Adjust the height as needed
             }}
         />
+        
         <Box
             sx={{
                 marginTop: '100px',
@@ -212,6 +210,11 @@ export default function GuestForm() {
                 boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)'
             }}
         >
+            {loading && (
+            <Loader>
+                <FadeLoader  color="#007FFF" />
+            </Loader>
+        )}
             <Typography
                 variant="h4"
                 fontFamily="Roboto"
